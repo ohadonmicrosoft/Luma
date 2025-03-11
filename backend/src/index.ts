@@ -1,7 +1,7 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import dotenv from 'dotenv';
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -14,8 +14,8 @@ app.use(helmet());
 app.use(express.json());
 
 // Routes
-app.get('/', (req, res) => {
-  res.json({ message: 'Luma API is running' });
+app.get("/", (req, res) => {
+  res.json({ message: "Luma API is running" });
 });
 
 // Start server

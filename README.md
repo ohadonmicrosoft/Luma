@@ -15,17 +15,20 @@ This project is organized with the following directories:
 ## Getting Started
 
 1. Start the database services:
+
    ```bash
    docker-compose up -d
    ```
 
 2. Start the backend:
+
    ```bash
    cd backend
    npm run dev
    ```
 
 3. In a separate terminal, start the frontend:
+
    ```bash
    cd frontend
    npm run dev
