@@ -6,6 +6,7 @@ import { Order } from './Order';
 import { Review } from './Review';
 import { WishlistItem } from './WishlistItem';
 import { Cart } from './Cart';
+import { Subscription } from './Subscription';
 
 // Define types for user-related data
 type UserAddress = {
@@ -89,6 +90,9 @@ export class User {
 
   @OneToMany(() => Cart, cart => cart.user)
   carts!: Cart[];
+
+  @OneToMany(() => Subscription, subscription => subscription.user)
+  subscriptions!: Subscription[];
 
   @CreateDateColumn()
   createdAt!: Date;
