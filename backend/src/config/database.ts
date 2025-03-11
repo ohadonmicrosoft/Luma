@@ -7,6 +7,7 @@ dotenv.config();
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
+const isDevelopment = !isProduction && !isTest;
 
 // Database connection options
 export const AppDataSource = new DataSource({
@@ -27,11 +28,24 @@ export const AppDataSource = new DataSource({
 // Initialize database connection
 export const initializeDatabase = async () => {
   try {
+    // Check if we should skip database connection (for development without DB)
+    if (process.env.SKIP_DB_CONNECTION === 'true' || isDevelopment) {
+      console.warn('Database connection skipped in development mode. Set SKIP_DB_CONNECTION=false to enable database connection.');
+      return null;
+    }
+    
     await AppDataSource.initialize();
     console.log('Database connection established successfully');
     return AppDataSource;
   } catch (error) {
     console.error('Error during database connection:', error);
+    
+    // In development, we may want to continue even without a database
+    if (isDevelopment) {
+      console.warn('Continuing in development mode without database connection.');
+      return null;
+    }
+    
     throw error;
   }
 };

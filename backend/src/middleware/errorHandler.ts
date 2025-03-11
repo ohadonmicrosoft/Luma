@@ -5,13 +5,13 @@ import { logger } from '../utils/logger';
 // Custom API error class
 export class ApiError extends Error {
   statusCode: number;
-  errorCode: string;
+  errorCode: ErrorCode;
   isOperational: boolean;
 
   constructor(
     statusCode: number,
     message: string,
-    errorCode: string = ErrorCode.INTERNAL_SERVER_ERROR,
+    errorCode: ErrorCode = ErrorCode.INTERNAL_SERVER_ERROR,
     isOperational: boolean = true
   ) {
     super(message);

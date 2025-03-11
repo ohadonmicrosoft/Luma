@@ -25,8 +25,13 @@ setupErrorHandling(app);
 // Start server function
 const startServer = async () => {
   try {
-    // Initialize database
-    await initializeDatabase();
+    // Initialize database (may return null in development)
+    const dataSource = await initializeDatabase();
+    if (dataSource) {
+      logger.info('Database connected successfully');
+    } else {
+      logger.warn('Running without database connection');
+    }
 
     // Start server
     app.listen(port, () => {

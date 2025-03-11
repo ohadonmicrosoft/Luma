@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
-import { errorHandler } from './errorHandler';
+import { errorHandler, notFoundHandler } from './errorHandler';
 
 // Setup common middleware
 export const setupMiddleware = (app: Express) => {
@@ -28,8 +28,8 @@ export const setupMiddleware = (app: Express) => {
 
   // Apply rate limiting to all requests
   const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 minutes by default
+    max: parseInt(process.env.RATE_LIMIT_MAX || '100', 10), // limit each IP to 100 requests per windowMs by default
     standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     message: {
@@ -42,8 +42,8 @@ export const setupMiddleware = (app: Express) => {
 
   // More stringent rate limiting for authentication routes
   const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // limit each IP to 10 requests per windowMs
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 minutes by default
+    max: parseInt(process.env.AUTH_RATE_LIMIT_MAX || '10', 10), // limit each IP to 10 requests per windowMs by default
     standardHeaders: true,
     legacyHeaders: false,
     message: {
@@ -64,7 +64,12 @@ export const setupMiddleware = (app: Express) => {
 
 // Setup error handling middleware (should be used after routes)
 export const setupErrorHandling = (app: Express) => {
+  // Add the 404 handler for unmatched routes
+  app.use('*', notFoundHandler);
+  
+  // Add the error handler as the last middleware
   app.use(errorHandler);
+  
   return app;
 };
 
