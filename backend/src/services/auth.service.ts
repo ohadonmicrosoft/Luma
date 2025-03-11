@@ -354,7 +354,7 @@ export class AuthService {
     // Use a simpler approach to sign the token
     let accessToken = '';
     try {
-      // @ts-ignore - Ignoring TypeScript errors for jwt.sign
+      // @ts-expect-error - TypeScript has issues with the jwt.sign types
       accessToken = jwt.sign(payload, this.jwtSecret, { expiresIn: this.jwtExpiry });
     } catch (error) {
       logger.error('Error signing JWT:', error);

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult, ValidationError } from 'express-validator';
 import { StatusCode, ErrorCode } from '../utils/constants';
-import { AppError } from '../utils/AppError';
 
 /**
  * Middleware to validate request data using express-validator
@@ -19,13 +18,7 @@ export const validateRequest = (
       message: error.msg
     }));
     
-    const error = new AppError(
-      'Validation failed',
-      StatusCode.BAD_REQUEST,
-      ErrorCode.INVALID_INPUT
-    );
-    
-    // Add validation errors to the response
+    // Send validation error response
     res.status(StatusCode.BAD_REQUEST).json({
       status: 'error',
       code: ErrorCode.INVALID_INPUT,

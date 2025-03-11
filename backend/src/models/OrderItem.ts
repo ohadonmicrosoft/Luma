@@ -3,6 +3,9 @@ import { Min, IsNotEmpty } from 'class-validator';
 import { Order } from './Order';
 import { Product } from './Product';
 
+// Define a type for product attributes in order items
+type OrderItemAttributes = Record<string, string | number | boolean | null>;
+
 @Entity('order_items')
 export class OrderItem {
   @PrimaryGeneratedColumn('uuid')
@@ -41,7 +44,7 @@ export class OrderItem {
   subtotal!: number;
 
   @Column({ type: 'json', nullable: true })
-  productAttributes?: Record<string, any>;
+  productAttributes?: OrderItemAttributes;
 
   @Column({ nullable: true })
   sku?: string;

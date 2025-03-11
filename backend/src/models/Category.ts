@@ -2,70 +2,73 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 import { Length, IsNotEmpty, IsOptional } from 'class-validator';
 import { Product } from './Product';
 
+// Define a type for category attributes
+type CategoryAttributes = Record<string, string | number | boolean | null>;
+
 @Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ length: 100 })
   @Length(2, 100)
   @IsNotEmpty()
   @Index()
-  name: string;
+  name!: string;
 
   @Column({ type: 'text', nullable: true })
   @IsOptional()
-  description: string;
+  description?: string;
 
   @Column({ nullable: true })
   @IsOptional()
-  image: string;
+  image?: string;
 
   @Column({ default: 0 })
-  sortOrder: number;
+  sortOrder!: number;
 
   @ManyToOne(() => Category, category => category.children, { nullable: true })
   @JoinColumn({ name: 'parent_id' })
-  parent: Category;
+  parent?: Category;
 
   @Column({ nullable: true })
-  parent_id: string;
+  parent_id?: string;
 
   @OneToMany(() => Category, category => category.parent)
-  children: Category[];
+  children!: Category[];
 
   @OneToMany(() => Product, product => product.category)
-  products: Product[];
+  products!: Product[];
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ nullable: true })
   @IsOptional()
-  slug: string;
+  slug?: string;
 
   @Column({ type: 'json', nullable: true })
   @IsOptional()
-  attributes: Record<string, any>;
+  attributes?: CategoryAttributes;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   // Helper method to get full category path (Breadcrumb)
   async getPath(): Promise<string[]> {
-    const path: string[] = [this.name];
-    let current = this;
-
-    while (current.parent_id) {
-      // We would need to load the parent here
-      // This is a simplified version
-      path.unshift(current.parent.name);
-      current = current.parent;
-    }
-
-    return path;
+    // Use a recursive approach instead of aliasing this
+    const getParentPath = async (category: Category): Promise<string[]> => {
+      if (category.parent_id && category.parent) {
+        return [category.parent.name, ...await getParentPath(category.parent)];
+      }
+      return [];
+    };
+    
+    // Get parent names and add to path
+    const parentNames = await getParentPath(this);
+    return [...parentNames, this.name];
   }
 } 

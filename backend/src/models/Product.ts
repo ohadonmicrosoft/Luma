@@ -5,73 +5,76 @@ import { OrderItem } from './OrderItem';
 import { Review } from './Review';
 import { WishlistItem } from './WishlistItem';
 
+// Define a type for product attributes
+type ProductAttributes = Record<string, string | number | boolean | string[] | null>;
+
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column({ length: 100 })
   @Length(3, 100)
   @IsNotEmpty()
   @Index()
-  name: string;
+  name!: string;
 
   @Column({ type: 'text' })
   @Length(10, 5000)
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   @Min(0)
   @IsNotEmpty()
-  price: number;
+  price!: number;
 
   @Column({ default: 0 })
   @Min(0)
-  stock: number;
+  stock!: number;
 
   @Column({ nullable: true })
   @IsOptional()
-  sku: string;
+  sku?: string;
 
   @Column({ default: true })
-  isActive: boolean;
+  isActive!: boolean;
 
   @Column({ default: false })
-  isFeatured: boolean;
+  isFeatured!: boolean;
 
   @Column({ nullable: true, type: 'text', array: true })
   @IsOptional()
-  images: string[];
+  images?: string[];
 
   @Column({ type: 'json', nullable: true })
   @IsOptional()
-  attributes: Record<string, any>;
+  attributes?: ProductAttributes;
 
   @ManyToOne(() => Category, category => category.products)
   @JoinColumn({ name: 'category_id' })
-  category: Category;
+  category!: Category;
 
   @Column({ nullable: true })
-  category_id: string;
+  category_id?: string;
 
   @OneToMany(() => OrderItem, orderItem => orderItem.product)
-  orderItems: OrderItem[];
+  orderItems!: OrderItem[];
 
   @OneToMany(() => Review, review => review.product)
-  reviews: Review[];
+  reviews!: Review[];
 
   @OneToMany(() => WishlistItem, wishlistItem => wishlistItem.product)
-  wishlistItems: WishlistItem[];
+  wishlistItems!: WishlistItem[];
 
   @Column({ default: 0 })
-  averageRating: number;
+  averageRating!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   // Calculate if product is in stock
   get inStock(): boolean {

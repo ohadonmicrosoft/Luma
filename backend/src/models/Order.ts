@@ -3,6 +3,19 @@ import { Min, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
 import { User } from './User';
 import { OrderItem } from './OrderItem';
 
+// Define address type
+type Address = {
+  firstName: string;
+  lastName: string;
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phone?: string;
+};
+
 // Define order status enum
 export enum OrderStatus {
   PENDING = 'pending',
@@ -75,11 +88,11 @@ export class Order {
 
   @Column({ type: 'json', nullable: true })
   @IsOptional()
-  billingAddress?: Record<string, any>;
+  billingAddress?: Address;
 
   @Column({ type: 'json', nullable: true })
   @IsOptional()
-  shippingAddress?: Record<string, any>;
+  shippingAddress?: Address;
 
   @Column({ nullable: true })
   @IsOptional()

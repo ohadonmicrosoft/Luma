@@ -4,12 +4,11 @@ import { EntityManager, QueryRunner } from 'typeorm';
 import logger from '../utils/logger';
 
 // Extend the Express Request type to include transaction related properties
-declare global {
-  namespace Express {
-    interface Request {
-      transactionManager?: EntityManager;
-      queryRunner?: QueryRunner;
-    }
+// Using module augmentation instead of namespace
+declare module 'express' {
+  interface Request {
+    transactionManager?: EntityManager;
+    queryRunner?: QueryRunner;
   }
 }
 
@@ -36,33 +35,54 @@ export const transactionMiddleware = async (req: Request, res: Response, next: N
     req.queryRunner = queryRunner;
     req.transactionManager = queryRunner.manager;
     
-    // Store original response end method
-    const originalEnd = res.end;
+    // Store original methods
+    const originalJson = res.json;
+    const originalSend = res.send;
     
-    // Override end method to commit transaction on successful response
-    res.end = async function(chunk?: any, encoding?: any, cb?: any) {
+    // Function to handle transaction completion
+    const completeTransaction = async (isSuccess: boolean) => {
       try {
-        if (res.statusCode >= 200 && res.statusCode < 400) {
-          // Success response - commit transaction
+        if (isSuccess) {
           await queryRunner.commitTransaction();
         } else {
-          // Error response - rollback transaction
           await queryRunner.rollbackTransaction();
         }
       } catch (error) {
         logger.error('Error finalizing transaction:', error);
-        await queryRunner.rollbackTransaction();
+        try {
+          await queryRunner.rollbackTransaction();
+        } catch (rollbackError) {
+          logger.error('Error during rollback:', rollbackError);
+        }
       } finally {
-        // Release query runner
         await queryRunner.release();
-        
-        // Remove from request
         delete req.queryRunner;
         delete req.transactionManager;
       }
+    };
+    
+    // Override json method
+    res.json = function(body) {
+      const isSuccess = res.statusCode >= 200 && res.statusCode < 400;
       
-      // Call original end method with arguments
-      return originalEnd.call(res, chunk, encoding, cb);
+      // Handle transaction asynchronously
+      completeTransaction(isSuccess).catch(err => {
+        logger.error('Unhandled error in transaction finalization:', err);
+      });
+      
+      return originalJson.call(this, body);
+    };
+    
+    // Override send method
+    res.send = function(body) {
+      const isSuccess = res.statusCode >= 200 && res.statusCode < 400;
+      
+      // Handle transaction asynchronously
+      completeTransaction(isSuccess).catch(err => {
+        logger.error('Unhandled error in transaction finalization:', err);
+      });
+      
+      return originalSend.call(this, body);
     };
     
     next();
@@ -84,7 +104,7 @@ export const transactionMiddleware = async (req: Request, res: Response, next: N
  * Higher-order function to wrap a specific route handler with transaction management
  * Useful for specific routes that need transaction management without applying it to all routes
  */
-export const withTransaction = (handler: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
+export const withTransaction = (handler: (req: Request, res: Response, next: NextFunction) => Promise<unknown>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     // Skip if database is not initialized
     if (!AppDataSource || !AppDataSource.isInitialized) {

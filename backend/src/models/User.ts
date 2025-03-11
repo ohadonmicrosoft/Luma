@@ -6,6 +6,24 @@ import { Order } from './Order';
 import { Review } from './Review';
 import { WishlistItem } from './WishlistItem';
 
+// Define types for user-related data
+type UserAddress = {
+  addressLine1: string;
+  addressLine2?: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  isDefault?: boolean;
+};
+
+type UserPreferences = {
+  emailNotifications?: boolean;
+  marketingConsent?: boolean;
+  theme?: 'light' | 'dark' | 'system';
+  language?: string;
+};
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -54,10 +72,10 @@ export class User {
   lastLogin?: Date;
 
   @Column({ type: 'json', nullable: true })
-  address?: Record<string, any>;
+  address?: UserAddress;
 
   @Column({ type: 'json', nullable: true })
-  preferences?: Record<string, any>;
+  preferences?: UserPreferences;
 
   @OneToMany(() => Order, order => order.user)
   orders!: Order[];
