@@ -2,6 +2,9 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { UserRole } from '../utils/constants';
 import * as argon2 from 'argon2';
 import { IsEmail, Length, IsEnum } from 'class-validator';
+import { Order } from './Order';
+import { Review } from './Review';
+import { WishlistItem } from './WishlistItem';
 
 @Entity('users')
 export class User {
@@ -49,6 +52,21 @@ export class User {
 
   @Column({ nullable: true, type: 'timestamp' })
   lastLogin?: Date;
+
+  @Column({ type: 'json', nullable: true })
+  address?: Record<string, any>;
+
+  @Column({ type: 'json', nullable: true })
+  preferences?: Record<string, any>;
+
+  @OneToMany(() => Order, order => order.user)
+  orders!: Order[];
+
+  @OneToMany(() => Review, review => review.user)
+  reviews!: Review[];
+
+  @OneToMany(() => WishlistItem, wishlistItem => wishlistItem.user)
+  wishlistItems!: WishlistItem[];
 
   @CreateDateColumn()
   createdAt!: Date;
