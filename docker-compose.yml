@@ -1,23 +1,76 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  postgres:
-    image: postgres:14
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
     environment:
-      POSTGRES_USER: luma
-      POSTGRES_PASSWORD: luma_password
-      POSTGRES_DB: luma_db
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - luma-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - luma-network
+
+  postgres:
+    image: postgres:15-alpine
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=luma
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - luma-network
 
   redis:
-    image: redis:7
+    image: redis:alpine
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - luma-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - luma-network
+
+networks:
+  luma-network:
+    driver: bridge
 
 volumes:
   postgres_data:
