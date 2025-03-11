@@ -1,0 +1,66 @@
+services:
+  - type: web
+    name: luma-api
+    env: node
+    region: ohio
+    plan: standard
+    buildCommand: cd ../../backend && npm install && npm run build
+    startCommand: cd ../../backend && npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DB_HOST
+        fromDatabase:
+          name: luma-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: luma-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: luma-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: luma-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: luma-db
+          property: database
+      - key: REDIS_HOST
+        fromService:
+          name: luma-redis
+          type: redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: luma-redis
+          type: redis
+          property: port
+      - key: JWT_SECRET
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+    autoDeploy: true
+    disk:
+      name: uploads
+      mountPath: /app/uploads
+      sizeGB: 10
+
+  - type: redis
+    name: luma-redis
+    region: ohio
+    plan: standard
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+
+databases:
+  - name: luma-db
+    region: ohio
+    plan: standard 

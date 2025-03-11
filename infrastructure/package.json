@@ -1,0 +1,19 @@
+{
+  "name": "@luma/infrastructure",
+  "version": "1.0.0",
+  "description": "Infrastructure configuration for Luma e-commerce platform",
+  "private": true,
+  "scripts": {
+    "deploy:vercel": "vercel",
+    "deploy:render": "render deploy"
+  },
+  "dependencies": {
+    "@sentry/node": "^7.91.0",
+    "@sentry/profiling-node": "^1.2.6",
+    "cloudinary": "^1.41.0",
+    "logrocket": "^4.0.4"
+  },
+  "devDependencies": {
+    "vercel": "^32.5.5"
+  }
+} 
