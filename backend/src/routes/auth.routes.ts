@@ -1,8 +1,7 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { AuthController } from '../controllers/auth.controller';
-import { validateRequest } from '../middleware/validation.middleware';
-import { authenticate } from '../middleware/auth.middleware';
 import { body, param } from 'express-validator';
+import { authenticate } from '../middleware/auth.middleware';
 
 const router = Router();
 const authController = new AuthController();
@@ -17,9 +16,8 @@ router.post(
       .withMessage('Password must be at least 8 characters long'),
     body('firstName').notEmpty().withMessage('First name is required'),
     body('lastName').notEmpty().withMessage('Last name is required')
-  ],
-  validateRequest,
-  authController.register
+  ] as RequestHandler[],
+  authController.register as RequestHandler
 );
 
 // Login
@@ -28,31 +26,28 @@ router.post(
   [
     body('email').isEmail().withMessage('Please provide a valid email'),
     body('password').notEmpty().withMessage('Password is required')
-  ],
-  validateRequest,
-  authController.login
+  ] as RequestHandler[],
+  authController.login as RequestHandler
 );
 
 // Refresh token
-router.post('/refresh-token', authController.refreshToken);
+router.post('/refresh-token', authController.refreshToken as RequestHandler);
 
 // Logout
-router.post('/logout', authenticate, authController.logout);
+router.post('/logout', authenticate as RequestHandler, authController.logout as RequestHandler);
 
 // Verify email
 router.get(
   '/verify-email/:token',
-  [param('token').notEmpty().withMessage('Token is required')],
-  validateRequest,
-  authController.verifyEmail
+  [param('token').notEmpty().withMessage('Token is required')] as RequestHandler[],
+  authController.verifyEmail as RequestHandler
 );
 
 // Request password reset
 router.post(
   '/forgot-password',
-  [body('email').isEmail().withMessage('Please provide a valid email')],
-  validateRequest,
-  authController.requestPasswordReset
+  [body('email').isEmail().withMessage('Please provide a valid email')] as RequestHandler[],
+  authController.requestPasswordReset as RequestHandler
 );
 
 // Reset password
@@ -63,9 +58,8 @@ router.post(
     body('password')
       .isLength({ min: 8 })
       .withMessage('Password must be at least 8 characters long')
-  ],
-  validateRequest,
-  authController.resetPassword
+  ] as RequestHandler[],
+  authController.resetPassword as RequestHandler
 );
 
 export default router; 

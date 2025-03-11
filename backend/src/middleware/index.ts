@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, RequestHandler, ErrorRequestHandler } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -65,10 +65,10 @@ export const setupMiddleware = (app: Express) => {
 // Setup error handling middleware (should be used after routes)
 export const setupErrorHandling = (app: Express) => {
   // Add the 404 handler for unmatched routes
-  app.use('*', notFoundHandler);
+  app.use('*', notFoundHandler as RequestHandler);
   
   // Add the error handler as the last middleware
-  app.use(errorHandler);
+  app.use(errorHandler as ErrorRequestHandler);
   
   return app;
 };

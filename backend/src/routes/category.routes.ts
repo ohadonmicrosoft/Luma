@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { CategoryController } from '../controllers/category.controller';
 import { validateRequest } from '../middleware/validation.middleware';
 import { authenticate } from '../middleware/auth.middleware';
@@ -10,35 +10,35 @@ const router = Router();
 const categoryController = new CategoryController();
 
 // Public routes
-router.get('/', categoryController.getAllCategories);
-router.get('/tree', categoryController.getCategoryTree);
-router.get('/root', categoryController.getRootCategories);
-router.get('/:id', categoryController.getCategoryById);
-router.get('/:id/subcategories', categoryController.getSubcategories);
-router.get('/:id/path', categoryController.getCategoryPath);
+router.get('/', categoryController.getAllCategories as RequestHandler);
+router.get('/tree', categoryController.getCategoryTree as RequestHandler);
+router.get('/root', categoryController.getRootCategories as RequestHandler);
+router.get('/:id', categoryController.getCategoryById as RequestHandler);
+router.get('/:id/subcategories', categoryController.getSubcategories as RequestHandler);
+router.get('/:id/path', categoryController.getCategoryPath as RequestHandler);
 
 // Protected admin routes
 router.post(
   '/',
-  authenticate,
-  checkRole([UserRole.Admin]),
-  validateRequest(categoryValidationSchemas.createCategory),
-  categoryController.createCategory
+  authenticate as RequestHandler,
+  checkRole([UserRole.Admin]) as RequestHandler,
+  validateRequest(categoryValidationSchemas.createCategory) as RequestHandler,
+  categoryController.createCategory as RequestHandler
 );
 
 router.put(
   '/:id',
-  authenticate,
-  checkRole([UserRole.Admin]),
-  validateRequest(categoryValidationSchemas.updateCategory),
-  categoryController.updateCategory
+  authenticate as RequestHandler,
+  checkRole([UserRole.Admin]) as RequestHandler,
+  validateRequest(categoryValidationSchemas.updateCategory) as RequestHandler,
+  categoryController.updateCategory as RequestHandler
 );
 
 router.delete(
   '/:id',
-  authenticate,
-  checkRole([UserRole.Admin]),
-  categoryController.deleteCategory
+  authenticate as RequestHandler,
+  checkRole([UserRole.Admin]) as RequestHandler,
+  categoryController.deleteCategory as RequestHandler
 );
 
 export default router; 

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { AnyZodObject, ZodError } from 'zod';
 import { StatusCode } from '../utils/constants';
-import { AppError } from '../utils/AppError';
 import { logger } from '../utils/logger';
 
 /**

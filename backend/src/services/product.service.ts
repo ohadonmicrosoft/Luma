@@ -1,4 +1,4 @@
-import { Repository, Like, FindOptionsWhere, ILike, FindOptionsOrder, Between, In, MoreThan, Not } from 'typeorm';
+import { Repository, FindOptionsWhere, ILike, FindOptionsOrder, Between, In, MoreThan, Not } from 'typeorm';
 import { AppDataSource } from '../config/database';
 import { Product } from '../models/Product';
 import { Category } from '../models/Category';

@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { CategoryService } from '../services/category.service';
 import { StatusCode } from '../utils/constants';
-import { AppError } from '../utils/AppError';
-import { logger } from '../utils/logger';
 
 export class CategoryController {
   private categoryService: CategoryService;

@@ -69,11 +69,17 @@ export const authenticate = async (
       );
     }
 
-    // Attach user to request with additional properties from token
+    // Attach user to request
     req.user = {
-      ...user,
-      id: decoded.userId,
-      role: decoded.role
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      // Add additional properties from JWT
+      userId: decoded.userId,
+      iat: decoded.iat,
+      exp: decoded.exp
     };
 
     next();

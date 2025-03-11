@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { RequestHandler, ErrorRequestHandler } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -26,10 +26,10 @@ app.use(morgan('dev'));
 app.use('/api', routes);
 
 // 404 handler
-app.use(notFoundHandler);
+app.use(notFoundHandler as RequestHandler);
 
 // Global error handler
-app.use(errorHandler);
+app.use(errorHandler as ErrorRequestHandler);
 
 // Initialize database connection
 const initializeApp = async () => {

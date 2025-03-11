@@ -3,7 +3,6 @@ import { ProductService } from '../services/product.service';
 import { CategoryService } from '../services/category.service';
 import { StatusCode } from '../utils/constants';
 import { AppError } from '../utils/AppError';
-import { logger } from '../utils/logger';
 
 export class ProductController {
   private productService: ProductService;
@@ -38,7 +37,7 @@ export class ProductController {
         min_price: min_price ? parseFloat(min_price as string) : undefined,
         max_price: max_price ? parseFloat(max_price as string) : undefined,
         in_stock: in_stock === 'true',
-        sortBy: sort_by as string,
+        sortBy: sort_by as 'price' | 'createdAt' | 'name' | 'averageRating',
         sortOrder: sort_order as 'ASC' | 'DESC',
         page: parseInt(page as string, 10),
         limit: parseInt(limit as string, 10)
