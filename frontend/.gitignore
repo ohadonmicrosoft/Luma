@@ -1,0 +1,9 @@
+# See root .gitignore for most rules
+
+# Frontend specific ignores
+.next/
+out/
+next-env.d.ts
+# Public assets that should be generated
+public/sw.js
+public/workbox-*.js

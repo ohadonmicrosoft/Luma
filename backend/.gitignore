@@ -1,0 +1,6 @@
+# See root .gitignore for most rules
+
+# Backend specific ignores
+dist/
+coverage/
+uploads/
