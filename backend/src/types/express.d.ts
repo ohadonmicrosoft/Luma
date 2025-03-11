@@ -1,13 +1,14 @@
-import { User } from '../models/User';
+import { JwtPayload } from 'jsonwebtoken';
 import { UserRole } from '../utils/constants';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User & {
-        id: string;
-        role: UserRole;
-      };
-    }
+// Extend the Express Request interface to include a user property
+declare module 'express' {
+  interface Request {
+    user?: {
+      id: string;
+      email: string;
+      role: UserRole;
+    } & JwtPayload;
+    refreshToken?: string;
   }
 } 
