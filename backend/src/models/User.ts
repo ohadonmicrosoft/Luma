@@ -5,6 +5,7 @@ import { IsEmail, Length, IsEnum } from 'class-validator';
 import { Order } from './Order';
 import { Review } from './Review';
 import { WishlistItem } from './WishlistItem';
+import { Cart } from './Cart';
 
 // Define types for user-related data
 type UserAddress = {
@@ -85,6 +86,9 @@ export class User {
 
   @OneToMany(() => WishlistItem, wishlistItem => wishlistItem.user)
   wishlistItems!: WishlistItem[];
+
+  @OneToMany(() => Cart, cart => cart.user)
+  carts!: Cart[];
 
   @CreateDateColumn()
   createdAt!: Date;
