@@ -4,3 +4,20 @@
 dist/
 coverage/
 uploads/
+logs/
+tmp/
+
+# Database files
+*.sqlite
+*.sqlite3
+dump.rdb
+
+# Generated API docs
+api-docs/
+
+# Test reports
+test-report.xml
+junit.xml
+
+# Generated types
+src/types/generated/

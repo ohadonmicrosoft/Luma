@@ -1,0 +1,12 @@
+# See root .gitignore for most rules
+
+# Shared specific ignores
+dist/
+coverage/
+
+# Generated types
+src/types/generated/
+
+# Test reports
+test-report.xml
+junit.xml 

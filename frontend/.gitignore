@@ -7,3 +7,22 @@ next-env.d.ts
 # Public assets that should be generated
 public/sw.js
 public/workbox-*.js
+
+# Build
+build/
+.swc/
+storybook-static/
+
+# Deployment
+.vercel/
+
+# Generated files
+public/sitemap*.xml
+public/robots.txt
+.react-email/
+
+# Next.js telemetry
+.next-telemetry/
+
+# Sentry
+.sentryclirc
