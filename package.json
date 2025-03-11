@@ -1,6 +1,7 @@
 {
-  "name": "luma-ecommerce",
-  "version": "0.1.0",
+  "name": "luma",
+  "version": "1.0.0",
+  "description": "A high-end e-commerce platform specialized for premium soap and shampoo products.",
   "private": true,
   "workspaces": [
     "frontend",
@@ -12,14 +13,21 @@
     "build": "turbo run build",
     "start": "turbo run start",
     "lint": "turbo run lint",
-    "test": "turbo run test",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ohadonmicrosoft/Luma.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ohadonmicrosoft/Luma/issues"
+  },
+  "homepage": "https://github.com/ohadonmicrosoft/Luma#readme",
   "devDependencies": {
     "prettier": "^2.8.8",
     "turbo": "^1.10.12"
-  },
-  "engines": {
-    "node": ">=16.0.0"
   }
 }
