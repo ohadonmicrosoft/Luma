@@ -1,0 +1,7 @@
+# Shared
+
+This directory contains the shared code for the Luma e-commerce platform.
+
+## Structure
+
+See subdirectories for specific components.

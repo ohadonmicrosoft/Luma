@@ -1,0 +1,25 @@
+{
+  "name": "luma-ecommerce",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8",
+    "turbo": "^1.10.12"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
