@@ -221,7 +221,7 @@ export default function SubscriptionsPage() {
             </svg>
             <h3 className="mt-2 text-sm font-medium text-neutral-900">No active subscriptions</h3>
             <p className="mt-1 text-sm text-neutral-500">
-              You don't have any active subscriptions at the moment.
+              You don&apos;t have any active subscriptions at the moment.
             </p>
             <div className="mt-6">
               <Link href="/products?filter=subscription">

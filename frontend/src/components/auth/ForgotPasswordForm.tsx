@@ -55,11 +55,11 @@ export function ForgotPasswordForm({ onSubmit, isLoading = false }: ForgotPasswo
           Check your email
         </h2>
         <p className="text-neutral-600 mb-6">
-          We've sent a password reset link to <span className="font-semibold">{email}</span>.
+          We&apos;ve sent a password reset link to <span className="font-semibold">{email}</span>.
           Please check your inbox and follow the instructions to reset your password.
         </p>
         <p className="text-neutral-500 text-sm">
-          Didn't receive the email?{' '}
+          Didn&apos;t receive the email?{' '}
           <button
             type="button"
             onClick={() => setSubmitted(false)}
@@ -86,7 +86,7 @@ export function ForgotPasswordForm({ onSubmit, isLoading = false }: ForgotPasswo
     <div className="w-full max-w-md mx-auto">
       <h2 className="text-3xl font-bold text-center text-neutral-800 mb-3">Forgot password?</h2>
       <p className="text-center text-neutral-600 mb-8">
-        Enter your email address and we'll send you a link to reset your password.
+        Enter your email address and we&apos;ll send you a link to reset your password.
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input

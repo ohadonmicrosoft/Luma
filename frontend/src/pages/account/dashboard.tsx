@@ -227,7 +227,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="text-center py-4">
-                <p className="text-neutral-500 mb-4">You don't have any active subscriptions.</p>
+                <p className="text-neutral-500 mb-4">You don&apos;t have any active subscriptions.</p>
                 <Link href="/subscriptions">
                   <Button
                     variant="outline"

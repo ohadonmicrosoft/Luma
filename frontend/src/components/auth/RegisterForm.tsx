@@ -197,7 +197,7 @@ export function RegisterForm({ onSubmit, isLoading = false }: RegisterFormProps)
           <>
             <div className="text-center mb-6">
               <h3 className="text-lg font-medium text-neutral-800">Email Address</h3>
-              <p className="text-sm text-neutral-500">We'll use this for login and notifications</p>
+              <p className="text-sm text-neutral-500">We&apos;ll use this for login and notifications</p>
             </div>
             <Input
               type="email"

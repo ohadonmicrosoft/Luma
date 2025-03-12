@@ -12,7 +12,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Wireless Noise-Cancelling Headphones',
     slug: 'wireless-noise-cancelling-headphones',
     price: 249.99,
-    image: '/images/products/headphones.jpg',
+    image: '/images/products/headphones.svg',
     rating: 4.8,
     reviewCount: 156,
     isNew: true,
@@ -23,7 +23,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Smart Watch Pro',
     slug: 'smart-watch-pro',
     price: 399.99,
-    image: '/images/products/smartwatch.jpg',
+    image: '/images/products/smartwatch.svg',
     rating: 4.6,
     reviewCount: 98,
     isOnSale: true,
@@ -35,7 +35,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Ultra HD 4K Monitor',
     slug: 'ultra-hd-4k-monitor',
     price: 599.99,
-    image: '/images/products/monitor.jpg',
+    image: '/images/products/monitor.svg',
     rating: 4.9,
     reviewCount: 72,
     brand: 'VisualPro',
@@ -45,7 +45,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Ergonomic Office Chair',
     slug: 'ergonomic-office-chair',
     price: 249.99,
-    image: '/images/products/chair.jpg',
+    image: '/images/products/chair.svg',
     rating: 4.7,
     reviewCount: 124,
     brand: 'ComfortPlus',
@@ -55,7 +55,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Mechanical Keyboard',
     slug: 'mechanical-keyboard',
     price: 129.99,
-    image: '/images/products/keyboard.jpg',
+    image: '/images/products/keyboard.svg',
     rating: 4.5,
     reviewCount: 87,
     isNew: true,
@@ -66,7 +66,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Wireless Gaming Mouse',
     slug: 'wireless-gaming-mouse',
     price: 79.99,
-    image: '/images/products/mouse.jpg',
+    image: '/images/products/mouse.svg',
     rating: 4.4,
     reviewCount: 63,
     isOnSale: true,
@@ -78,7 +78,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Portable Bluetooth Speaker',
     slug: 'portable-bluetooth-speaker',
     price: 89.99,
-    image: '/images/products/speaker.jpg',
+    image: '/images/products/speaker.svg',
     rating: 4.3,
     reviewCount: 42,
     brand: 'SoundMaster',
@@ -88,7 +88,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Laptop Stand',
     slug: 'laptop-stand',
     price: 49.99,
-    image: '/images/products/laptop-stand.jpg',
+    image: '/images/products/laptop-stand.svg',
     rating: 4.2,
     reviewCount: 38,
     brand: 'WorkWell',
@@ -98,7 +98,7 @@ const mockProducts: ProductGridItem[] = [
     name: 'Wireless Earbuds',
     slug: 'wireless-earbuds',
     price: 129.99,
-    image: '/images/products/earbuds.jpg',
+    image: '/images/products/earbuds.svg',
     rating: 4.6,
     reviewCount: 112,
     isNew: true,
@@ -231,7 +231,7 @@ export default function ProductsPage() {
     setTimeout(() => {
       setIsLoading(false);
     }, 500);
-  }, [router.isReady, router.query]);
+  }, [router.isReady, router.query, selectedFilters]);
 
   // Apply filters and sorting
   useEffect(() => {
@@ -338,7 +338,7 @@ export default function ProductsPage() {
 
     // Update URL without triggering a navigation
     router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
-  }, [selectedFilters, sortBy, router.isReady]);
+  }, [selectedFilters, sortBy, router.isReady, router]);
 
   const handleFilterChange = (filterType: string, filterId: string, groupId?: string) => {
     setSelectedFilters(prev => {

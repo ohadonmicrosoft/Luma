@@ -61,7 +61,7 @@ export function FilterSidebar({
       initialExpanded[attr.id] = true;
     });
     setExpanded(initialExpanded);
-  }, [attributes]);
+  }, [attributes, expanded]);
 
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'min' | 'max') => {
     const value = parseInt(e.target.value, 10) || 0;
