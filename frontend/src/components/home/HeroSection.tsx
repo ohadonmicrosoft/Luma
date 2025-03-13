@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/utils/cn';
@@ -72,21 +72,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     changeSlide(prevIndex);
   };
   
-  // Set up autoplay
-  React.useEffect(() => {
-    if (!autoplay) return;
-    
-    const interval = setInterval(() => {
-      if (!isAnimating) {
+  // Set up autoplay interval
+  useEffect(() => {
+    if (autoplay && slides.length > 1) {
+      const interval = setInterval(() => {
         nextSlide();
-      }
-    }, autoplaySpeed);
-    
-    return () => clearInterval(interval);
-  }, [autoplay, autoplaySpeed, activeSlide, isAnimating]);
+      }, autoplaySpeed);
+      
+      // Clear interval on cleanup
+      return () => clearInterval(interval);
+    }
+  }, [activeSlide, autoplay, autoplaySpeed, slides.length]);
   
-  // Handle keyboard navigation
-  React.useEffect(() => {
+  // Set up keyboard navigation
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
         isRTL ? nextSlide() : prevSlide();

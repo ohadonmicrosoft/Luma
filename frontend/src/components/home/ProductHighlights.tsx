@@ -50,7 +50,7 @@ export const ProductHighlights: React.FC<ProductHighlightsProps> = ({
   };
   
   // Handle mouse drag for carousel
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!scrollRef.current || layout !== 'carousel') return;
     
     setIsDragging(true);
