@@ -1,80 +1,283 @@
 import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { cn } from '@/utils/cn';
+import { useDirectionalStyles } from '@/utils/rtl';
+import { Button } from '@/components/ui/Button';
+import { LocalizedContent } from '@/components/localization/LocalizedContent';
+import { LocalizedString } from '@/types/product';
 
-export interface StoryHighlight {
+export interface BrandValue {
   id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
+  title: LocalizedString;
+  description: LocalizedString;
+  icon: string;
+}
+
+export interface BrandTestimonial {
+  id: string;
+  quote: LocalizedString;
+  author: {
+    name: LocalizedString;
+    title?: LocalizedString;
+    image?: string;
+  };
 }
 
 export interface BrandStoryProps {
-  title: string;
-  subtitle?: string;
-  highlights: StoryHighlight[];
+  title: LocalizedString;
+  subtitle?: LocalizedString;
+  description: LocalizedString;
+  values?: BrandValue[];
+  image: string;
+  secondaryImage?: string;
+  testimonial?: BrandTestimonial;
+  ctaText?: LocalizedString;
+  ctaLink?: string;
+  statistics?: {
+    value: string | number;
+    label: LocalizedString;
+  }[];
+  badges?: {
+    text: LocalizedString;
+    icon?: string;
+  }[];
+  theme?: 'light' | 'dark';
+  alignment?: 'left' | 'right';
+  className?: string;
 }
 
-export function BrandStory({ title, subtitle, highlights }: BrandStoryProps) {
+export const BrandStory: React.FC<BrandStoryProps> = ({
+  title,
+  subtitle,
+  description,
+  values,
+  image,
+  secondaryImage,
+  testimonial,
+  ctaText,
+  ctaLink,
+  statistics,
+  badges,
+  theme = 'light',
+  alignment = 'left',
+  className,
+}) => {
+  const { isRTL, direction, flip } = useDirectionalStyles();
+  
+  // Apply RTL adjustments to content alignment
+  const contentAlignment = flip(alignment, alignment === 'left' ? 'right' : 'left');
+  
+  // Determine text colors based on theme
+  const textColors = theme === 'dark' 
+    ? { title: 'text-white', subtitle: 'text-white/90', description: 'text-white/80' } 
+    : { title: 'text-neutral-900', subtitle: 'text-neutral-700', description: 'text-neutral-600' };
+  
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">{title}</h2>
-          {subtitle && (
-            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">{subtitle}</p>
-          )}
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {highlights.map((highlight) => (
-            <div 
-              key={highlight.id}
-              className="bg-neutral-50 rounded-lg p-8 shadow-sm hover:shadow-md transition-shadow duration-300"
-            >
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-4 text-primary-600 flex items-center justify-center w-16 h-16 rounded-full bg-primary-100">
-                  {highlight.icon}
+    <section 
+      className={cn(
+        "py-16",
+        theme === 'dark' ? 'bg-neutral-900' : 'bg-white',
+        className
+      )}
+      dir={direction}
+    >
+      <div className="container mx-auto px-4">
+        <div className={cn(
+          "flex flex-col lg:flex-row gap-12",
+          contentAlignment === 'right' ? 'lg:flex-row-reverse' : ''
+        )}>
+          {/* Image column */}
+          <div className="lg:w-1/2">
+            <div className="relative h-[400px] lg:h-[600px] rounded-lg overflow-hidden">
+              <Image
+                src={image}
+                alt={title.en || Object.values(title)[0]}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+                priority
+              />
+              
+              {/* Secondary image overlay - tactical focus */}
+              {secondaryImage && (
+                <div className={cn(
+                  "absolute w-2/3 h-1/2",
+                  contentAlignment === 'right' ? 'bottom-8 left-0 -ml-5' : 'bottom-8 right-0 -mr-5'
+                )}>
+                  <div className="relative w-full h-full shadow-xl">
+                    <Image
+                      src={secondaryImage}
+                      alt=""
+                      fill
+                      sizes="(max-width: 1024px) 50vw, 25vw"
+                      className="object-cover rounded-lg"
+                    />
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold text-neutral-900 mb-2">{highlight.title}</h3>
-                <p className="text-neutral-600">{highlight.description}</p>
-              </div>
+              )}
+              
+              {/* Badges */}
+              {badges && badges.length > 0 && (
+                <div className={cn(
+                  "absolute top-4 flex flex-col gap-2",
+                  contentAlignment === 'right' ? 'right-4' : 'left-4'
+                )}>
+                  {badges.map((badge, index) => (
+                    <div 
+                      key={index}
+                      className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary-600 text-white text-sm font-medium"
+                    >
+                      {badge.icon && (
+                        <Image
+                          src={badge.icon}
+                          alt=""
+                          width={16}
+                          height={16}
+                          className={cn("object-contain", isRTL ? "ml-1.5" : "mr-1.5")}
+                        />
+                      )}
+                      <LocalizedContent content={badge.text} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          ))}
+          </div>
+          
+          {/* Content column */}
+          <div className={cn(
+            "lg:w-1/2 flex flex-col justify-center",
+            isRTL ? "text-right" : "text-left"
+          )}>
+            {subtitle && (
+              <div className={cn("mb-2 text-lg font-medium", textColors.subtitle)}>
+                <LocalizedContent content={subtitle} />
+              </div>
+            )}
+            
+            <h2 className={cn("text-3xl md:text-4xl font-bold mb-6", textColors.title)}>
+              <LocalizedContent content={title} />
+            </h2>
+            
+            <div className={cn("prose max-w-none mb-8", textColors.description, theme === 'dark' ? 'prose-invert' : '')}>
+              <LocalizedContent content={description} />
+            </div>
+            
+            {/* Brand values - durability and reliability */}
+            {values && values.length > 0 && (
+              <div className="space-y-6 mb-8">
+                {values.map(value => (
+                  <div 
+                    key={value.id}
+                    className={cn(
+                      "flex items-start",
+                      isRTL ? "flex-row-reverse" : "flex-row"
+                    )}
+                  >
+                    <div className={cn(
+                      "flex-shrink-0 w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center",
+                      isRTL ? "ml-4" : "mr-4"
+                    )}>
+                      <Image
+                        src={value.icon}
+                        alt=""
+                        width={24}
+                        height={24}
+                        className="object-contain"
+                      />
+                    </div>
+                    <div>
+                      <h3 className={cn("text-xl font-bold mb-1", textColors.title)}>
+                        <LocalizedContent content={value.title} />
+                      </h3>
+                      <p className={cn("text-base", textColors.description)}>
+                        <LocalizedContent content={value.description} />
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* Statistics */}
+            {statistics && statistics.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                {statistics.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className={cn("text-3xl font-bold mb-1", textColors.title)}>
+                      {stat.value}
+                    </div>
+                    <div className={cn("text-sm", textColors.description)}>
+                      <LocalizedContent content={stat.label} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* Testimonial */}
+            {testimonial && (
+              <div className={cn(
+                "mb-8 p-4 border-l-4 border-primary-600",
+                theme === 'dark' ? 'bg-neutral-800' : 'bg-neutral-50',
+                isRTL ? "border-l-0 border-r-4 pr-4" : "pl-4"
+              )}>
+                <blockquote>
+                  <p className={cn("text-lg italic mb-3", textColors.description)}>
+                    <LocalizedContent content={testimonial.quote} />
+                  </p>
+                  <div className="flex items-center">
+                    {testimonial.author.image && (
+                      <div className={cn(
+                        "flex-shrink-0",
+                        isRTL ? "ml-3" : "mr-3"
+                      )}>
+                        <Image
+                          src={testimonial.author.image}
+                          alt={testimonial.author.name.en || Object.values(testimonial.author.name)[0]}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <div className={cn("font-medium", textColors.title)}>
+                        <LocalizedContent content={testimonial.author.name} />
+                      </div>
+                      {testimonial.author.title && (
+                        <div className={cn("text-sm", textColors.description)}>
+                          <LocalizedContent content={testimonial.author.title} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </blockquote>
+              </div>
+            )}
+            
+            {/* CTA */}
+            {ctaText && ctaLink && (
+              <div className="mt-2">
+                <Button size="lg" asChild>
+                  <Link href={ctaLink}>
+                    <LocalizedContent content={ctaText} />
+                  </Link>
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
   );
-}
+};
 
-// Pre-defined icons for common brand story elements
-export const BrandIcons = {
-  Sustainability: (
-    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-    </svg>
-  ),
-  Quality: (
-    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-    </svg>
-  ),
-  Innovation: (
-    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-    </svg>
-  ),
-  Ethical: (
-    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-    </svg>
-  ),
-  Craftsmanship: (
-    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-    </svg>
-  ),
-  ShippingGlobal: (
-    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  ),
+// Pre-defined paths for brand features icons
+export const BrandFeatureIcons = {
+  FastShipping: '/images/features/fast-shipping.svg',
+  Quality: '/images/features/quality.svg',
+  Support: '/images/features/support.svg',
+  Rewards: '/images/features/rewards.svg',
 }; 

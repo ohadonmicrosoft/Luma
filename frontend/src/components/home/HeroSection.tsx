@@ -1,75 +1,291 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { cn } from '@/utils/cn';
+import { useDirectionalStyles } from '@/utils/rtl';
 import { Button } from '@/components/ui/Button';
+import { LocalizedContent } from '@/components/localization/LocalizedContent';
+import { LocalizedString } from '@/types/product';
 
-export interface HeroSectionProps {
-  title: string;
-  subtitle: string;
-  ctaText: string;
-  ctaLink: string;
-  backgroundImage: string;
-  secondaryCtaText?: string;
-  secondaryCtaLink?: string;
+export interface HeroFeature {
+  id: string;
+  title: LocalizedString;
+  description?: LocalizedString;
+  icon: string;
 }
 
-export function HeroSection({
-  title,
-  subtitle,
-  ctaText,
-  ctaLink,
-  backgroundImage,
-  secondaryCtaText,
-  secondaryCtaLink,
-}: HeroSectionProps) {
-  const [isVisible, setIsVisible] = useState(false);
+export interface HeroSlide {
+  id: string;
+  title: LocalizedString;
+  subtitle?: LocalizedString;
+  description?: LocalizedString;
+  image: string;
+  mobileImage?: string;
+  actionLabel: LocalizedString;
+  actionUrl: string;
+  secondaryActionLabel?: LocalizedString;
+  secondaryActionUrl?: string;
+  features?: HeroFeature[];
+  theme?: 'light' | 'dark';
+  align?: 'left' | 'right' | 'center';
+}
 
-  useEffect(() => {
-    // Small delay for the fade-in effect
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 100);
+export interface HeroSectionProps {
+  slides: HeroSlide[];
+  autoplay?: boolean;
+  autoplaySpeed?: number;
+  className?: string;
+}
 
-    return () => clearTimeout(timer);
-  }, []);
-
+export const HeroSection: React.FC<HeroSectionProps> = ({
+  slides,
+  autoplay = true,
+  autoplaySpeed = 5000,
+  className,
+}) => {
+  const { isRTL, direction, flip } = useDirectionalStyles();
+  const [activeSlide, setActiveSlide] = React.useState(0);
+  const [isAnimating, setIsAnimating] = React.useState(false);
+  
+  // Handle slide change
+  const changeSlide = (index: number) => {
+    if (isAnimating || index === activeSlide) return;
+    
+    setIsAnimating(true);
+    setActiveSlide(index);
+    
+    // Reset animation state after transition
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 500);
+  };
+  
+  // Next slide
+  const nextSlide = () => {
+    const nextIndex = (activeSlide + 1) % slides.length;
+    changeSlide(nextIndex);
+  };
+  
+  // Previous slide
+  const prevSlide = () => {
+    const prevIndex = (activeSlide - 1 + slides.length) % slides.length;
+    changeSlide(prevIndex);
+  };
+  
+  // Set up autoplay
+  React.useEffect(() => {
+    if (!autoplay) return;
+    
+    const interval = setInterval(() => {
+      if (!isAnimating) {
+        nextSlide();
+      }
+    }, autoplaySpeed);
+    
+    return () => clearInterval(interval);
+  }, [autoplay, autoplaySpeed, activeSlide, isAnimating]);
+  
+  // Handle keyboard navigation
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        isRTL ? nextSlide() : prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        isRTL ? prevSlide() : nextSlide();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isRTL, activeSlide]);
+  
+  if (slides.length === 0) return null;
+  
+  const currentSlide = slides[activeSlide];
+  const slideAlign = currentSlide.align || 'center';
+  const slideTheme = currentSlide.theme || 'light';
+  
+  // Apply RTL adjustments to content alignment
+  const contentAlign = flip(slideAlign, slideAlign === 'left' ? 'right' : slideAlign === 'right' ? 'left' : 'center');
+  
+  // Determine text colors based on theme
+  const textColors = slideTheme === 'dark' 
+    ? { title: 'text-white', subtitle: 'text-white/90', description: 'text-white/80' } 
+    : { title: 'text-neutral-900', subtitle: 'text-neutral-800', description: 'text-neutral-700' };
+  
   return (
-    <div 
-      className="relative h-[70vh] min-h-[600px] w-full overflow-hidden bg-cover bg-center"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40" />
-      
-      {/* Content */}
-      <div className="relative h-full flex flex-col justify-center items-center text-center px-4 sm:px-6 lg:px-8">
-        <div
-          className={`max-w-3xl mx-auto transition-opacity duration-1000 ${
-            isVisible ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight">
-            {title}
-          </h1>
-          <p className="text-xl md:text-2xl text-white mb-8 max-w-xl mx-auto">
-            {subtitle}
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href={ctaLink}>
-              <Button size="lg" className="px-8">
-                {ctaText}
-              </Button>
-            </Link>
-            
-            {secondaryCtaText && secondaryCtaLink && (
-              <Link href={secondaryCtaLink}>
-                <Button variant="outline" size="lg" className="px-8 bg-transparent border-white text-white hover:bg-white hover:text-black">
-                  {secondaryCtaText}
-                </Button>
-              </Link>
+    <div className={cn("relative overflow-hidden", className)}>
+      {/* Main slide */}
+      <div 
+        className="relative h-[550px] sm:h-[600px] lg:h-[650px] w-full overflow-hidden"
+        dir={direction}
+      >
+        {/* Background image */}
+        <div className="absolute inset-0 w-full h-full transition-opacity duration-500">
+          <Image
+            src={currentSlide.image}
+            alt={currentSlide.title.en || Object.values(currentSlide.title)[0]}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          
+          {/* Overlay gradient */}
+          <div 
+            className={cn(
+              "absolute inset-0",
+              slideTheme === 'dark' 
+                ? "bg-gradient-to-t from-black/70 to-black/30"
+                : "bg-gradient-to-t from-white/60 via-white/20 to-transparent"
             )}
+          />
+        </div>
+        
+        {/* Content */}
+        <div className="absolute inset-0 flex items-center">
+          <div className="container mx-auto px-4">
+            <div 
+              className={cn(
+                "max-w-xl transition-all duration-500 space-y-4 animate-fadeIn",
+                contentAlign === 'left' ? 'text-left mr-auto' : 
+                contentAlign === 'right' ? 'text-right ml-auto' : 
+                'text-center mx-auto',
+                isRTL && contentAlign !== 'center' && (contentAlign === 'left' ? 'text-right' : 'text-left')
+              )}
+            >
+              {currentSlide.subtitle && (
+                <h2 className={cn("text-lg sm:text-xl font-medium", textColors.subtitle)}>
+                  <LocalizedContent content={currentSlide.subtitle} />
+                </h2>
+              )}
+              
+              <h1 className={cn("text-4xl sm:text-5xl lg:text-6xl font-bold", textColors.title)}>
+                <LocalizedContent content={currentSlide.title} />
+              </h1>
+              
+              {currentSlide.description && (
+                <p className={cn("text-lg sm:text-xl", textColors.description)}>
+                  <LocalizedContent content={currentSlide.description} />
+                </p>
+              )}
+              
+              <div className={cn(
+                "flex gap-3 mt-6",
+                contentAlign === 'center' ? 'justify-center' : 
+                contentAlign === 'right' ? 'justify-end' : 'justify-start',
+                isRTL && contentAlign !== 'center' && (contentAlign === 'left' ? 'justify-end' : 'justify-start')
+              )}>
+                <Button size="lg" asChild>
+                  <Link href={currentSlide.actionUrl}>
+                    <LocalizedContent content={currentSlide.actionLabel} />
+                  </Link>
+                </Button>
+                
+                {currentSlide.secondaryActionLabel && currentSlide.secondaryActionUrl && (
+                  <Button size="lg" variant="outline" asChild>
+                    <Link href={currentSlide.secondaryActionUrl}>
+                      <LocalizedContent content={currentSlide.secondaryActionLabel} />
+                    </Link>
+                  </Button>
+                )}
+              </div>
+              
+              {/* Feature highlights */}
+              {currentSlide.features && currentSlide.features.length > 0 && (
+                <div className="mt-8 pt-4">
+                  <div className={cn(
+                    "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white/80 dark:bg-black/40 rounded-lg p-4",
+                    contentAlign === 'center' ? 'mx-auto' : 
+                    contentAlign === 'right' ? 'ml-auto' : 'mr-auto'
+                  )}>
+                    {currentSlide.features.map((feature) => (
+                      <div 
+                        key={feature.id} 
+                        className={cn(
+                          "flex items-start space-x-3 p-2",
+                          isRTL ? "flex-row-reverse space-x-reverse" : "flex-row"
+                        )}
+                      >
+                        <div className="flex-shrink-0 text-primary-600">
+                          <Image 
+                            src={feature.icon} 
+                            alt="" 
+                            width={24} 
+                            height={24} 
+                            className="object-contain"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-neutral-900 dark:text-white">
+                            <LocalizedContent content={feature.title} />
+                          </h3>
+                          {feature.description && (
+                            <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                              <LocalizedContent content={feature.description} />
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+      
+      {/* Navigation indicators */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center">
+          <div className="flex items-center space-x-2">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => changeSlide(index)}
+                className={cn(
+                  "w-2.5 h-2.5 rounded-full transition-all",
+                  index === activeSlide 
+                    ? "bg-primary-600 scale-125" 
+                    : "bg-white/50 hover:bg-white/80"
+                )}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {/* Navigation arrows */}
+      {slides.length > 1 && (
+        <>
+          <button
+            onClick={prevSlide}
+            className={cn(
+              "absolute top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-neutral-800 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all",
+              isRTL ? "right-4" : "left-4"
+            )}
+            aria-label="Previous slide"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isRTL ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"} />
+            </svg>
+          </button>
+          <button
+            onClick={nextSlide}
+            className={cn(
+              "absolute top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-neutral-800 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all",
+              isRTL ? "left-4" : "right-4"
+            )}
+            aria-label="Next slide"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isRTL ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+            </svg>
+          </button>
+        </>
+      )}
     </div>
   );
-} 
+}; 
