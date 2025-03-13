@@ -1,329 +1,285 @@
 import React, { useState } from 'react';
+import { cn } from '@/utils/cn';
+import { useDirectionalStyles } from '@/utils/rtl';
 import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { Input } from '@/components/ui/Input';
+import { LocalizedContent } from '@/components/localization/LocalizedContent';
+import { LocalizedString } from '@/types/product';
 
-export interface FilterOption {
+export interface RangeFilter {
   id: string;
-  label: string;
-  count: number;
-}
-
-export interface FilterGroup {
-  id: string;
-  name: string;
-  options: FilterOption[];
-}
-
-export interface PriceRange {
+  name: LocalizedString;
   min: number;
   max: number;
+  step?: number;
+  unit?: string;
+  rangeValues: [number, number]; // Current values as [min, max]
+}
+
+export interface SelectionFilter {
+  id: string;
+  name: LocalizedString;
+  options: {
+    id: string;
+    name: LocalizedString;
+    count?: number;
+    selected: boolean;
+  }[];
+  multiSelect?: boolean;
+}
+
+export interface FilterCategory {
+  id: string;
+  name: LocalizedString;
+  selectionFilters?: SelectionFilter[];
+  rangeFilters?: RangeFilter[];
+  isExpanded?: boolean;
 }
 
 export interface FilterSidebarProps {
-  categories: FilterGroup;
-  brands: FilterGroup;
-  attributes: FilterGroup[];
-  priceRange: PriceRange;
-  selectedFilters: {
-    categories: string[];
-    brands: string[];
-    attributes: Record<string, string[]>;
-    price: PriceRange;
-  };
-  onFilterChange: (filterType: string, filterId: string, groupId?: string) => void;
-  onPriceChange: (range: PriceRange) => void;
-  onClearFilters: () => void;
-  isMobileOpen?: boolean;
-  onMobileClose?: () => void;
+  categories: FilterCategory[];
+  onFilterChange: (categoryId: string, filterId: string, value: any) => void;
+  onResetFilters: () => void;
+  onApplyFilters?: () => void;
+  filtersCount?: number;
+  mobileView?: boolean;
+  onClose?: () => void;
+  className?: string;
 }
 
-export function FilterSidebar({
+export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   categories,
-  brands,
-  attributes,
-  priceRange,
-  selectedFilters,
   onFilterChange,
-  onPriceChange,
-  onClearFilters,
-  isMobileOpen = false,
-  onMobileClose,
-}: FilterSidebarProps) {
-  const [localPriceRange, setLocalPriceRange] = useState<PriceRange>(selectedFilters.price);
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({
-    categories: true,
-    brands: true,
-  });
-
-  // Initialize attribute groups as expanded
-  React.useEffect(() => {
-    const initialExpanded = { ...expanded };
-    attributes.forEach(attr => {
-      initialExpanded[attr.id] = true;
-    });
-    setExpanded(initialExpanded);
-  }, [attributes, expanded]);
-
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'min' | 'max') => {
-    const value = parseInt(e.target.value, 10) || 0;
-    const newRange = { ...localPriceRange, [type]: value };
-    setLocalPriceRange(newRange);
-  };
-
-  const applyPriceRange = () => {
-    onPriceChange(localPriceRange);
-  };
-
-  const toggleExpand = (sectionId: string) => {
-    setExpanded(prev => ({
+  onResetFilters,
+  onApplyFilters,
+  filtersCount = 0,
+  mobileView = false,
+  onClose,
+  className,
+}) => {
+  const { isRTL } = useDirectionalStyles();
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>(
+    categories.reduce((acc, category) => {
+      acc[category.id] = category.isExpanded !== false; // Default to true unless explicitly set to false
+      return acc;
+    }, {} as Record<string, boolean>)
+  );
+  
+  // Toggle category expansion
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories(prev => ({
       ...prev,
-      [sectionId]: !prev[sectionId],
+      [categoryId]: !prev[categoryId],
     }));
   };
-
-  const formatPrice = (price: number) => {
-    return `$${price.toFixed(0)}`;
+  
+  // Handle changes to checkbox filters
+  const handleCheckboxChange = (
+    categoryId: string,
+    filterId: string,
+    optionId: string,
+    multiSelect: boolean,
+    checked: boolean
+  ) => {
+    onFilterChange(categoryId, filterId, { optionId, checked, multiSelect });
   };
-
-  // Count total active filters
-  const countActiveFilters = () => {
-    return (
-      selectedFilters.categories.length +
-      selectedFilters.brands.length +
-      Object.values(selectedFilters.attributes).flat().length +
-      (selectedFilters.price.min > priceRange.min || selectedFilters.price.max < priceRange.max ? 1 : 0)
-    );
+  
+  // Handle changes to range filters
+  const handleRangeChange = (
+    categoryId: string,
+    filterId: string,
+    index: 0 | 1, // 0 for min, 1 for max
+    value: number
+  ) => {
+    const rangeFilter = categories
+      .find(c => c.id === categoryId)
+      ?.rangeFilters?.find(f => f.id === filterId);
+      
+    if (!rangeFilter) return;
+    
+    const newValues = [...rangeFilter.rangeValues] as [number, number];
+    newValues[index] = value;
+    
+    // Ensure min <= max
+    if (index === 0 && newValues[0] > newValues[1]) {
+      newValues[0] = newValues[1];
+    } else if (index === 1 && newValues[1] < newValues[0]) {
+      newValues[1] = newValues[0];
+    }
+    
+    onFilterChange(categoryId, filterId, newValues);
   };
-
-  const activeFilterCount = countActiveFilters();
-
+  
   return (
-    <div
-      className={`bg-white border-r border-neutral-200 h-full overflow-auto transition-all duration-300 ${
-        isMobileOpen
-          ? 'fixed inset-0 z-40 w-80 transform translate-x-0'
-          : 'w-64 hidden lg:block'
-      }`}
-    >
-      <div className="p-4 border-b border-neutral-200 sticky top-0 bg-white z-10">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Filters</h2>
-          {isMobileOpen && onMobileClose && (
-            <button
-              onClick={onMobileClose}
-              className="text-neutral-500 hover:text-neutral-700"
-              aria-label="Close filters"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
-        </div>
-        {activeFilterCount > 0 && (
-          <div className="mt-2 flex justify-between items-center">
-            <span className="text-sm text-neutral-600">
-              {activeFilterCount} {activeFilterCount === 1 ? 'filter' : 'filters'} applied
-            </span>
-            <button
-              onClick={onClearFilters}
-              className="text-sm text-primary-600 hover:text-primary-800 font-medium"
-            >
-              Clear all
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="p-4 space-y-6">
-        {/* Categories Filter */}
-        <div className="border-b border-neutral-200 pb-4">
-          <button
-            className="flex justify-between items-center w-full text-left mb-2"
-            onClick={() => toggleExpand('categories')}
-          >
-            <h3 className="text-md font-medium">Categories</h3>
-            <svg
-              className={`w-5 h-5 transition-transform ${expanded.categories ? 'transform rotate-180' : ''}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          
-          {expanded.categories && (
-            <div className="mt-2 space-y-1">
-              {categories.options.map((category) => (
-                <div key={category.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`category-${category.id}`}
-                    checked={selectedFilters.categories.includes(category.id)}
-                    onChange={() => onFilterChange('categories', category.id)}
-                    className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
-                  />
-                  <label htmlFor={`category-${category.id}`} className="ml-2 text-sm text-neutral-700">
-                    {category.label} <span className="text-neutral-500">({category.count})</span>
-                  </label>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Brands Filter */}
-        <div className="border-b border-neutral-200 pb-4">
-          <button
-            className="flex justify-between items-center w-full text-left mb-2"
-            onClick={() => toggleExpand('brands')}
-          >
-            <h3 className="text-md font-medium">Brands</h3>
-            <svg
-              className={`w-5 h-5 transition-transform ${expanded.brands ? 'transform rotate-180' : ''}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          
-          {expanded.brands && (
-            <div className="mt-2 space-y-1">
-              {brands.options.map((brand) => (
-                <div key={brand.id} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={`brand-${brand.id}`}
-                    checked={selectedFilters.brands.includes(brand.id)}
-                    onChange={() => onFilterChange('brands', brand.id)}
-                    className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
-                  />
-                  <label htmlFor={`brand-${brand.id}`} className="ml-2 text-sm text-neutral-700">
-                    {brand.label} <span className="text-neutral-500">({brand.count})</span>
-                  </label>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Price Range Filter */}
-        <div className="border-b border-neutral-200 pb-4">
-          <h3 className="text-md font-medium mb-2">Price Range</h3>
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-[45%]">
-              <label htmlFor="min-price" className="block text-xs text-neutral-500 mb-1">
-                Min
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-neutral-500 text-sm">
-                  $
-                </span>
-                <input
-                  type="number"
-                  id="min-price"
-                  value={localPriceRange.min}
-                  onChange={(e) => handlePriceChange(e, 'min')}
-                  min={priceRange.min}
-                  max={priceRange.max}
-                  className="w-full pl-6 pr-2 py-1 border border-neutral-300 rounded text-sm"
-                />
-              </div>
-            </div>
-            <div className="text-neutral-400">—</div>
-            <div className="w-[45%]">
-              <label htmlFor="max-price" className="block text-xs text-neutral-500 mb-1">
-                Max
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-neutral-500 text-sm">
-                  $
-                </span>
-                <input
-                  type="number"
-                  id="max-price"
-                  value={localPriceRange.max}
-                  onChange={(e) => handlePriceChange(e, 'max')}
-                  min={priceRange.min}
-                  max={priceRange.max}
-                  className="w-full pl-6 pr-2 py-1 border border-neutral-300 rounded text-sm"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="relative mb-4 px-2">
-            <div className="h-1 bg-neutral-200 rounded-full">
-              <div
-                className="absolute h-1 bg-primary-600 rounded-full"
-                style={{
-                  left: `${((localPriceRange.min - priceRange.min) / (priceRange.max - priceRange.min)) * 100}%`,
-                  right: `${100 - ((localPriceRange.max - priceRange.min) / (priceRange.max - priceRange.min)) * 100}%`,
-                }}
-              ></div>
-            </div>
-            <div className="relative">
-              <div
-                className="absolute w-4 h-4 bg-white border-2 border-primary-600 rounded-full -mt-1.5 cursor-pointer"
-                style={{
-                  left: `calc(${((localPriceRange.min - priceRange.min) / (priceRange.max - priceRange.min)) * 100}% - 8px)`,
-                }}
-              ></div>
-              <div
-                className="absolute w-4 h-4 bg-white border-2 border-primary-600 rounded-full -mt-1.5 cursor-pointer"
-                style={{
-                  left: `calc(${((localPriceRange.max - priceRange.min) / (priceRange.max - priceRange.min)) * 100}% - 8px)`,
-                }}
-              ></div>
-            </div>
-          </div>
-          <div className="flex justify-between text-xs text-neutral-500 mb-4">
-            <span>{formatPrice(priceRange.min)}</span>
-            <span>{formatPrice(priceRange.max)}</span>
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            className="w-full"
-            onClick={applyPriceRange}
-          >
-            Apply Price Range
+    <aside className={cn(
+      "flex flex-col h-full overflow-hidden bg-white",
+      mobileView ? "w-full" : "w-72 border-r border-neutral-200",
+      className
+    )}>
+      {/* Mobile header */}
+      {mobileView && onClose && (
+        <div className="flex items-center justify-between p-4 border-b border-neutral-200">
+          <h2 className="font-medium text-lg">
+            {isRTL ? 'סינון מוצרים' : 'Filter Products'}
+          </h2>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            {isRTL ? 'סגור' : 'Close'}
           </Button>
         </div>
-
-        {/* Attribute Filters */}
-        {attributes.map((attribute) => (
-          <div key={attribute.id} className="border-b border-neutral-200 pb-4">
+      )}
+      
+      {/* Filter header */}
+      <div className="flex items-center justify-between p-4">
+        <h2 className="font-medium text-lg">
+          {isRTL ? 'סנן לפי' : 'Filter By'}
+        </h2>
+        <Button 
+          variant="link" 
+          size="sm" 
+          onClick={onResetFilters}
+          className="text-sm"
+        >
+          {isRTL ? 'נקה הכל' : 'Clear All'}
+        </Button>
+      </div>
+      
+      {/* Filters content */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        {categories.map(category => (
+          <div key={category.id} className="border-b border-neutral-200 pb-4 last:border-0">
             <button
-              className="flex justify-between items-center w-full text-left mb-2"
-              onClick={() => toggleExpand(attribute.id)}
+              className={cn(
+                "w-full flex items-center justify-between py-2 text-left font-medium",
+                isRTL ? "text-right" : "text-left"
+              )}
+              onClick={() => toggleCategory(category.id)}
             >
-              <h3 className="text-md font-medium">{attribute.name}</h3>
-              <svg
-                className={`w-5 h-5 transition-transform ${expanded[attribute.id] ? 'transform rotate-180' : ''}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+              <LocalizedContent content={category.name} />
+              <span className="transform transition-transform">
+                {expandedCategories[category.id] ? '−' : '+'}
+              </span>
             </button>
             
-            {expanded[attribute.id] && (
-              <div className="mt-2 space-y-1">
-                {attribute.options.map((option) => (
-                  <div key={option.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={`${attribute.id}-${option.id}`}
-                      checked={selectedFilters.attributes[attribute.id]?.includes(option.id) || false}
-                      onChange={() => onFilterChange('attributes', option.id, attribute.id)}
-                      className="h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
-                    />
-                    <label htmlFor={`${attribute.id}-${option.id}`} className="ml-2 text-sm text-neutral-700">
-                      {option.label} <span className="text-neutral-500">({option.count})</span>
-                    </label>
+            {expandedCategories[category.id] && (
+              <div className="mt-2 space-y-4">
+                {/* Selection/checkbox filters */}
+                {category.selectionFilters?.map(filter => (
+                  <div key={filter.id} className="space-y-2">
+                    <h4 className="text-sm font-medium text-neutral-500">
+                      <LocalizedContent content={filter.name} />
+                    </h4>
+                    <div className="space-y-1 max-h-60 overflow-y-auto">
+                      {filter.options.map(option => (
+                        <div key={option.id} className={cn(
+                          "flex items-center group",
+                          isRTL ? "flex-row-reverse" : "flex-row"
+                        )}>
+                          <Checkbox
+                            id={`${filter.id}-${option.id}`}
+                            checked={option.selected}
+                            onCheckedChange={(checked) => 
+                              handleCheckboxChange(category.id, filter.id, option.id, !!filter.multiSelect, !!checked)
+                            }
+                          />
+                          <label
+                            htmlFor={`${filter.id}-${option.id}`}
+                            className={cn(
+                              "text-sm cursor-pointer select-none flex-1",
+                              isRTL ? "mr-2" : "ml-2"
+                            )}
+                          >
+                            <span className="flex-1"><LocalizedContent content={option.name} /></span>
+                            {option.count !== undefined && (
+                              <span className="text-neutral-400 text-xs">
+                                ({option.count})
+                              </span>
+                            )}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Range filters */}
+                {category.rangeFilters?.map(filter => (
+                  <div key={filter.id} className="space-y-2">
+                    <h4 className="text-sm font-medium text-neutral-500 flex justify-between">
+                      <LocalizedContent content={filter.name} />
+                      <span className="text-xs text-neutral-500">
+                        {`${filter.rangeValues[0]}${filter.unit ? filter.unit : ''} - ${filter.rangeValues[1]}${filter.unit ? filter.unit : ''}`}
+                      </span>
+                    </h4>
+                    
+                    {/* Range inputs */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="range"
+                          min={filter.min}
+                          max={filter.max}
+                          step={filter.step || 1}
+                          value={filter.rangeValues[0]}
+                          onChange={(e) => handleRangeChange(
+                            category.id,
+                            filter.id,
+                            0,
+                            parseFloat(e.target.value)
+                          )}
+                          className="w-full"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="range"
+                          min={filter.min}
+                          max={filter.max}
+                          step={filter.step || 1}
+                          value={filter.rangeValues[1]}
+                          onChange={(e) => handleRangeChange(
+                            category.id,
+                            filter.id,
+                            1,
+                            parseFloat(e.target.value)
+                          )}
+                          className="w-full"
+                        />
+                      </div>
+                      
+                      {/* Min/Max inputs */}
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          min={filter.min}
+                          max={filter.max}
+                          step={filter.step || 1}
+                          value={filter.rangeValues[0]}
+                          onChange={(e) => handleRangeChange(
+                            category.id,
+                            filter.id,
+                            0,
+                            parseFloat(e.target.value)
+                          )}
+                          className="w-1/2"
+                        />
+                        <span className="text-neutral-500">-</span>
+                        <Input
+                          type="number"
+                          min={filter.min}
+                          max={filter.max}
+                          step={filter.step || 1}
+                          value={filter.rangeValues[1]}
+                          onChange={(e) => handleRangeChange(
+                            category.id,
+                            filter.id,
+                            1,
+                            parseFloat(e.target.value)
+                          )}
+                          className="w-1/2"
+                        />
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -331,6 +287,20 @@ export function FilterSidebar({
           </div>
         ))}
       </div>
-    </div>
+      
+      {/* Mobile footer */}
+      {mobileView && onApplyFilters && (
+        <div className="p-4 border-t border-neutral-200">
+          <Button 
+            onClick={onApplyFilters}
+            fullWidth
+          >
+            {isRTL
+              ? `החל ${filtersCount > 0 ? `(${filtersCount})` : ''}`
+              : `Apply Filters ${filtersCount > 0 ? `(${filtersCount})` : ''}`}
+          </Button>
+        </div>
+      )}
+    </aside>
   );
-} 
+}; 

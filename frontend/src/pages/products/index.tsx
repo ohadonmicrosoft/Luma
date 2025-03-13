@@ -1,518 +1,621 @@
 import React, { useState, useEffect } from 'react';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { ParsedUrlQuery } from 'querystring';
+import { FilterSidebar, FilterCategory, RangeFilter } from '@/components/products/FilterSidebar';
+import { ProductResultsGrid, SortOption } from '@/components/products/ProductResultsGrid';
+import { useDirectionalStyles } from '@/utils/rtl';
+import { usePriceFormatter } from '@/hooks/usePriceFormatter';
 import { Layout } from '@/components/layout/Layout';
-import { FilterSidebar, FilterGroup, PriceRange } from '@/components/products/FilterSidebar';
-import { ProductGrid, ProductGridItem } from '@/components/products/ProductGrid';
 
-// Mock data for products
-const mockProducts: ProductGridItem[] = [
-  {
-    id: 'prod-1',
-    name: 'Wireless Noise-Cancelling Headphones',
-    slug: 'wireless-noise-cancelling-headphones',
-    price: 249.99,
-    image: '/images/products/headphones.svg',
-    rating: 4.8,
-    reviewCount: 156,
-    isNew: true,
-    brand: 'SoundMaster',
-  },
-  {
-    id: 'prod-2',
-    name: 'Smart Watch Pro',
-    slug: 'smart-watch-pro',
-    price: 399.99,
-    image: '/images/products/smartwatch.svg',
-    rating: 4.6,
-    reviewCount: 98,
-    isOnSale: true,
-    discount: 15,
-    brand: 'TechGear',
-  },
-  {
-    id: 'prod-3',
-    name: 'Ultra HD 4K Monitor',
-    slug: 'ultra-hd-4k-monitor',
-    price: 599.99,
-    image: '/images/products/monitor.svg',
-    rating: 4.9,
-    reviewCount: 72,
-    brand: 'VisualPro',
-  },
-  {
-    id: 'prod-4',
-    name: 'Ergonomic Office Chair',
-    slug: 'ergonomic-office-chair',
-    price: 249.99,
-    image: '/images/products/chair.svg',
-    rating: 4.7,
-    reviewCount: 124,
-    brand: 'ComfortPlus',
-  },
-  {
-    id: 'prod-5',
-    name: 'Mechanical Keyboard',
-    slug: 'mechanical-keyboard',
-    price: 129.99,
-    image: '/images/products/keyboard.svg',
-    rating: 4.5,
-    reviewCount: 87,
-    isNew: true,
-    brand: 'TechGear',
-  },
-  {
-    id: 'prod-6',
-    name: 'Wireless Gaming Mouse',
-    slug: 'wireless-gaming-mouse',
-    price: 79.99,
-    image: '/images/products/mouse.svg',
-    rating: 4.4,
-    reviewCount: 63,
-    isOnSale: true,
-    discount: 10,
-    brand: 'GameMaster',
-  },
-  {
-    id: 'prod-7',
-    name: 'Portable Bluetooth Speaker',
-    slug: 'portable-bluetooth-speaker',
-    price: 89.99,
-    image: '/images/products/speaker.svg',
-    rating: 4.3,
-    reviewCount: 42,
-    brand: 'SoundMaster',
-  },
-  {
-    id: 'prod-8',
-    name: 'Laptop Stand',
-    slug: 'laptop-stand',
-    price: 49.99,
-    image: '/images/products/laptop-stand.svg',
-    rating: 4.2,
-    reviewCount: 38,
-    brand: 'WorkWell',
-  },
-  {
-    id: 'prod-9',
-    name: 'Wireless Earbuds',
-    slug: 'wireless-earbuds',
-    price: 129.99,
-    image: '/images/products/earbuds.svg',
-    rating: 4.6,
-    reviewCount: 112,
-    isNew: true,
-    brand: 'SoundMaster',
-  },
-];
-
-// Mock data for filter categories
-const categoryFilters: FilterGroup = {
-  id: 'categories',
-  name: 'Categories',
-  options: [
-    { id: 'electronics', label: 'Electronics', count: 15 },
-    { id: 'office', label: 'Office Supplies', count: 8 },
-    { id: 'audio', label: 'Audio', count: 12 },
-    { id: 'accessories', label: 'Accessories', count: 20 },
-  ],
+// Helper function to create a properly typed rangeValues tuple
+const createRangeValues = (min: number, max: number): [number, number] => {
+  return [min, max];
 };
 
-// Mock data for filter brands
-const brandFilters: FilterGroup = {
-  id: 'brands',
-  name: 'Brands',
-  options: [
-    { id: 'soundmaster', label: 'SoundMaster', count: 8 },
-    { id: 'techgear', label: 'TechGear', count: 12 },
-    { id: 'visualpro', label: 'VisualPro', count: 5 },
-    { id: 'comfortplus', label: 'ComfortPlus', count: 7 },
-    { id: 'gamemaster', label: 'GameMaster', count: 9 },
-    { id: 'workwell', label: 'WorkWell', count: 6 },
+// Sample mock data - in real application this would come from API
+const mockProducts = Array.from({ length: 24 }).map((_, index) => ({
+  id: `prod-${index + 1}`,
+  slug: `product-${index + 1}`,
+  name: {
+    en: `Product ${index + 1}`,
+    he: `מוצר ${index + 1}`
+  },
+  description: {
+    en: `This is a sample product description for product ${index + 1}`,
+    he: `זהו תיאור מוצר לדוגמה עבור מוצר ${index + 1}`
+  },
+  price: 500 + Math.floor(Math.random() * 1500),
+  currency: 'USD',
+  discountedPrice: Math.random() > 0.7 ? (500 + Math.floor(Math.random() * 1000)) : undefined,
+  mainImage: `/images/products/product-${(index % 6) + 1}.jpg`,
+  images: [
+    `/images/products/product-${(index % 6) + 1}.jpg`,
+    `/images/products/product-${((index + 2) % 6) + 1}.jpg`,
   ],
-};
+  specifications: Array.from({ length: 3 }).map((_, specIndex) => ({
+    id: `spec-${specIndex}`,
+    name: {
+      en: ['Resolution', 'Memory', 'Processor'][specIndex] || `Spec ${specIndex}`,
+      he: ['רזולוציה', 'זיכרון', 'מעבד'][specIndex] || `מפרט ${specIndex}`
+    },
+    value: {
+      en: ['4K', '16GB', '2.4GHz'][specIndex] || `Value ${specIndex}`,
+      he: ['4K', '16GB', '2.4GHz'][specIndex] || `ערך ${specIndex}`
+    },
+    category: {
+      en: 'Technical',
+      he: 'טכני'
+    },
+    isHighlighted: specIndex === 0,
+    sortOrder: specIndex
+  })),
+  badges: Math.random() > 0.7 ? [{
+    text: {
+      en: 'New',
+      he: 'חדש'
+    },
+    type: 'new'
+  }] : [],
+  category: {
+    id: `cat-${index % 3}`,
+    name: {
+      en: ['Electronics', 'Computers', 'Phones'][index % 3],
+      he: ['אלקטרוניקה', 'מחשבים', 'טלפונים'][index % 3]
+    }
+  },
+  brand: {
+    id: `brand-${index % 4}`,
+    name: {
+      en: ['Apple', 'Samsung', 'Dell', 'Sony'][index % 4],
+      he: ['אפל', 'סמסונג', 'דל', 'סוני'][index % 4]
+    }
+  },
+  rating: 3 + Math.floor(Math.random() * 2.5),
+  reviewCount: Math.floor(Math.random() * 100),
+  isInStock: Math.random() > 0.2,
+  stockQuantity: Math.floor(Math.random() * 100),
+}));
 
-// Mock data for attribute filters
-const attributeFilters: FilterGroup[] = [
+// Mock filter categories
+const mockFilterCategories: FilterCategory[] = [
   {
-    id: 'color',
-    name: 'Color',
-    options: [
-      { id: 'black', label: 'Black', count: 18 },
-      { id: 'white', label: 'White', count: 12 },
-      { id: 'silver', label: 'Silver', count: 8 },
-      { id: 'blue', label: 'Blue', count: 5 },
-      { id: 'red', label: 'Red', count: 3 },
+    id: 'categories',
+    name: {
+      en: 'Categories',
+      he: 'קטגוריות',
+    },
+    selectionFilters: [
+      {
+        id: 'product-categories',
+        name: {
+          en: 'Product Categories',
+          he: 'קטגוריות מוצרים',
+        },
+        multiSelect: true,
+        options: [
+          {
+            id: 'cat-0',
+            name: {
+              en: 'Electronics',
+              he: 'אלקטרוניקה'
+            },
+            count: 8,
+            selected: false,
+          },
+          {
+            id: 'cat-1',
+            name: {
+              en: 'Computers',
+              he: 'מחשבים'
+            },
+            count: 8,
+            selected: false,
+          },
+          {
+            id: 'cat-2',
+            name: {
+              en: 'Phones',
+              he: 'טלפונים'
+            },
+            count: 8,
+            selected: false,
+          },
+        ],
+      },
     ],
   },
   {
-    id: 'connectivity',
-    name: 'Connectivity',
-    options: [
-      { id: 'wireless', label: 'Wireless', count: 14 },
-      { id: 'bluetooth', label: 'Bluetooth', count: 10 },
-      { id: 'usb', label: 'USB', count: 8 },
-      { id: 'usb-c', label: 'USB-C', count: 6 },
+    id: 'brands',
+    name: {
+      en: 'Brands',
+      he: 'מותגים',
+    },
+    selectionFilters: [
+      {
+        id: 'product-brands',
+        name: {
+          en: 'Manufacturers',
+          he: 'יצרנים',
+        },
+        multiSelect: true,
+        options: [
+          {
+            id: 'brand-0',
+            name: {
+              en: 'Apple',
+              he: 'אפל'
+            },
+            count: 6,
+            selected: false,
+          },
+          {
+            id: 'brand-1',
+            name: {
+              en: 'Samsung',
+              he: 'סמסונג'
+            },
+            count: 6,
+            selected: false,
+          },
+          {
+            id: 'brand-2',
+            name: {
+              en: 'Dell',
+              he: 'דל'
+            },
+            count: 6,
+            selected: false,
+          },
+          {
+            id: 'brand-3',
+            name: {
+              en: 'Sony',
+              he: 'סוני'
+            },
+            count: 6,
+            selected: false,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'price',
+    name: {
+      en: 'Price',
+      he: 'מחיר',
+    },
+    rangeFilters: [
+      {
+        id: 'price-range',
+        name: {
+          en: 'Price Range',
+          he: 'טווח מחירים',
+        },
+        min: 0,
+        max: 2000,
+        step: 10,
+        unit: '$',
+        rangeValues: createRangeValues(0, 2000),
+      },
+    ],
+  },
+  {
+    id: 'tech-specs',
+    name: {
+      en: 'Technical Specifications',
+      he: 'מפרט טכני',
+    },
+    selectionFilters: [
+      {
+        id: 'processor',
+        name: {
+          en: 'Processor',
+          he: 'מעבד',
+        },
+        multiSelect: true,
+        options: [
+          {
+            id: 'i5',
+            name: {
+              en: 'Intel i5',
+              he: 'אינטל i5'
+            },
+            count: 4,
+            selected: false,
+          },
+          {
+            id: 'i7',
+            name: {
+              en: 'Intel i7',
+              he: 'אינטל i7'
+            },
+            count: 6,
+            selected: false,
+          },
+          {
+            id: 'i9',
+            name: {
+              en: 'Intel i9',
+              he: 'אינטל i9'
+            },
+            count: 2,
+            selected: false,
+          },
+          {
+            id: 'amd',
+            name: {
+              en: 'AMD Ryzen',
+              he: 'AMD Ryzen'
+            },
+            count: 4,
+            selected: false,
+          },
+        ],
+      },
+      {
+        id: 'memory',
+        name: {
+          en: 'Memory',
+          he: 'זיכרון',
+        },
+        multiSelect: true,
+        options: [
+          {
+            id: '8gb',
+            name: {
+              en: '8GB',
+              he: '8GB'
+            },
+            count: 5,
+            selected: false,
+          },
+          {
+            id: '16gb',
+            name: {
+              en: '16GB',
+              he: '16GB'
+            },
+            count: 8,
+            selected: false,
+          },
+          {
+            id: '32gb',
+            name: {
+              en: '32GB',
+              he: '32GB'
+            },
+            count: 3,
+            selected: false,
+          },
+        ],
+      },
     ],
   },
 ];
 
-// Mock price range
-const priceRangeFilter: PriceRange = {
-  min: 0,
-  max: 1000,
-};
-
-// Sort options
-const sortOptions = [
-  { value: 'featured', label: 'Featured' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'rating', label: 'Highest Rated' },
+// Mock sort options
+const mockSortOptions: SortOption[] = [
+  {
+    id: 'price-asc',
+    name: {
+      en: 'Price: Low to High',
+      he: 'מחיר: מהנמוך לגבוה'
+    }
+  },
+  {
+    id: 'price-desc',
+    name: {
+      en: 'Price: High to Low',
+      he: 'מחיר: מהגבוה לנמוך'
+    }
+  },
+  {
+    id: 'newest',
+    name: {
+      en: 'Newest First',
+      he: 'החדש ביותר תחילה'
+    }
+  },
+  {
+    id: 'rating',
+    name: {
+      en: 'Highest Rated',
+      he: 'דירוג גבוה ביותר'
+    }
+  },
 ];
 
-export default function ProductsPage() {
+interface ProductsPageProps {
+  initialProducts: typeof mockProducts;
+  initialFilters: ParsedUrlQuery;
+}
+
+export default function ProductsPage({ initialProducts, initialFilters }: ProductsPageProps) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [filteredProducts, setFilteredProducts] = useState<ProductGridItem[]>([]);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [sortBy, setSortBy] = useState('featured');
-  const [selectedFilters, setSelectedFilters] = useState({
-    categories: [] as string[],
-    brands: [] as string[],
-    attributes: {} as Record<string, string[]>,
-    price: { ...priceRangeFilter },
-  });
-
-  // Initialize filters from URL query params
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    const { category, brand, sort, min, max, ...rest } = router.query;
-
-    const newFilters = { ...selectedFilters };
-
-    // Handle category filter
-    if (category) {
-      newFilters.categories = Array.isArray(category) ? category : [category];
-    }
-
-    // Handle brand filter
-    if (brand) {
-      newFilters.brands = Array.isArray(brand) ? brand : [brand];
-    }
-
-    // Handle price range
-    if (min || max) {
-      newFilters.price = {
-        min: min ? parseInt(min as string, 10) : priceRangeFilter.min,
-        max: max ? parseInt(max as string, 10) : priceRangeFilter.max,
-      };
-    }
-
-    // Handle attribute filters
-    attributeFilters.forEach((attr) => {
-      const value = rest[attr.id];
-      if (value) {
-        newFilters.attributes[attr.id] = Array.isArray(value) ? value : [value as string];
-      }
-    });
-
-    // Handle sort
-    if (sort) {
-      setSortBy(sort as string);
-    }
-
-    setSelectedFilters(newFilters);
+  const { isRTL } = useDirectionalStyles();
+  const { formatPrice } = usePriceFormatter();
+  
+  // State for products list and loading state
+  const [products, setProducts] = useState(initialProducts);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  
+  // State for mobile filter visibility
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  
+  // State for applied filters
+  const [filterCategories, setFilterCategories] = useState<FilterCategory[]>(mockFilterCategories);
+  const [activeSort, setActiveSort] = useState<string>('newest');
+  
+  // State for multi-selection
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const [showMultiSelect, setShowMultiSelect] = useState(false);
+  
+  // Count active filters
+  const countActiveFilters = () => {
+    let count = 0;
     
-    // Simulate loading
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  }, [router.isReady, router.query, selectedFilters]);
-
-  // Apply filters and sorting
-  useEffect(() => {
-    let result = [...mockProducts];
-
-    // Filter by category
-    if (selectedFilters.categories.length > 0) {
-      // In a real app, this would filter by category
-      // For mock data, we'll just simulate filtering
-      if (selectedFilters.categories.includes('audio')) {
-        result = result.filter(p => 
-          p.name.toLowerCase().includes('headphone') || 
-          p.name.toLowerCase().includes('speaker') ||
-          p.name.toLowerCase().includes('earbud')
+    filterCategories.forEach(category => {
+      // Count selected options in selection filters
+      category.selectionFilters?.forEach(filter => {
+        count += filter.options.filter(opt => opt.selected).length;
+      });
+      
+      // Count changed range filters
+      category.rangeFilters?.forEach(filter => {
+        if (filter.rangeValues[0] > filter.min || filter.rangeValues[1] < filter.max) {
+          count += 1;
+        }
+      });
+    });
+    
+    return count;
+  };
+  
+  // Handle filter changes
+  const handleFilterChange = (categoryId: string, filterId: string, value: any) => {
+    setFilterCategories(prevCategories => {
+      const newCategories = [...prevCategories];
+      const categoryIndex = newCategories.findIndex(c => c.id === categoryId);
+      
+      if (categoryIndex === -1) return prevCategories;
+      
+      // Handle selection filters (checkboxes)
+      if (value.optionId !== undefined) {
+        const { optionId, checked, multiSelect } = value;
+        const selectionFilterIndex = newCategories[categoryIndex].selectionFilters?.findIndex(
+          f => f.id === filterId
         );
-      }
-    }
-
-    // Filter by brand
-    if (selectedFilters.brands.length > 0) {
-      result = result.filter(p => 
-        p.brand && selectedFilters.brands.some(b => 
-          p.brand?.toLowerCase() === b.toLowerCase() ||
-          brandFilters.options.find(opt => opt.id === b)?.label.toLowerCase() === p.brand?.toLowerCase()
-        )
-      );
-    }
-
-    // Filter by price range
-    result = result.filter(p => {
-      const finalPrice = p.isOnSale && p.discount 
-        ? p.price - (p.price * p.discount / 100) 
-        : p.price;
-      return finalPrice >= selectedFilters.price.min && finalPrice <= selectedFilters.price.max;
-    });
-
-    // Sort products
-    switch (sortBy) {
-      case 'newest':
-        // In a real app, this would sort by date
-        // For mock data, we'll just sort by isNew flag
-        result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
-        break;
-      case 'price-asc':
-        result.sort((a, b) => {
-          const aPrice = a.isOnSale && a.discount ? a.price - (a.price * a.discount / 100) : a.price;
-          const bPrice = b.isOnSale && b.discount ? b.price - (b.price * b.discount / 100) : b.price;
-          return aPrice - bPrice;
-        });
-        break;
-      case 'price-desc':
-        result.sort((a, b) => {
-          const aPrice = a.isOnSale && a.discount ? a.price - (a.price * a.discount / 100) : a.price;
-          const bPrice = b.isOnSale && b.discount ? b.price - (b.price * b.discount / 100) : b.price;
-          return bPrice - aPrice;
-        });
-        break;
-      case 'rating':
-        result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-        break;
-      default: // featured
-        // Keep default order
-        break;
-    }
-
-    setFilteredProducts(result);
-  }, [selectedFilters, sortBy]);
-
-  // Update URL with filters
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    const query: Record<string, string | string[]> = {};
-
-    // Add categories to query
-    if (selectedFilters.categories.length > 0) {
-      query.category = selectedFilters.categories;
-    }
-
-    // Add brands to query
-    if (selectedFilters.brands.length > 0) {
-      query.brand = selectedFilters.brands;
-    }
-
-    // Add price range to query if different from default
-    if (selectedFilters.price.min !== priceRangeFilter.min) {
-      query.min = selectedFilters.price.min.toString();
-    }
-    if (selectedFilters.price.max !== priceRangeFilter.max) {
-      query.max = selectedFilters.price.max.toString();
-    }
-
-    // Add attributes to query
-    Object.entries(selectedFilters.attributes).forEach(([key, values]) => {
-      if (values.length > 0) {
-        query[key] = values;
-      }
-    });
-
-    // Add sort to query if not default
-    if (sortBy !== 'featured') {
-      query.sort = sortBy;
-    }
-
-    // Update URL without triggering a navigation
-    router.push({ pathname: router.pathname, query }, undefined, { shallow: true });
-  }, [selectedFilters, sortBy, router.isReady, router]);
-
-  const handleFilterChange = (filterType: string, filterId: string, groupId?: string) => {
-    setSelectedFilters(prev => {
-      const newFilters = { ...prev };
-
-      if (filterType === 'categories') {
-        if (newFilters.categories.includes(filterId)) {
-          newFilters.categories = newFilters.categories.filter(id => id !== filterId);
-        } else {
-          newFilters.categories = [...newFilters.categories, filterId];
+        
+        if (selectionFilterIndex === undefined || selectionFilterIndex === -1) return prevCategories;
+        
+        const filter = newCategories[categoryIndex].selectionFilters![selectionFilterIndex];
+        
+        // Single select (radio) behavior
+        if (!multiSelect) {
+          filter.options.forEach(opt => {
+            opt.selected = opt.id === optionId ? checked : false;
+          });
         }
-      } else if (filterType === 'brands') {
-        if (newFilters.brands.includes(filterId)) {
-          newFilters.brands = newFilters.brands.filter(id => id !== filterId);
-        } else {
-          newFilters.brands = [...newFilters.brands, filterId];
-        }
-      } else if (filterType === 'attributes' && groupId) {
-        if (!newFilters.attributes[groupId]) {
-          newFilters.attributes[groupId] = [];
-        }
-
-        if (newFilters.attributes[groupId].includes(filterId)) {
-          newFilters.attributes[groupId] = newFilters.attributes[groupId].filter(id => id !== filterId);
-          if (newFilters.attributes[groupId].length === 0) {
-            delete newFilters.attributes[groupId];
+        // Multi-select (checkbox) behavior
+        else {
+          const optionIndex = filter.options.findIndex(opt => opt.id === optionId);
+          if (optionIndex !== -1) {
+            filter.options[optionIndex].selected = checked;
           }
-        } else {
-          newFilters.attributes[groupId] = [...newFilters.attributes[groupId], filterId];
         }
       }
-
-      return newFilters;
+      // Handle range filters
+      else if (Array.isArray(value) && value.length === 2) {
+        const rangeFilterIndex = newCategories[categoryIndex].rangeFilters?.findIndex(
+          f => f.id === filterId
+        );
+        
+        if (rangeFilterIndex === undefined || rangeFilterIndex === -1) return prevCategories;
+        
+        if (newCategories[categoryIndex].rangeFilters) {
+          // Ensure value is properly typed as [number, number]
+          const typedValue: [number, number] = [value[0], value[1]];
+          newCategories[categoryIndex].rangeFilters![rangeFilterIndex].rangeValues = typedValue;
+        }
+      }
+      
+      return newCategories;
     });
+    
+    // Simulate loading new filtered products
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      // In a real app, you would fetch filtered products from the API
+    }, 800);
   };
-
-  const handlePriceChange = (range: PriceRange) => {
-    setSelectedFilters(prev => ({
-      ...prev,
-      price: range,
-    }));
-  };
-
-  const handleClearFilters = () => {
-    setSelectedFilters({
-      categories: [],
-      brands: [],
-      attributes: {},
-      price: { ...priceRangeFilter },
+  
+  // Handle reset of all filters
+  const handleResetFilters = () => {
+    setFilterCategories(prevCategories => {
+      const newCategories = [...prevCategories];
+      
+      newCategories.forEach(category => {
+        // Reset selection filters
+        category.selectionFilters?.forEach(filter => {
+          filter.options.forEach(opt => {
+            opt.selected = false;
+          });
+        });
+        
+        // Reset range filters with proper typing
+        category.rangeFilters?.forEach(filter => {
+          filter.rangeValues = createRangeValues(filter.min, filter.max);
+        });
+      });
+      
+      return newCategories;
     });
-    setSortBy('featured');
+    
+    // Simulate loading new filtered products
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      // In a real app, you would fetch filtered products from the API
+    }, 800);
   };
-
-  const handleAddToCart = (productId: string) => {
-    // In a real app, this would add the product to the cart
-    alert(`Added product ${productId} to cart!`);
+  
+  // Handle sort changes
+  const handleSortChange = (sortId: string) => {
+    setActiveSort(sortId);
+    
+    // Simulate loading new sorted products
+    setLoading(true);
+    setTimeout(() => {
+      let sortedProducts = [...products];
+      
+      switch (sortId) {
+        case 'price-asc':
+          sortedProducts.sort((a, b) => (a.discountedPrice || a.price) - (b.discountedPrice || b.price));
+          break;
+        case 'price-desc':
+          sortedProducts.sort((a, b) => (b.discountedPrice || b.price) - (a.discountedPrice || a.price));
+          break;
+        case 'rating':
+          sortedProducts.sort((a, b) => b.rating - a.rating);
+          break;
+        default:
+          // For 'newest', we would normally sort by date, but in this mock we'll just use the original order
+          break;
+      }
+      
+      setProducts(sortedProducts);
+      setLoading(false);
+      // In a real app, you would fetch sorted products from the API
+    }, 500);
   };
-
-  const handleAddToWishlist = (productId: string) => {
-    // In a real app, this would add the product to the wishlist
-    alert(`Added product ${productId} to wishlist!`);
+  
+  // Handle load more button
+  const handleLoadMore = () => {
+    setLoading(true);
+    
+    // Simulate loading more products
+    setTimeout(() => {
+      // In a real app, you would fetch more products from the API
+      // For this example, we'll just add the same products again
+      if (products.length >= 48) {
+        setHasMore(false);
+      } else {
+        setProducts(prev => [...prev, ...mockProducts.slice(0, 8)]);
+      }
+      setLoading(false);
+    }, 1000);
   };
-
+  
+  // Handle product selection for multi-select actions
+  const handleProductSelection = (productId: string, selected: boolean) => {
+    if (selected) {
+      setSelectedProductIds(prev => [...prev, productId]);
+    } else {
+      setSelectedProductIds(prev => prev.filter(id => id !== productId));
+    }
+  };
+  
+  // Handle toggle multi-select mode
+  const toggleMultiSelect = () => {
+    setShowMultiSelect(prev => !prev);
+    if (showMultiSelect) {
+      setSelectedProductIds([]);
+    }
+  };
+  
+  // Handle applying selected filters (for mobile view)
+  const handleApplyFilters = () => {
+    setShowMobileFilters(false);
+    // Additional logic if needed
+  };
+  
   return (
     <Layout>
       <Head>
-        <title>Products | Luma</title>
-        <meta name="description" content="Browse our collection of premium products." />
+        <title>{isRTL ? 'מוצרים - לומה' : 'Products - Luma'}</title>
+        <meta name="description" content="Browse our collection of products" />
       </Head>
-
-      <div className="bg-white">
-        <div>
-          {/* Mobile filter dialog */}
-          <div className="fixed inset-0 flex z-40 lg:hidden" role="dialog" aria-modal="true" style={{ display: mobileFiltersOpen ? 'flex' : 'none' }}>
-            <div className="fixed inset-0 bg-black bg-opacity-25" aria-hidden="true" onClick={() => setMobileFiltersOpen(false)}></div>
-            
-            <div className="ml-auto relative max-w-xs w-full h-full bg-white shadow-xl py-4 pb-12 flex flex-col overflow-y-auto">
-              <div className="px-4 flex items-center justify-between">
-                <h2 className="text-lg font-medium text-neutral-900">Filters</h2>
-                <button
-                  type="button"
-                  className="-mr-2 w-10 h-10 bg-white p-2 rounded-md flex items-center justify-center text-neutral-400"
-                  onClick={() => setMobileFiltersOpen(false)}
-                >
-                  <span className="sr-only">Close menu</span>
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Mobile filters */}
-              <FilterSidebar
-                categories={categoryFilters}
-                brands={brandFilters}
-                attributes={attributeFilters}
-                priceRange={priceRangeFilter}
-                selectedFilters={selectedFilters}
-                onFilterChange={handleFilterChange}
-                onPriceChange={handlePriceChange}
-                onClearFilters={handleClearFilters}
-                isMobileOpen={true}
-              />
-            </div>
+      
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Mobile filters toggle */}
+          {showMobileFilters && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" onClick={() => setShowMobileFilters(false)} />
+          )}
+          
+          {/* Filter sidebar */}
+          <div className={`md:w-72 flex-shrink-0 ${showMobileFilters ? 'fixed inset-0 z-50 md:static md:z-auto' : 'hidden md:block'}`}>
+            <FilterSidebar
+              categories={filterCategories}
+              onFilterChange={handleFilterChange}
+              onResetFilters={handleResetFilters}
+              onApplyFilters={handleApplyFilters}
+              filtersCount={countActiveFilters()}
+              mobileView={showMobileFilters}
+              onClose={() => setShowMobileFilters(false)}
+            />
           </div>
-
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative z-10 flex items-baseline justify-between pt-8 pb-6 border-b border-neutral-200">
-              <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Products</h1>
-
-              <div className="flex items-center">
-                <div className="relative inline-block text-left">
-                  <select
-                    id="sort-by"
-                    name="sort-by"
-                    className="block w-full pl-3 pr-10 py-2 text-base border-neutral-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  >
-                    {sortOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+          
+          {/* Product results */}
+          <div className="flex-1">
+            {/* Multi-select actions */}
+            {showMultiSelect && selectedProductIds.length > 0 && (
+              <div className="bg-white border border-neutral-200 rounded-md p-3 mb-4 flex justify-between items-center">
+                <div>
+                  <span className="font-medium">{selectedProductIds.length}</span> {selectedProductIds.length === 1 ? 'product' : 'products'} selected
                 </div>
-
-                <button
-                  type="button"
-                  className="p-2 -m-2 ml-4 sm:ml-6 text-neutral-400 hover:text-neutral-500 lg:hidden"
-                  onClick={() => setMobileFiltersOpen(true)}
-                >
-                  <span className="sr-only">Filters</span>
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <section aria-labelledby="products-heading" className="pt-6 pb-24">
-              <h2 id="products-heading" className="sr-only">Products</h2>
-
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-8 gap-y-10">
-                {/* Filters */}
-                <FilterSidebar
-                  categories={categoryFilters}
-                  brands={brandFilters}
-                  attributes={attributeFilters}
-                  priceRange={priceRangeFilter}
-                  selectedFilters={selectedFilters}
-                  onFilterChange={handleFilterChange}
-                  onPriceChange={handlePriceChange}
-                  onClearFilters={handleClearFilters}
-                />
-
-                {/* Product grid */}
-                <div className="lg:col-span-3">
-                  <div className="h-full">
-                    <ProductGrid
-                      products={filteredProducts}
-                      columns={3}
-                      showAddToCart={true}
-                      onAddToCart={handleAddToCart}
-                      onAddToWishlist={handleAddToWishlist}
-                      isLoading={isLoading}
-                    />
-                  </div>
+                <div className="flex gap-2">
+                  <button className="text-sm text-blue-600 hover:text-blue-800">
+                    {isRTL ? 'השווה' : 'Compare'}
+                  </button>
+                  <button className="text-sm text-red-600 hover:text-red-800">
+                    {isRTL ? 'הסר' : 'Remove'}
+                  </button>
                 </div>
               </div>
-            </section>
-          </main>
+            )}
+            
+            {/* Product grid */}
+            <ProductResultsGrid
+              products={products}
+              loading={loading}
+              hasMore={hasMore}
+              onLoadMore={handleLoadMore}
+              sortOptions={mockSortOptions}
+              activeSort={activeSort}
+              onSortChange={handleSortChange}
+              resultsCount={products.length}
+              totalCount={50} // Mock total count
+              onToggleFilters={() => setShowMobileFilters(true)}
+              onSelectProduct={handleProductSelection}
+              selectedProductIds={selectedProductIds}
+              showMultiSelect={showMultiSelect}
+              gridColumns={3}
+              emptyStateMessage={{
+                en: 'No products found',
+                he: 'לא נמצאו מוצרים'
+              }}
+            />
+          </div>
         </div>
       </div>
     </Layout>
   );
-} 
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // In a real app, you would fetch products and filters based on query params
+  const { query } = context;
+  
+  return {
+    props: {
+      initialProducts: mockProducts,
+      initialFilters: query,
+    },
+  };
+}; 
