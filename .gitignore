@@ -118,3 +118,7 @@ kubeconfig
 
 # Package Manager
 .npmrc
+
+# Implementation plans and documentation (unless explicitly tracked)
+*_implementation_plan.md
+!implementation_plan.md

@@ -1,0 +1,5 @@
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="400" fill="#374151"/>
+  <path d="M300 125C291.667 125 285 131.667 285 140V160H275C266.667 160 260 166.667 260 175V265C260 273.333 266.667 280 275 280H325C333.333 280 340 273.333 340 265V175C340 166.667 333.333 160 325 160H315V140C315 131.667 308.333 125 300 125ZM300 140H300.025L300 140ZM275 190H325V205H275V190ZM275 220H325V265H275V220Z" fill="#9CA3AF"/>
+  <text x="300" y="340" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="24">Home & Kitchen</text>
+</svg> 
