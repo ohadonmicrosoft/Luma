@@ -1,104 +1,175 @@
 /**
- * RTL utilities for managing direction-aware styling
+ * RTL/LTR utility functions for managing directional styling
  */
 
 import { useLayout } from '@/contexts/LayoutContext';
 
 /**
- * Create a direction-aware value based on the current layout direction
- * @param ltrValue - Value for left-to-right layout
- * @param rtlValue - Value for right-to-left layout
- * @returns The appropriate value based on the current direction
+ * CSS logical properties mapping (physical to logical)
  */
-export function useDirectionalValue<T>(ltrValue: T, rtlValue: T): T {
-  const { isRTL } = useLayout();
-  return isRTL ? rtlValue : ltrValue;
-}
-
-/**
- * Direction-aware margin
- * @param start - Margin at the start (left in LTR, right in RTL)
- * @param end - Margin at the end (right in LTR, left in RTL)
- * @returns CSS classes for margin
- */
-export function useMarginDirectional(start: number, end: number): string {
-  const { isRTL } = useLayout();
+export const LOGICAL_PROPERTIES: Record<string, string | Record<string, string>> = {
+  // Margins
+  marginLeft: 'marginInlineStart',
+  marginRight: 'marginInlineEnd',
   
-  if (isRTL) {
-    return `mr-${start} ml-${end}`;
-  }
+  // Paddings
+  paddingLeft: 'paddingInlineStart',
+  paddingRight: 'paddingInlineEnd',
   
-  return `ml-${start} mr-${end}`;
-}
-
-/**
- * Direction-aware padding
- * @param start - Padding at the start (left in LTR, right in RTL)
- * @param end - Padding at the end (right in LTR, left in RTL)
- * @returns CSS classes for padding
- */
-export function usePaddingDirectional(start: number, end: number): string {
-  const { isRTL } = useLayout();
+  // Positions
+  left: 'inset-inline-start',
+  right: 'inset-inline-end',
   
-  if (isRTL) {
-    return `pr-${start} pl-${end}`;
-  }
+  // Borders
+  borderLeft: 'borderInlineStart',
+  borderRight: 'borderInlineEnd',
+  borderTopLeft: 'borderStartStart',
+  borderTopRight: 'borderStartEnd',
+  borderBottomLeft: 'borderEndStart',
+  borderBottomRight: 'borderEndEnd',
   
-  return `pl-${start} pr-${end}`;
-}
-
-/**
- * Create direction-aware class names
- * @param base - Base class name
- * @param ltrClasses - Classes to add in LTR mode
- * @param rtlClasses - Classes to add in RTL mode
- * @returns Combined class string
- */
-export function useDirectionalClasses(
-  base: string, 
-  ltrClasses: string, 
-  rtlClasses: string
-): string {
-  const { isRTL } = useLayout();
+  // Text alignment
+  textAlign: {
+    left: 'start',
+    right: 'end',
+  },
   
-  return `${base} ${isRTL ? rtlClasses : ltrClasses}`;
-}
-
-/**
- * Map of CSS logical properties to their physical equivalents based on direction
- */
-export const logicalToPhysical = {
-  marginStart: 'marginLeft',
-  marginEnd: 'marginRight',
-  paddingStart: 'paddingLeft',
-  paddingEnd: 'paddingRight',
-  borderStart: 'borderLeft',
-  borderEnd: 'borderRight',
-  insetStart: 'left',
-  insetEnd: 'right',
+  // Float
+  float: {
+    left: 'inline-start',
+    right: 'inline-end',
+  },
 };
 
 /**
- * Get the physical property name based on the logical property and direction
- * @param logicalProp - Logical property name
- * @param isRTL - Whether the direction is RTL
- * @returns Physical property name
+ * Get a logical CSS property based on direction
+ * @param property - The physical CSS property
+ * @returns The logical CSS property
  */
-export function getPhysicalProperty(logicalProp: string, isRTL: boolean): string {
-  if (!isRTL) {
-    return logicalToPhysical[logicalProp as keyof typeof logicalToPhysical] || logicalProp;
+export function getLogicalProperty(property: string): string {
+  const value = LOGICAL_PROPERTIES[property];
+  return typeof value === 'string' ? value : property;
+}
+
+/**
+ * Get a logical CSS value based on direction
+ * @param property - The CSS property
+ * @param value - The physical CSS value
+ * @returns The logical CSS value
+ */
+export function getLogicalValue(property: string, value: string): string {
+  const valueMap = LOGICAL_PROPERTIES[property];
+  
+  if (typeof valueMap === 'object' && valueMap !== null) {
+    return valueMap[value] || value;
   }
   
-  // Swap left/right for RTL
-  switch (logicalProp) {
-    case 'marginStart': return 'marginRight';
-    case 'marginEnd': return 'marginLeft';
-    case 'paddingStart': return 'paddingRight';
-    case 'paddingEnd': return 'paddingLeft';
-    case 'borderStart': return 'borderRight';
-    case 'borderEnd': return 'borderLeft';
-    case 'insetStart': return 'right';
-    case 'insetEnd': return 'left';
-    default: return logicalProp;
-  }
+  return value;
+}
+
+/**
+ * Custom hook for managing directional styles
+ * Provides utilities for RTL-aware styling and values
+ * @returns An object with RTL utilities and helpers
+ */
+export function useDirectionalStyles() {
+  const { isRTL, direction } = useLayout();
+  
+  /**
+   * Get a style object with logical properties
+   * @param styles - The physical style object
+   * @returns The logical style object
+   */
+  const getLogicalStyles = (styles: Record<string, any>): Record<string, any> => {
+    const logicalStyles: Record<string, any> = {};
+    
+    Object.entries(styles).forEach(([property, value]) => {
+      // Handle property mappings
+      const propValue = LOGICAL_PROPERTIES[property];
+      const logicalProperty = typeof propValue === 'string' ? propValue : property;
+      
+      // Handle value mappings for certain properties
+      const valueMap = LOGICAL_PROPERTIES[property];
+      let logicalValue = value;
+      
+      if (typeof valueMap === 'object' && valueMap !== null && typeof value === 'string') {
+        logicalValue = valueMap[value] || value;
+      }
+      
+      logicalStyles[logicalProperty] = logicalValue;
+    });
+    
+    return logicalStyles;
+  };
+  
+  /**
+   * Get a class name with directional suffix
+   * @param baseClassName - The base class name
+   * @returns The directional class name
+   */
+  const getDirectionalClassName = (baseClassName: string): string => {
+    return `${baseClassName}-${direction}`;
+  };
+  
+  /**
+   * Flip a value based on direction
+   * @param ltrValue - The value for LTR
+   * @param rtlValue - The value for RTL
+   * @returns The appropriate value based on direction
+   */
+  const flip = <T>(ltrValue: T, rtlValue: T): T => {
+    return isRTL ? rtlValue : ltrValue;
+  };
+  
+  /**
+   * Get a margin or padding CSS object with logical properties
+   * @param top - Top value
+   * @param right - Right value
+   * @param bottom - Bottom value
+   * @param left - Left value
+   * @returns The logical spacing CSS object
+   */
+  const getSpacing = (
+    top?: string | number,
+    right?: string | number,
+    bottom?: string | number,
+    left?: string | number
+  ): Record<string, string | number | undefined> => {
+    return {
+      marginTop: top,
+      marginInlineEnd: isRTL ? left : right,
+      marginBottom: bottom,
+      marginInlineStart: isRTL ? right : left,
+    };
+  };
+  
+  /**
+   * Swap values for RTL
+   * @param value - The value to potentially swap
+   * @returns The swapped value if RTL, original if LTR
+   */
+  const swap = <T>(value: [T, T]): T => {
+    return isRTL ? value[1] : value[0];
+  };
+  
+  /**
+   * Apply RTL transform if needed
+   * @param transformFn - The transform function to apply
+   * @param value - The value to transform
+   * @returns The transformed value if RTL, original if LTR
+   */
+  const transform = <T>(transformFn: (value: T) => T, value: T): T => {
+    return isRTL ? transformFn(value) : value;
+  };
+  
+  return {
+    isRTL,
+    direction,
+    getLogicalStyles,
+    getDirectionalClassName,
+    flip,
+    getSpacing,
+    swap,
+    transform,
+  };
 } 
