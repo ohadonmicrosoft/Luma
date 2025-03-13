@@ -1,0 +1,120 @@
+{
+  "site": {
+    "name": "Luma",
+    "tagline": "Professional Tactical & Outdoor Equipment",
+    "description": "High-quality tactical gear, outdoor equipment, and home accessories"
+  },
+  "navigation": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "about": "About Us",
+    "contact": "Contact",
+    "blog": "Blog",
+    "account": "Account",
+    "search": "Search"
+  },
+  "product": {
+    "price": "Price",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "addToCart": "Add to Cart",
+    "addToWishlist": "Add to Wishlist",
+    "description": "Description",
+    "specifications": "Specifications",
+    "features": "Features",
+    "reviews": "Reviews",
+    "relatedProducts": "Related Products",
+    "dimensions": "Dimensions",
+    "weight": "Weight",
+    "material": "Material",
+    "color": "Color",
+    "style": "Style",
+    "on_sale": "On Sale",
+    "new": "New",
+    "saving": "You save"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "continueShopping": "Continue Shopping",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "tax": "Tax",
+    "shipping": "Shipping"
+  },
+  "account": {
+    "login": "Log In",
+    "register": "Register",
+    "logout": "Log Out",
+    "profile": "Profile",
+    "orders": "Orders",
+    "wishlist": "Wishlist",
+    "settings": "Settings",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name"
+  },
+  "categories": {
+    "tactical_outdoor": "Tactical & Outdoor",
+    "tactical_gear": "Tactical Gear",
+    "outdoor_equipment": "Outdoor Equipment",
+    "survival_tools": "Survival Tools",
+    "home_accessories": "Home Accessories",
+    "living_room": "Living Room",
+    "kitchen": "Kitchen",
+    "decor": "Decor"
+  },
+  "filters": {
+    "title": "Filters",
+    "price": "Price",
+    "brand": "Brand",
+    "color": "Color",
+    "size": "Size",
+    "material": "Material",
+    "clearAll": "Clear All",
+    "apply": "Apply",
+    "sortBy": "Sort By",
+    "featured": "Featured",
+    "priceLowToHigh": "Price: Low to High",
+    "priceHighToLow": "Price: High to Low",
+    "newest": "Newest",
+    "bestSellers": "Best Sellers",
+    "rating": "Rating"
+  },
+  "footer": {
+    "about": "About Us",
+    "contact": "Contact Us",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "shipping": "Shipping & Returns",
+    "faq": "FAQ",
+    "blog": "Blog",
+    "newsletter": "Newsletter",
+    "subscribe": "Subscribe",
+    "copyright": "© 2023 Luma. All rights reserved."
+  },
+  "buttons": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "continue": "Continue",
+    "back": "Back",
+    "apply": "Apply"
+  },
+  "errors": {
+    "requiredField": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordMismatch": "Passwords do not match",
+    "passwordLength": "Password must be at least 8 characters",
+    "serverError": "An error occurred. Please try again later."
+  }
+} 

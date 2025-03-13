@@ -1,0 +1,120 @@
+{
+  "site": {
+    "name": "לומה",
+    "tagline": "ציוד טקטי ואאוטדור מקצועי",
+    "description": "ציוד טקטי, ציוד לשטח ואביזרים לבית באיכות גבוהה"
+  },
+  "navigation": {
+    "home": "דף הבית",
+    "products": "מוצרים",
+    "categories": "קטגוריות",
+    "about": "אודות",
+    "contact": "צור קשר",
+    "blog": "בלוג",
+    "account": "חשבון",
+    "search": "חיפוש"
+  },
+  "product": {
+    "price": "מחיר",
+    "inStock": "במלאי",
+    "outOfStock": "אזל מהמלאי",
+    "addToCart": "הוסף לסל",
+    "addToWishlist": "הוסף למועדפים",
+    "description": "תיאור",
+    "specifications": "מפרט טכני",
+    "features": "תכונות",
+    "reviews": "ביקורות",
+    "relatedProducts": "מוצרים דומים",
+    "dimensions": "מידות",
+    "weight": "משקל",
+    "material": "חומר",
+    "color": "צבע",
+    "style": "סגנון",
+    "on_sale": "במבצע",
+    "new": "חדש",
+    "saving": "החיסכון שלך"
+  },
+  "cart": {
+    "title": "סל הקניות שלך",
+    "empty": "סל הקניות שלך ריק",
+    "continueShopping": "המשך לקנות",
+    "checkout": "לתשלום",
+    "remove": "הסר",
+    "subtotal": "סכום ביניים",
+    "total": "סה״כ לתשלום",
+    "tax": "מע״מ",
+    "shipping": "משלוח"
+  },
+  "account": {
+    "login": "התחברות",
+    "register": "הרשמה",
+    "logout": "התנתקות",
+    "profile": "פרופיל",
+    "orders": "הזמנות",
+    "wishlist": "מועדפים",
+    "settings": "הגדרות",
+    "forgotPassword": "שכחת סיסמה?",
+    "resetPassword": "איפוס סיסמה",
+    "email": "כתובת דוא״ל",
+    "password": "סיסמה",
+    "confirmPassword": "אימות סיסמה",
+    "firstName": "שם פרטי",
+    "lastName": "שם משפחה"
+  },
+  "categories": {
+    "tactical_outdoor": "טקטי וחוץ",
+    "tactical_gear": "ציוד טקטי",
+    "outdoor_equipment": "ציוד לשטח",
+    "survival_tools": "כלי הישרדות",
+    "home_accessories": "אביזרים לבית",
+    "living_room": "סלון",
+    "kitchen": "מטבח",
+    "decor": "עיצוב"
+  },
+  "filters": {
+    "title": "סינון",
+    "price": "מחיר",
+    "brand": "מותג",
+    "color": "צבע",
+    "size": "גודל",
+    "material": "חומר",
+    "clearAll": "נקה הכל",
+    "apply": "החל",
+    "sortBy": "מיין לפי",
+    "featured": "מומלצים",
+    "priceLowToHigh": "מחיר: מהנמוך לגבוה",
+    "priceHighToLow": "מחיר: מהגבוה לנמוך",
+    "newest": "החדשים ביותר",
+    "bestSellers": "הנמכרים ביותר",
+    "rating": "דירוג"
+  },
+  "footer": {
+    "about": "אודות",
+    "contact": "צור קשר",
+    "terms": "תנאי שימוש",
+    "privacy": "מדיניות פרטיות",
+    "shipping": "משלוחים והחזרות",
+    "faq": "שאלות נפוצות",
+    "blog": "בלוג",
+    "newsletter": "ניוזלטר",
+    "subscribe": "הרשמה",
+    "copyright": "© 2023 לומה. כל הזכויות שמורות."
+  },
+  "buttons": {
+    "submit": "שלח",
+    "cancel": "ביטול",
+    "save": "שמור",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "continue": "המשך",
+    "back": "חזרה",
+    "apply": "החל"
+  },
+  "errors": {
+    "requiredField": "שדה חובה",
+    "invalidEmail": "נא להזין כתובת דוא״ל תקינה",
+    "passwordMismatch": "הסיסמאות אינן תואמות",
+    "passwordLength": "הסיסמה חייבת להכיל לפחות 8 תווים",
+    "serverError": "אירעה שגיאה. נא לנסות שוב מאוחר יותר."
+  }
+} 
