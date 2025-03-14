@@ -1,0 +1,16 @@
+# Build output
+.next/
+dist/
+build/
+out/
+
+# Dependencies
+node_modules/
+
+# Generated files
+coverage/
+.turbo/
+
+# Environment files
+.env*
+!.env.example 

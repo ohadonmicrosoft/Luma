@@ -3,7 +3,6 @@
  */
 
 import { useTranslation } from 'next-i18next';
-import { useLayout } from '@/contexts/LayoutContext';
 
 // Supported currencies
 export enum Currency {
@@ -88,7 +87,6 @@ export function formatPrice(
  */
 export function usePriceFormatter() {
   const { i18n } = useTranslation();
-  const { isRTL } = useLayout();
   
   const formatPriceWithLocale = (
     amount: number,

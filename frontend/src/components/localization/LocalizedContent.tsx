@@ -1,10 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { useLocalizedContent } from '@/services/translationService';
-import { useLayout } from '@/contexts/LayoutContext';
+import { useLocalizedContent } from '@/hooks/useLocalizedContent';
+import { useLayout } from '@/hooks/useLayout';
 import { LocalizedString } from '@/types/product';
-import { useDirectionalStyles } from '@/utils/rtl';
+import { cn } from '@/utils/cn';
 
 interface LocalizedContentProps {
   content: LocalizedString;
@@ -27,7 +27,6 @@ export const LocalizedContent: React.FC<LocalizedContentProps> = ({
 }) => {
   const { getContent } = useLocalizedContent();
   const { isRTL } = useLayout();
-  const { flip } = useDirectionalStyles();
   
   // Get content in current locale with fallback
   const localizedContent = getContent(content) || fallback;

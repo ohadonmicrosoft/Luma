@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import { cn } from '@/utils/cn';
 
 export interface Product {
   id: string;

@@ -89,9 +89,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
-        isRTL ? nextSlide() : prevSlide();
+        void (isRTL ? nextSlide() : prevSlide());
       } else if (e.key === 'ArrowRight') {
-        isRTL ? prevSlide() : nextSlide();
+        void (isRTL ? prevSlide() : nextSlide());
       }
     };
     

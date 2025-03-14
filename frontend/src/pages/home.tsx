@@ -1,84 +1,71 @@
 import React from 'react';
-import { GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTranslation } from 'next-i18next';
 import { Layout } from '@/components/layout/Layout';
 import { HeroSection } from '@/components/home/HeroSection';
 import { CategoryShowcase } from '@/components/categories/CategoryShowcase';
 import { heroSlides } from '@/data/heroSlides';
 import { mainCategories, tacticalCategories, outdoorCategories, homeDefenseCategories } from '@/data/categories';
-import { LocalizedText } from '@/components/localization/LocalizedContent';
-import { useLayout } from '@/contexts/LayoutContext';
 
 export default function HomePage() {
-  const { t } = useTranslation(['common', 'home']);
-  const { isRTL } = useLayout();
-  
   return (
     <Layout>
-      {/* Hero Section */}
-      <HeroSection 
-        slides={heroSlides} 
-        autoplay={true} 
-        autoplaySpeed={6000}
-      />
+      <HeroSection slides={heroSlides} autoplay={true} autoplaySpeed={5000} />
       
       {/* Main Categories */}
-      <CategoryShowcase 
-        title="categories.title"
-        description="categories.description"
+      <CategoryShowcase
+        title="Explore Our Categories"
+        description="Discover our wide range of tactical and outdoor equipment"
         categories={mainCategories}
         variant="featured"
+        className="mt-12"
       />
       
       {/* Tactical Categories */}
-      <div className="bg-neutral-50 dark:bg-neutral-900">
-        <CategoryShowcase 
-          title="categories.tactical.title"
-          description="categories.tactical.description"
-          categories={tacticalCategories}
-          variant="grid"
-        />
-      </div>
+      <CategoryShowcase
+        title="Tactical Equipment"
+        description="Professional-grade gear for law enforcement, military, and security professionals"
+        categories={tacticalCategories}
+        variant="grid"
+        className="mt-16"
+      />
       
       {/* Outdoor Categories */}
-      <CategoryShowcase 
-        title="categories.outdoor.title"
-        description="categories.outdoor.description"
+      <CategoryShowcase
+        title="Outdoor Adventure"
+        description="Essential gear for camping, hiking, and outdoor exploration"
         categories={outdoorCategories}
         variant="carousel"
+        className="mt-16"
       />
       
       {/* Home Defense Categories */}
-      <div className="bg-neutral-50 dark:bg-neutral-900">
-        <CategoryShowcase 
-          title="categories.homeDefense.title"
-          description="categories.homeDefense.description"
-          categories={homeDefenseCategories}
-          variant="grid"
-        />
-      </div>
+      <CategoryShowcase
+        title="Home Defense"
+        description="Reliable solutions to protect what matters most"
+        categories={homeDefenseCategories}
+        variant="grid"
+        className="mt-16 mb-20"
+      />
       
-      {/* Site Information */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-center">
-            <LocalizedText textKey="site.tagline" ns="common" />
-          </h2>
-          
-          <p className="text-lg mb-8 text-center text-neutral-700 dark:text-neutral-300">
-            <LocalizedText textKey="site.description" ns="common" />
-          </p>
+      {/* Site Info */}
+      <div className="bg-gray-100 py-16 mt-20">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8">Why Choose Luma</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <h3 className="text-xl font-semibold mb-2">Quality Assurance</h3>
+              <p>All products are tested and verified to meet our high standards</p>
+            </div>
+            <div className="text-center">
+              <h3 className="text-xl font-semibold mb-2">Expert Support</h3>
+              <p>Our team of specialists is always ready to help with your questions</p>
+            </div>
+            <div className="text-center">
+              <h3 className="text-xl font-semibold mb-2">Fast Shipping</h3>
+              <p>Quick delivery options available for all orders</p>
+            </div>
+          </div>
         </div>
       </div>
     </Layout>
   );
 }
-
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || 'en', ['common', 'home'])),
-    },
-  };
-};
