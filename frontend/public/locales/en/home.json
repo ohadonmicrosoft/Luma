@@ -45,6 +45,22 @@
       "expert": {
         "title": "Expert Designed",
         "description": "Created by industry professionals"
+      },
+      "lightweight": {
+        "title": "Lightweight Design",
+        "description": "Optimized for mobility and comfort"
+      },
+      "waterproof": {
+        "title": "Waterproof Protection",
+        "description": "Reliable in wet conditions"
+      },
+      "tactical": {
+        "title": "Tactical Advantage",
+        "description": "Designed for operational superiority"
+      },
+      "military": {
+        "title": "Military Specifications",
+        "description": "Meets or exceeds military standards"
       }
     }
   },

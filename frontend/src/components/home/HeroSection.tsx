@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/utils/cn';
@@ -48,7 +48,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const [isAnimating, setIsAnimating] = React.useState(false);
   
   // Handle slide change
-  const changeSlide = (index: number) => {
+  const changeSlide = useCallback((index: number) => {
     if (isAnimating || index === activeSlide) return;
     
     setIsAnimating(true);
@@ -58,19 +58,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     setTimeout(() => {
       setIsAnimating(false);
     }, 500);
-  };
+  }, [isAnimating, activeSlide]);
   
   // Next slide
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     const nextIndex = (activeSlide + 1) % slides.length;
     changeSlide(nextIndex);
-  };
+  }, [activeSlide, slides.length, changeSlide]);
   
   // Previous slide
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     const prevIndex = (activeSlide - 1 + slides.length) % slides.length;
     changeSlide(prevIndex);
-  };
+  }, [activeSlide, slides.length, changeSlide]);
   
   // Set up autoplay interval
   useEffect(() => {
@@ -82,7 +82,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       // Clear interval on cleanup
       return () => clearInterval(interval);
     }
-  }, [activeSlide, autoplay, autoplaySpeed, slides.length, nextSlide]);
+  }, [autoplay, autoplaySpeed, slides.length, nextSlide]);
   
   // Set up keyboard navigation
   useEffect(() => {
@@ -96,7 +96,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isRTL, activeSlide, nextSlide, prevSlide]);
+  }, [isRTL, nextSlide, prevSlide]);
   
   if (slides.length === 0) return null;
   
@@ -128,6 +128,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             priority
             sizes="100vw"
             className="object-cover"
+            style={{ objectPosition: contentAlign === 'left' ? 'right center' : contentAlign === 'right' ? 'left center' : 'center center' }}
           />
           
           {/* Overlay gradient */}
@@ -135,8 +136,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className={cn(
               "absolute inset-0",
               slideTheme === 'dark' 
-                ? "bg-gradient-to-t from-black/70 to-black/30"
-                : "bg-gradient-to-t from-white/60 via-white/20 to-transparent"
+                ? "bg-gradient-to-t from-black/80 via-black/50 to-black/30"
+                : "bg-gradient-to-t from-white/70 via-white/40 to-white/20"
             )}
           />
         </div>
@@ -194,15 +195,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {currentSlide.features && currentSlide.features.length > 0 && (
                 <div className="mt-8 pt-4">
                   <div className={cn(
-                    "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white/80 dark:bg-black/40 rounded-lg p-4",
-                    contentAlign === 'center' ? 'mx-auto' : 
-                    contentAlign === 'right' ? 'ml-auto' : 'mr-auto'
+                    "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-white/90 dark:bg-black/60 backdrop-blur-sm rounded-lg p-4 shadow-lg",
+                    contentAlign === 'center' ? 'mx-auto max-w-3xl' : 
+                    contentAlign === 'right' ? 'ml-auto max-w-xl' : 'mr-auto max-w-xl'
                   )}>
                     {currentSlide.features.map((feature) => (
                       <div 
                         key={feature.id} 
                         className={cn(
-                          "flex items-start space-x-3 p-2",
+                          "flex items-start space-x-3 p-2 hover:bg-white/30 dark:hover:bg-black/30 rounded-md transition-colors",
                           isRTL ? "flex-row-reverse space-x-reverse" : "flex-row"
                         )}
                       >
@@ -210,8 +211,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                           <Image 
                             src={feature.icon} 
                             alt="" 
-                            width={24} 
-                            height={24} 
+                            width={28} 
+                            height={28} 
                             className="object-contain"
                           />
                         </div>

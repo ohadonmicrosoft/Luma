@@ -45,6 +45,22 @@
       "expert": {
         "title": "מעוצב על ידי מומחים",
         "description": "נוצר על ידי אנשי מקצוע בתעשייה"
+      },
+      "lightweight": {
+        "title": "עיצוב קל משקל",
+        "description": "מותאם לניידות ונוחות"
+      },
+      "waterproof": {
+        "title": "הגנה מפני מים",
+        "description": "אמין בתנאי רטיבות"
+      },
+      "tactical": {
+        "title": "יתרון טקטי",
+        "description": "מתוכנן לעליונות מבצעית"
+      },
+      "military": {
+        "title": "מפרט צבאי",
+        "description": "עומד או עולה על תקנים צבאיים"
       }
     }
   },

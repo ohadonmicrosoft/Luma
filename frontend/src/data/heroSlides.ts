@@ -73,6 +73,54 @@ export const heroFeatures: Record<string, HeroFeature> = {
       he: 'נוצר על ידי אנשי מקצוע בתעשייה'
     },
     icon: '/images/features/expert.svg'
+  },
+  lightweight: {
+    id: 'lightweight',
+    title: {
+      en: 'Lightweight Design',
+      he: 'עיצוב קל משקל'
+    },
+    description: {
+      en: 'Optimized for mobility and comfort',
+      he: 'מותאם לניידות ונוחות'
+    },
+    icon: '/images/features/lightweight.svg'
+  },
+  waterproof: {
+    id: 'waterproof',
+    title: {
+      en: 'Waterproof Protection',
+      he: 'הגנה מפני מים'
+    },
+    description: {
+      en: 'Reliable in wet conditions',
+      he: 'אמין בתנאי רטיבות'
+    },
+    icon: '/images/features/waterproof.svg'
+  },
+  tactical: {
+    id: 'tactical',
+    title: {
+      en: 'Tactical Advantage',
+      he: 'יתרון טקטי'
+    },
+    description: {
+      en: 'Designed for operational superiority',
+      he: 'מתוכנן לעליונות מבצעית'
+    },
+    icon: '/images/features/tactical.svg'
+  },
+  military: {
+    id: 'military',
+    title: {
+      en: 'Military Specifications',
+      he: 'מפרט צבאי'
+    },
+    description: {
+      en: 'Meets or exceeds military standards',
+      he: 'עומד או עולה על תקנים צבאיים'
+    },
+    icon: '/images/features/military.svg'
   }
 };
 
@@ -92,8 +140,8 @@ export const heroSlides: HeroSlide[] = [
       en: 'Discover our premium collection of military-grade tactical gear designed for professionals and enthusiasts alike.',
       he: 'גלה את האוסף היוקרתי שלנו של ציוד טקטי בדרגה צבאית המיועד לאנשי מקצוע וחובבים כאחד.'
     },
-    image: '/images/hero/tactical-hero.jpg',
-    mobileImage: '/images/hero/tactical-hero-mobile.jpg',
+    image: '/images/hero/tactical-hero.svg',
+    mobileImage: '/images/hero/tactical-hero.svg',
     actionLabel: {
       en: 'Shop Tactical Gear',
       he: 'קנה ציוד טקטי'
@@ -106,8 +154,8 @@ export const heroSlides: HeroSlide[] = [
     secondaryActionUrl: '/about/tactical',
     features: [
       heroFeatures.durability,
-      heroFeatures.performance,
-      heroFeatures.innovation
+      heroFeatures.tactical,
+      heroFeatures.military
     ],
     theme: 'dark',
     align: 'left'
@@ -126,8 +174,8 @@ export const heroSlides: HeroSlide[] = [
       en: 'Premium outdoor equipment for hiking, camping, and survival. Be prepared for any adventure.',
       he: 'ציוד חוץ פרימיום לטיולים, מחנאות והישרדות. היה מוכן לכל הרפתקה.'
     },
-    image: '/images/hero/outdoor-hero.jpg',
-    mobileImage: '/images/hero/outdoor-hero-mobile.jpg',
+    image: '/images/hero/outdoor-hero.svg',
+    mobileImage: '/images/hero/outdoor-hero.svg',
     actionLabel: {
       en: 'Explore Outdoor',
       he: 'חקור ציוד חוץ'
@@ -139,9 +187,9 @@ export const heroSlides: HeroSlide[] = [
     },
     secondaryActionUrl: '/guides/outdoor',
     features: [
-      heroFeatures.quality,
-      heroFeatures.durability,
-      heroFeatures.expert
+      heroFeatures.waterproof,
+      heroFeatures.lightweight,
+      heroFeatures.durability
     ],
     theme: 'light',
     align: 'right'
@@ -160,8 +208,8 @@ export const heroSlides: HeroSlide[] = [
       en: 'Advanced security and defense solutions for your home, designed with reliability and ease of use in mind.',
       he: 'פתרונות אבטחה והגנה מתקדמים לביתך, מתוכננים עם אמינות וקלות שימוש.'
     },
-    image: '/images/hero/home-defense-hero.jpg',
-    mobileImage: '/images/hero/home-defense-hero-mobile.jpg',
+    image: '/images/hero/home-defense-hero.svg',
+    mobileImage: '/images/hero/home-defense-hero.svg',
     actionLabel: {
       en: 'Browse Defense Products',
       he: 'עיין במוצרי הגנה'
@@ -174,8 +222,8 @@ export const heroSlides: HeroSlide[] = [
     secondaryActionUrl: '/guides/home-security',
     features: [
       heroFeatures.innovation,
-      heroFeatures.guarantee,
-      heroFeatures.performance
+      heroFeatures.quality,
+      heroFeatures.guarantee
     ],
     theme: 'dark',
     align: 'center'
