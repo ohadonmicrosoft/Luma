@@ -47,5 +47,21 @@
         "description": "Created by industry professionals"
       }
     }
+  },
+  "categories": {
+    "title": "Explore Our Collections",
+    "description": "Professional equipment for every need",
+    "tactical": {
+      "title": "Tactical Collections",
+      "description": "Professional gear for operators and enthusiasts"
+    },
+    "outdoor": {
+      "title": "Outdoor Adventures",
+      "description": "High-performance equipment for the great outdoors"
+    },
+    "homeDefense": {
+      "title": "Home Defense",
+      "description": "Protect what matters most with advanced security solutions"
+    }
   }
 } 
