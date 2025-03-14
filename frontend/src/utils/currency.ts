@@ -2,38 +2,38 @@
  * Currency utilities for formatting and displaying prices
  */
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from "next-i18next";
 
 // Supported currencies
 export enum Currency {
-  USD = 'USD',
-  ILS = 'ILS',
-  EUR = 'EUR',
-  GBP = 'GBP',
+  USD = "USD",
+  ILS = "ILS",
+  EUR = "EUR",
+  GBP = "GBP",
 }
 
 // Currency symbols
 export const CURRENCY_SYMBOLS: Record<Currency, string> = {
-  [Currency.USD]: '$',
-  [Currency.ILS]: '₪',
-  [Currency.EUR]: '€',
-  [Currency.GBP]: '£',
+  [Currency.USD]: "$",
+  [Currency.ILS]: "₪",
+  [Currency.EUR]: "€",
+  [Currency.GBP]: "£",
 };
 
 // Currency positions (before or after amount)
-export const CURRENCY_POSITIONS: Record<Currency, 'before' | 'after'> = {
-  [Currency.USD]: 'before',
-  [Currency.ILS]: 'after',
-  [Currency.EUR]: 'before',
-  [Currency.GBP]: 'before',
+export const CURRENCY_POSITIONS: Record<Currency, "before" | "after"> = {
+  [Currency.USD]: "before",
+  [Currency.ILS]: "after",
+  [Currency.EUR]: "before",
+  [Currency.GBP]: "before",
 };
 
 // Currency locale mappings for Intl.NumberFormat
 export const CURRENCY_LOCALES: Record<Currency, string> = {
-  [Currency.USD]: 'en-US',
-  [Currency.ILS]: 'he-IL',
-  [Currency.EUR]: 'de-DE',
-  [Currency.GBP]: 'en-GB',
+  [Currency.USD]: "en-US",
+  [Currency.ILS]: "he-IL",
+  [Currency.EUR]: "de-DE",
+  [Currency.GBP]: "en-GB",
 };
 
 /**
@@ -64,17 +64,17 @@ export function formatPrice(
 
   // Determine which locale to use for formatting
   const formattingLocale = locale || CURRENCY_LOCALES[currency];
-  
+
   // Create number formatter
   const formatter = new Intl.NumberFormat(formattingLocale, {
-    style: 'currency',
+    style: "currency",
     currency,
-    currencyDisplay: useSymbol ? 'symbol' : (useCurrencyCode ? 'code' : 'name'),
+    currencyDisplay: useSymbol ? "symbol" : useCurrencyCode ? "code" : "name",
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
-    notation: compact ? 'compact' : 'standard',
+    notation: compact ? "compact" : "standard",
   });
-  
+
   return formatter.format(amount);
 }
 
@@ -87,7 +87,7 @@ export function formatPrice(
  */
 export function usePriceFormatter() {
   const { i18n } = useTranslation();
-  
+
   const formatPriceWithLocale = (
     amount: number,
     currency: Currency = Currency.USD,
@@ -100,7 +100,7 @@ export function usePriceFormatter() {
   ): string => {
     return formatPrice(amount, currency, i18n.language, options);
   };
-  
+
   return formatPriceWithLocale;
 }
 
@@ -149,13 +149,14 @@ export function convertCurrency(
   if (fromCurrency === toCurrency) {
     return amount;
   }
-  
+
   // Convert to base currency (USD) first, then to target currency
-  const inUSD = fromCurrency === Currency.USD 
-    ? amount 
-    : amount / exchangeRates[fromCurrency];
-    
-  return toCurrency === Currency.USD 
-    ? inUSD 
+  const inUSD =
+    fromCurrency === Currency.USD
+      ? amount
+      : amount / exchangeRates[fromCurrency];
+
+  return toCurrency === Currency.USD
+    ? inUSD
     : inUSD * exchangeRates[toCurrency];
-} 
+}

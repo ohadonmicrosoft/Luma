@@ -1,24 +1,24 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CreateInitialSchema1722421678002 implements MigrationInterface {
-    name = 'CreateInitialSchema1722421678002'
+  name = "CreateInitialSchema1722421678002";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        // Create enum types
-        await queryRunner.query(`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    // Create enum types
+    await queryRunner.query(`
             CREATE TYPE "user_role_enum" AS ENUM ('customer', 'admin', 'staff')
         `);
-        
-        await queryRunner.query(`
+
+    await queryRunner.query(`
             CREATE TYPE "order_status_enum" AS ENUM ('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded')
         `);
-        
-        await queryRunner.query(`
+
+    await queryRunner.query(`
             CREATE TYPE "payment_status_enum" AS ENUM ('pending', 'paid', 'failed', 'refunded')
         `);
 
-        // Create users table
-        await queryRunner.query(`
+    // Create users table
+    await queryRunner.query(`
             CREATE TABLE "users" (
                 "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "email" varchar NOT NULL UNIQUE,
@@ -39,8 +39,8 @@ export class CreateInitialSchema1722421678002 implements MigrationInterface {
             )
         `);
 
-        // Create categories table with self-reference for hierarchical structure
-        await queryRunner.query(`
+    // Create categories table with self-reference for hierarchical structure
+    await queryRunner.query(`
             CREATE TABLE "categories" (
                 "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "name" varchar(100) NOT NULL,
@@ -56,14 +56,14 @@ export class CreateInitialSchema1722421678002 implements MigrationInterface {
                 CONSTRAINT "fk_category_parent" FOREIGN KEY ("parent_id") REFERENCES "categories"("id") ON DELETE SET NULL
             )
         `);
-        
-        // Create index on category name
-        await queryRunner.query(`
+
+    // Create index on category name
+    await queryRunner.query(`
             CREATE INDEX "idx_category_name" ON "categories"("name")
         `);
 
-        // Create products table
-        await queryRunner.query(`
+    // Create products table
+    await queryRunner.query(`
             CREATE TABLE "products" (
                 "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "name" varchar(100) NOT NULL,
@@ -82,18 +82,18 @@ export class CreateInitialSchema1722421678002 implements MigrationInterface {
                 CONSTRAINT "fk_product_category" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL
             )
         `);
-        
-        // Create indexes on product columns
-        await queryRunner.query(`
+
+    // Create indexes on product columns
+    await queryRunner.query(`
             CREATE INDEX "idx_product_name" ON "products"("name")
         `);
-        
-        await queryRunner.query(`
+
+    await queryRunner.query(`
             CREATE INDEX "idx_product_is_active_is_featured" ON "products"("isActive", "isFeatured")
         `);
 
-        // Create orders table
-        await queryRunner.query(`
+    // Create orders table
+    await queryRunner.query(`
             CREATE TABLE "orders" (
                 "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "orderNumber" varchar NOT NULL UNIQUE,
@@ -118,18 +118,18 @@ export class CreateInitialSchema1722421678002 implements MigrationInterface {
                 CONSTRAINT "fk_order_user" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
             )
         `);
-        
-        // Create indexes on orders
-        await queryRunner.query(`
+
+    // Create indexes on orders
+    await queryRunner.query(`
             CREATE INDEX "idx_order_user" ON "orders"("user_id")
         `);
-        
-        await queryRunner.query(`
+
+    await queryRunner.query(`
             CREATE INDEX "idx_order_status_created" ON "orders"("status", "createdAt")
         `);
 
-        // Create order items table
-        await queryRunner.query(`
+    // Create order items table
+    await queryRunner.query(`
             CREATE TABLE "order_items" (
                 "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "order_id" uuid NOT NULL,
@@ -146,14 +146,14 @@ export class CreateInitialSchema1722421678002 implements MigrationInterface {
                 CONSTRAINT "fk_order_item_product" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE SET NULL
             )
         `);
-        
-        // Create index on order items
-        await queryRunner.query(`
+
+    // Create index on order items
+    await queryRunner.query(`
             CREATE INDEX "idx_order_item_order" ON "order_items"("order_id")
         `);
 
-        // Create reviews table
-        await queryRunner.query(`
+    // Create reviews table
+    await queryRunner.query(`
             CREATE TABLE "reviews" (
                 "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "user_id" uuid NOT NULL,
@@ -171,18 +171,18 @@ export class CreateInitialSchema1722421678002 implements MigrationInterface {
                 CONSTRAINT "fk_review_product" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE
             )
         `);
-        
-        // Create indexes on reviews
-        await queryRunner.query(`
+
+    // Create indexes on reviews
+    await queryRunner.query(`
             CREATE INDEX "idx_review_product" ON "reviews"("product_id")
         `);
-        
-        await queryRunner.query(`
+
+    await queryRunner.query(`
             CREATE INDEX "idx_review_user" ON "reviews"("user_id")
         `);
 
-        // Create wishlist items table with unique constraint on user + product
-        await queryRunner.query(`
+    // Create wishlist items table with unique constraint on user + product
+    await queryRunner.query(`
             CREATE TABLE "wishlist_items" (
                 "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
                 "user_id" uuid NOT NULL,
@@ -195,26 +195,26 @@ export class CreateInitialSchema1722421678002 implements MigrationInterface {
                 CONSTRAINT "uq_user_product" UNIQUE ("user_id", "product_id")
             )
         `);
-        
-        // Create indexes on wishlist
-        await queryRunner.query(`
+
+    // Create indexes on wishlist
+    await queryRunner.query(`
             CREATE INDEX "idx_wishlist_user" ON "wishlist_items"("user_id")
         `);
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        // Drop tables in reverse order to handle foreign key constraints
-        await queryRunner.query(`DROP TABLE "wishlist_items"`);
-        await queryRunner.query(`DROP TABLE "reviews"`);
-        await queryRunner.query(`DROP TABLE "order_items"`);
-        await queryRunner.query(`DROP TABLE "orders"`);
-        await queryRunner.query(`DROP TABLE "products"`);
-        await queryRunner.query(`DROP TABLE "categories"`);
-        await queryRunner.query(`DROP TABLE "users"`);
-        
-        // Drop enum types
-        await queryRunner.query(`DROP TYPE "payment_status_enum"`);
-        await queryRunner.query(`DROP TYPE "order_status_enum"`);
-        await queryRunner.query(`DROP TYPE "user_role_enum"`);
-    }
-} 
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    // Drop tables in reverse order to handle foreign key constraints
+    await queryRunner.query(`DROP TABLE "wishlist_items"`);
+    await queryRunner.query(`DROP TABLE "reviews"`);
+    await queryRunner.query(`DROP TABLE "order_items"`);
+    await queryRunner.query(`DROP TABLE "orders"`);
+    await queryRunner.query(`DROP TABLE "products"`);
+    await queryRunner.query(`DROP TABLE "categories"`);
+    await queryRunner.query(`DROP TABLE "users"`);
+
+    // Drop enum types
+    await queryRunner.query(`DROP TYPE "payment_status_enum"`);
+    await queryRunner.query(`DROP TYPE "order_status_enum"`);
+    await queryRunner.query(`DROP TYPE "user_role_enum"`);
+  }
+}

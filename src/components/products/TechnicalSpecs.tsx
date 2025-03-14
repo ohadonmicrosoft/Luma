@@ -1,5 +1,5 @@
-import React from 'react';
-import { useTranslation } from 'next-i18next';
+import React from "react";
+import { useTranslation } from "next-i18next";
 
 export interface Specification {
   id: string;
@@ -13,8 +13,8 @@ export interface TechnicalSpecsProps {
 }
 
 const TechnicalSpecs: React.FC<TechnicalSpecsProps> = ({ specifications }) => {
-  const { t } = useTranslation('common');
-  
+  const { t } = useTranslation("common");
+
   // Group specifications by category
   const groupedSpecs = specifications.reduce((acc, spec) => {
     if (!acc[spec.category]) {
@@ -26,8 +26,10 @@ const TechnicalSpecs: React.FC<TechnicalSpecsProps> = ({ specifications }) => {
 
   return (
     <div className="mt-8">
-      <h3 className="text-xl font-semibold mb-4">{t('technicalSpecifications')}</h3>
-      
+      <h3 className="text-xl font-semibold mb-4">
+        {t("technicalSpecifications")}
+      </h3>
+
       {Object.entries(groupedSpecs).map(([category, specs]) => (
         <div key={category} className="mb-6">
           <h4 className="text-lg font-medium mb-3">{category}</h4>
@@ -45,4 +47,4 @@ const TechnicalSpecs: React.FC<TechnicalSpecsProps> = ({ specifications }) => {
   );
 };
 
-export default TechnicalSpecs; 
+export default TechnicalSpecs;

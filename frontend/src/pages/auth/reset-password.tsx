@@ -1,36 +1,41 @@
-import React, { useState } from 'react';
-import Head from 'next/head';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { Layout } from '@/components/layout/Layout';
-import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
-import Link from 'next/link';
+import React, { useState } from "react";
+import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Layout } from "@/components/layout/Layout";
+import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm";
+import Link from "next/link";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const { token } = router.query;
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const handleResetPassword = async (password: string) => {
     setIsLoading(true);
     try {
       // Here you would make an API call to reset the password using the token and new password
-      console.log('Password reset with token:', token, 'New password length:', password.length);
-      
+      console.log(
+        "Password reset with token:",
+        token,
+        "New password length:",
+        password.length
+      );
+
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+
       // The form will show a success message after successful reset
       setIsLoading(false);
     } catch (error) {
-      console.error('Password reset failed:', error);
+      console.error("Password reset failed:", error);
       // Handle error
       setIsLoading(false);
     }
   };
-  
+
   // If no token is provided in the URL, show an error message
-  if (!token && typeof window !== 'undefined') {
+  if (!token && typeof window !== "undefined") {
     return (
       <Layout>
         <Head>
@@ -51,9 +56,12 @@ export default function ResetPasswordPage() {
 
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
-              <h2 className="text-3xl font-bold text-neutral-800 mb-4">Invalid Reset Link</h2>
+              <h2 className="text-3xl font-bold text-neutral-800 mb-4">
+                Invalid Reset Link
+              </h2>
               <p className="text-neutral-600 mb-6">
-                The password reset link is invalid or has expired. Please request a new password reset link.
+                The password reset link is invalid or has expired. Please
+                request a new password reset link.
               </p>
               <Link
                 href="/auth/forgot-password"
@@ -67,7 +75,7 @@ export default function ResetPasswordPage() {
       </Layout>
     );
   }
-  
+
   return (
     <Layout>
       <Head>
@@ -99,4 +107,4 @@ export default function ResetPasswordPage() {
       </div>
     </Layout>
   );
-} 
+}

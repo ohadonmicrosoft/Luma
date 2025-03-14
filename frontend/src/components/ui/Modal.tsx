@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { cn } from '@/utils/cn';
+import React, { useEffect } from "react";
+import { cn } from "@/utils/cn";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -23,23 +23,23 @@ export function Modal({
   // Close on escape key press
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
+      if (event.key === "Escape" && isOpen) {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    
+    document.addEventListener("keydown", handleEscape);
+
     // Prevent scrolling when modal is open
     if (isOpen) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add("overflow-hidden");
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     }
-    
+
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.classList.remove('overflow-hidden');
+      document.removeEventListener("keydown", handleEscape);
+      document.body.classList.remove("overflow-hidden");
     };
   }, [isOpen, onClose]);
 
@@ -54,7 +54,7 @@ export function Modal({
   return (
     <div
       className={cn(
-        'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4',
+        "fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4",
         className
       )}
       onClick={handleBackdropClick}
@@ -63,22 +63,37 @@ export function Modal({
     >
       <div
         className={cn(
-          'bg-white rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-auto animate-in fade-in-50 duration-200',
+          "bg-white rounded-lg shadow-lg max-w-md w-full max-h-[90vh] overflow-auto animate-in fade-in-50 duration-200",
           contentClassName
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {(title || showCloseButton) && (
           <div className="px-6 py-4 border-b border-neutral-200 flex justify-between items-center">
-            {title && <h3 className="text-xl font-semibold text-neutral-800">{title}</h3>}
+            {title && (
+              <h3 className="text-xl font-semibold text-neutral-800">
+                {title}
+              </h3>
+            )}
             {showCloseButton && (
               <button
                 onClick={onClose}
                 className="text-neutral-500 hover:text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-sm"
                 aria-label="Close"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             )}
@@ -88,4 +103,4 @@ export function Modal({
       </div>
     </div>
   );
-} 
+}

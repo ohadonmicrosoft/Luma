@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import { AccountLayout } from '@/components/account/AccountLayout';
-import { Button } from '@/components/ui/Button';
+import React, { useState } from "react";
+import { AccountLayout } from "@/components/account/AccountLayout";
+import { Button } from "@/components/ui/Button";
 
 export default function SettingsPage() {
   // Profile form state
   const [profile, setProfile] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'johndoe@example.com',
-    phone: '(555) 123-4567',
+    firstName: "John",
+    lastName: "Doe",
+    email: "johndoe@example.com",
+    phone: "(555) 123-4567",
   });
 
   // Password form state
   const [password, setPassword] = useState({
-    current: '',
-    new: '',
-    confirm: '',
+    current: "",
+    new: "",
+    confirm: "",
   });
 
   // Email preferences state
@@ -39,7 +39,7 @@ export default function SettingsPage() {
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would update the user's profile
-    alert('Profile updated successfully!');
+    alert("Profile updated successfully!");
   };
 
   // Password form handlers
@@ -53,36 +53,38 @@ export default function SettingsPage() {
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validation
     if (!password.current || !password.new || !password.confirm) {
-      alert('All password fields are required.');
+      alert("All password fields are required.");
       return;
     }
-    
+
     if (password.new !== password.confirm) {
-      alert('New passwords do not match.');
+      alert("New passwords do not match.");
       return;
     }
-    
+
     if (password.new.length < 8) {
-      alert('Password must be at least 8 characters long.');
+      alert("Password must be at least 8 characters long.");
       return;
     }
-    
+
     // In a real app, this would update the user's password
-    alert('Password updated successfully!');
-    
+    alert("Password updated successfully!");
+
     // Reset form
     setPassword({
-      current: '',
-      new: '',
-      confirm: '',
+      current: "",
+      new: "",
+      confirm: "",
     });
   };
 
   // Email preferences handlers
-  const handleEmailPreferenceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailPreferenceChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { name, checked } = e.target;
     setEmailPreferences({
       ...emailPreferences,
@@ -93,7 +95,7 @@ export default function SettingsPage() {
   const handleEmailPreferencesSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would update the user's email preferences
-    alert('Email preferences updated successfully!');
+    alert("Email preferences updated successfully!");
   };
 
   return (
@@ -106,7 +108,10 @@ export default function SettingsPage() {
             <form onSubmit={handleProfileSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor="firstName"
+                    className="block text-sm font-medium text-neutral-700 mb-1"
+                  >
                     First Name
                   </label>
                   <input
@@ -119,9 +124,12 @@ export default function SettingsPage() {
                     required
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor="lastName"
+                    className="block text-sm font-medium text-neutral-700 mb-1"
+                  >
                     Last Name
                   </label>
                   <input
@@ -134,9 +142,12 @@ export default function SettingsPage() {
                     required
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-neutral-700 mb-1"
+                  >
                     Email Address
                   </label>
                   <input
@@ -149,9 +160,12 @@ export default function SettingsPage() {
                     required
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-neutral-700 mb-1"
+                  >
                     Phone Number
                   </label>
                   <input
@@ -164,16 +178,14 @@ export default function SettingsPage() {
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-end">
-                <Button type="submit">
-                  Save Changes
-                </Button>
+                <Button type="submit">Save Changes</Button>
               </div>
             </form>
           </div>
         </section>
-        
+
         {/* Change Password */}
         <section>
           <h2 className="text-xl font-semibold mb-4">Change Password</h2>
@@ -181,7 +193,10 @@ export default function SettingsPage() {
             <form onSubmit={handlePasswordSubmit} className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="current" className="block text-sm font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor="current"
+                    className="block text-sm font-medium text-neutral-700 mb-1"
+                  >
                     Current Password
                   </label>
                   <input
@@ -194,9 +209,12 @@ export default function SettingsPage() {
                     required
                   />
                 </div>
-                
+
                 <div>
-                  <label htmlFor="new" className="block text-sm font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor="new"
+                    className="block text-sm font-medium text-neutral-700 mb-1"
+                  >
                     New Password
                   </label>
                   <input
@@ -213,9 +231,12 @@ export default function SettingsPage() {
                     Must be at least 8 characters long
                   </p>
                 </div>
-                
+
                 <div>
-                  <label htmlFor="confirm" className="block text-sm font-medium text-neutral-700 mb-1">
+                  <label
+                    htmlFor="confirm"
+                    className="block text-sm font-medium text-neutral-700 mb-1"
+                  >
                     Confirm New Password
                   </label>
                   <input
@@ -229,16 +250,14 @@ export default function SettingsPage() {
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-end">
-                <Button type="submit">
-                  Update Password
-                </Button>
+                <Button type="submit">Update Password</Button>
               </div>
             </form>
           </div>
         </section>
-        
+
         {/* Email Preferences */}
         <section>
           <h2 className="text-xl font-semibold mb-4">Email Preferences</h2>
@@ -257,13 +276,18 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="marketing" className="font-medium text-neutral-700">
+                    <label
+                      htmlFor="marketing"
+                      className="font-medium text-neutral-700"
+                    >
                       Marketing Communications
                     </label>
-                    <p className="text-neutral-500">Receive updates about new features and improvements.</p>
+                    <p className="text-neutral-500">
+                      Receive updates about new features and improvements.
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -276,13 +300,18 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="orderUpdates" className="font-medium text-neutral-700">
+                    <label
+                      htmlFor="orderUpdates"
+                      className="font-medium text-neutral-700"
+                    >
                       Order Updates
                     </label>
-                    <p className="text-neutral-500">Receive updates about your order status and shipping.</p>
+                    <p className="text-neutral-500">
+                      Receive updates about your order status and shipping.
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -295,13 +324,18 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="promotions" className="font-medium text-neutral-700">
+                    <label
+                      htmlFor="promotions"
+                      className="font-medium text-neutral-700"
+                    >
                       Promotions & Discounts
                     </label>
-                    <p className="text-neutral-500">Receive exclusive offers, discounts, and promotion codes.</p>
+                    <p className="text-neutral-500">
+                      Receive exclusive offers, discounts, and promotion codes.
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -314,13 +348,18 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="newProducts" className="font-medium text-neutral-700">
+                    <label
+                      htmlFor="newProducts"
+                      className="font-medium text-neutral-700"
+                    >
                       New Product Announcements
                     </label>
-                    <p className="text-neutral-500">Be the first to know about new product launches.</p>
+                    <p className="text-neutral-500">
+                      Be the first to know about new product launches.
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start">
                   <div className="flex items-center h-5">
                     <input
@@ -333,40 +372,52 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div className="ml-3 text-sm">
-                    <label htmlFor="newsletter" className="font-medium text-neutral-700">
+                    <label
+                      htmlFor="newsletter"
+                      className="font-medium text-neutral-700"
+                    >
                       Weekly Newsletter
                     </label>
-                    <p className="text-neutral-500">Receive our weekly newsletter with tips and trends.</p>
+                    <p className="text-neutral-500">
+                      Receive our weekly newsletter with tips and trends.
+                    </p>
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex justify-end">
-                <Button type="submit">
-                  Save Preferences
-                </Button>
+                <Button type="submit">Save Preferences</Button>
               </div>
             </form>
           </div>
         </section>
-        
+
         {/* Danger Zone */}
         <section>
           <h2 className="text-xl font-semibold mb-4">Danger Zone</h2>
           <div className="bg-white rounded-lg border border-red-200 p-6">
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-red-600">Delete Account</h3>
+              <h3 className="text-lg font-medium text-red-600">
+                Delete Account
+              </h3>
               <p className="text-neutral-600">
-                Permanently delete your account and all associated data. This action cannot be undone.
+                Permanently delete your account and all associated data. This
+                action cannot be undone.
               </p>
               <div>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
                   onClick={() => {
-                    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                    if (
+                      confirm(
+                        "Are you sure you want to delete your account? This action cannot be undone."
+                      )
+                    ) {
                       // In a real app, this would delete the user's account
-                      alert('Account deletion request submitted. We will process your request within 24 hours.');
+                      alert(
+                        "Account deletion request submitted. We will process your request within 24 hours."
+                      );
                     }
                   }}
                 >
@@ -379,4 +430,4 @@ export default function SettingsPage() {
       </div>
     </AccountLayout>
   );
-} 
+}

@@ -1,12 +1,12 @@
-import { Repository } from 'typeorm';
-import { User } from '../models/User';
-import { AppDataSource } from '../config/database';
-import * as jwt from 'jsonwebtoken';
-import * as crypto from 'crypto';
-import { v4 as uuidv4 } from 'uuid';
-import { ErrorCode, StatusCode, UserRole } from '../utils/constants';
-import { AppError } from '../utils/AppError';
-import { logger } from '../utils/logger';
+import { Repository } from "typeorm";
+import { User } from "../models/User";
+import { AppDataSource } from "../config/database";
+import * as jwt from "jsonwebtoken";
+import * as crypto from "crypto";
+import { v4 as uuidv4 } from "uuid";
+import { ErrorCode, StatusCode, UserRole } from "../utils/constants";
+import { AppError } from "../utils/AppError";
+import { logger } from "../utils/logger";
 
 export interface TokenPayload {
   userId: string;
@@ -27,9 +27,9 @@ export class AuthService {
 
   constructor() {
     this.userRepository = AppDataSource.getRepository(User);
-    this.jwtSecret = process.env.JWT_SECRET || 'default_jwt_secret_for_dev';
-    this.jwtExpiry = process.env.JWT_EXPIRY || '1h';
-    this.refreshTokenExpiry = process.env.REFRESH_TOKEN_EXPIRY || '7d';
+    this.jwtSecret = process.env.JWT_SECRET || "default_jwt_secret_for_dev";
+    this.jwtExpiry = process.env.JWT_EXPIRY || "1h";
+    this.refreshTokenExpiry = process.env.REFRESH_TOKEN_EXPIRY || "7d";
   }
 
   /**
@@ -39,25 +39,25 @@ export class AuthService {
     try {
       // Check if user already exists
       const existingUser = await this.userRepository.findOne({
-        where: { email: userData.email }
+        where: { email: userData.email },
       });
 
       if (existingUser) {
         throw new AppError(
-          'User with this email already exists',
+          "User with this email already exists",
           StatusCode.BAD_REQUEST,
           ErrorCode.USER_ALREADY_EXISTS
         );
       }
 
       // Create verification token
-      const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+      const emailVerificationToken = crypto.randomBytes(32).toString("hex");
 
       // Create new user
       const user = new User({
         ...userData,
         emailVerificationToken,
-        emailVerified: false
+        emailVerified: false,
       });
 
       // Save user to database
@@ -72,12 +72,12 @@ export class AuthService {
       }
       return userWithoutPassword as User;
     } catch (error) {
-      logger.error('Error registering user:', error);
+      logger.error("Error registering user:", error);
       if (error instanceof AppError) {
         throw error;
       }
       throw new AppError(
-        'Failed to register user',
+        "Failed to register user",
         StatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.REGISTRATION_FAILED
       );
@@ -87,17 +87,28 @@ export class AuthService {
   /**
    * Login a user
    */
-  async login(email: string, password: string): Promise<{ user: User; tokens: AuthTokens }> {
+  async login(
+    email: string,
+    password: string
+  ): Promise<{ user: User; tokens: AuthTokens }> {
     try {
       // Find user with password included
       const user = await this.userRepository.findOne({
         where: { email },
-        select: ['id', 'email', 'password', 'firstName', 'lastName', 'role', 'emailVerified']
+        select: [
+          "id",
+          "email",
+          "password",
+          "firstName",
+          "lastName",
+          "role",
+          "emailVerified",
+        ],
       });
 
       if (!user) {
         throw new AppError(
-          'Invalid email or password',
+          "Invalid email or password",
           StatusCode.UNAUTHORIZED,
           ErrorCode.INVALID_CREDENTIALS
         );
@@ -106,7 +117,7 @@ export class AuthService {
       // Check if email is verified
       if (!user.emailVerified) {
         throw new AppError(
-          'Email not verified',
+          "Email not verified",
           StatusCode.UNAUTHORIZED,
           ErrorCode.EMAIL_NOT_VERIFIED
         );
@@ -116,7 +127,7 @@ export class AuthService {
       const isPasswordValid = await user.comparePassword(password);
       if (!isPasswordValid) {
         throw new AppError(
-          'Invalid email or password',
+          "Invalid email or password",
           StatusCode.UNAUTHORIZED,
           ErrorCode.INVALID_CREDENTIALS
         );
@@ -138,12 +149,12 @@ export class AuthService {
 
       return { user: userWithoutPassword as User, tokens };
     } catch (error) {
-      logger.error('Error logging in user:', error);
+      logger.error("Error logging in user:", error);
       if (error instanceof AppError) {
         throw error;
       }
       throw new AppError(
-        'Failed to login',
+        "Failed to login",
         StatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.LOGIN_FAILED
       );
@@ -157,12 +168,12 @@ export class AuthService {
     try {
       // Find user with this refresh token
       const user = await this.userRepository.findOne({
-        where: { refreshToken }
+        where: { refreshToken },
       });
 
       if (!user) {
         throw new AppError(
-          'Invalid refresh token',
+          "Invalid refresh token",
           StatusCode.UNAUTHORIZED,
           ErrorCode.INVALID_REFRESH_TOKEN
         );
@@ -177,12 +188,12 @@ export class AuthService {
 
       return tokens;
     } catch (error) {
-      logger.error('Error refreshing token:', error);
+      logger.error("Error refreshing token:", error);
       if (error instanceof AppError) {
         throw error;
       }
       throw new AppError(
-        'Failed to refresh token',
+        "Failed to refresh token",
         StatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.TOKEN_REFRESH_FAILED
       );
@@ -196,12 +207,12 @@ export class AuthService {
     try {
       // Find user
       const user = await this.userRepository.findOne({
-        where: { id: userId }
+        where: { id: userId },
       });
 
       if (!user) {
         throw new AppError(
-          'User not found',
+          "User not found",
           StatusCode.NOT_FOUND,
           ErrorCode.USER_NOT_FOUND
         );
@@ -211,12 +222,12 @@ export class AuthService {
       user.refreshToken = null;
       await this.userRepository.save(user);
     } catch (error) {
-      logger.error('Error logging out user:', error);
+      logger.error("Error logging out user:", error);
       if (error instanceof AppError) {
         throw error;
       }
       throw new AppError(
-        'Failed to logout',
+        "Failed to logout",
         StatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.LOGOUT_FAILED
       );
@@ -230,12 +241,12 @@ export class AuthService {
     try {
       // Find user with this verification token
       const user = await this.userRepository.findOne({
-        where: { emailVerificationToken: token }
+        where: { emailVerificationToken: token },
       });
 
       if (!user) {
         throw new AppError(
-          'Invalid verification token',
+          "Invalid verification token",
           StatusCode.BAD_REQUEST,
           ErrorCode.INVALID_VERIFICATION_TOKEN
         );
@@ -253,12 +264,12 @@ export class AuthService {
       }
       return userWithoutPassword as User;
     } catch (error) {
-      logger.error('Error verifying email:', error);
+      logger.error("Error verifying email:", error);
       if (error instanceof AppError) {
         throw error;
       }
       throw new AppError(
-        'Failed to verify email',
+        "Failed to verify email",
         StatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.EMAIL_VERIFICATION_FAILED
       );
@@ -272,7 +283,7 @@ export class AuthService {
     try {
       // Find user
       const user = await this.userRepository.findOne({
-        where: { email }
+        where: { email },
       });
 
       if (!user) {
@@ -281,9 +292,9 @@ export class AuthService {
       }
 
       // Generate reset token
-      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetToken = crypto.randomBytes(32).toString("hex");
       const passwordResetToken = resetToken;
-      
+
       // Set expiration (1 hour from now)
       const passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000);
 
@@ -294,9 +305,9 @@ export class AuthService {
 
       // TODO: Send password reset email
     } catch (error) {
-      logger.error('Error requesting password reset:', error);
+      logger.error("Error requesting password reset:", error);
       throw new AppError(
-        'Failed to request password reset',
+        "Failed to request password reset",
         StatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.PASSWORD_RESET_REQUEST_FAILED
       );
@@ -312,12 +323,16 @@ export class AuthService {
       const user = await this.userRepository.findOne({
         where: {
           passwordResetToken: token,
-        }
+        },
       });
 
-      if (!user || !user.passwordResetExpires || user.passwordResetExpires < new Date()) {
+      if (
+        !user ||
+        !user.passwordResetExpires ||
+        user.passwordResetExpires < new Date()
+      ) {
         throw new AppError(
-          'Invalid or expired password reset token',
+          "Invalid or expired password reset token",
           StatusCode.BAD_REQUEST,
           ErrorCode.INVALID_RESET_TOKEN
         );
@@ -329,12 +344,12 @@ export class AuthService {
       user.passwordResetExpires = null;
       await this.userRepository.save(user);
     } catch (error) {
-      logger.error('Error resetting password:', error);
+      logger.error("Error resetting password:", error);
       if (error instanceof AppError) {
         throw error;
       }
       throw new AppError(
-        'Failed to reset password',
+        "Failed to reset password",
         StatusCode.INTERNAL_SERVER_ERROR,
         ErrorCode.PASSWORD_RESET_FAILED
       );
@@ -348,18 +363,20 @@ export class AuthService {
     const payload: TokenPayload = {
       userId: user.id as string,
       email: user.email,
-      role: user.role as unknown as UserRole
+      role: user.role as unknown as UserRole,
     };
 
     // Use a simpler approach to sign the token
-    let accessToken = '';
+    let accessToken = "";
     try {
       // @ts-expect-error - TypeScript has issues with the jwt.sign types
-      accessToken = jwt.sign(payload, this.jwtSecret, { expiresIn: this.jwtExpiry });
+      accessToken = jwt.sign(payload, this.jwtSecret, {
+        expiresIn: this.jwtExpiry,
+      });
     } catch (error) {
-      logger.error('Error signing JWT:', error);
+      logger.error("Error signing JWT:", error);
       throw new AppError(
-        'Failed to generate access token',
+        "Failed to generate access token",
         StatusCode.INTERNAL_SERVER_ERROR
       );
     }
@@ -368,7 +385,7 @@ export class AuthService {
 
     return {
       accessToken,
-      refreshToken
+      refreshToken,
     };
   }
-} 
+}

@@ -1,10 +1,13 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { cn } from '@/utils/cn';
-import { useDirectionalStyles } from '@/utils/rtl';
-import { LocalizedContent, LocalizedText } from '@/components/localization/LocalizedContent';
-import { LocalizedString } from '@/types/product';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { cn } from "@/utils/cn";
+import { useDirectionalStyles } from "@/utils/rtl";
+import {
+  LocalizedContent,
+  LocalizedText,
+} from "@/components/localization/LocalizedContent";
+import { LocalizedString } from "@/types/product";
 
 export interface CategoryFeature {
   id: string;
@@ -27,7 +30,7 @@ export interface CategoryShowcaseProps {
   description?: string;
   categories: CategoryCard[];
   className?: string;
-  variant?: 'grid' | 'featured' | 'carousel';
+  variant?: "grid" | "featured" | "carousel";
 }
 
 export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
@@ -35,7 +38,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
   description,
   categories,
   className,
-  variant = 'grid',
+  variant = "grid",
 }) => {
   const { isRTL, direction } = useDirectionalStyles();
 
@@ -84,9 +87,14 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
             />
             <div className="absolute inset-0 bg-gradient-to-r from-neutral-900/70 to-neutral-900/0" />
           </div>
-          
+
           <div className="absolute inset-0 flex items-center">
-            <div className={cn("container mx-auto px-4", isRTL ? "text-right" : "text-left")}>
+            <div
+              className={cn(
+                "container mx-auto px-4",
+                isRTL ? "text-right" : "text-left"
+              )}
+            >
               <div className="max-w-lg">
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
                   <LocalizedContent content={category.name} />
@@ -96,7 +104,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
                     <LocalizedContent content={category.description} />
                   </p>
                 )}
-                <Link 
+                <Link
                   href={`/categories/${category.slug}`}
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
@@ -137,7 +145,7 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
 
   const renderCarousel = () => (
     <div className="mt-8 relative">
-      <div 
+      <div
         className="flex space-x-6 overflow-x-auto pb-4 snap-x"
         dir={direction}
       >
@@ -165,18 +173,20 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
               <div className="p-3">
                 <div className="flex flex-wrap gap-2">
                   {category.features.map((feature) => (
-                    <div 
+                    <div
                       key={feature.id}
                       className="flex items-center bg-neutral-100 rounded-full px-3 py-1 text-xs font-medium text-neutral-800"
                     >
-                      <Image 
-                        src={feature.icon} 
-                        alt="" 
-                        width={14} 
-                        height={14} 
-                        className="mr-1" 
+                      <Image
+                        src={feature.icon}
+                        alt=""
+                        width={14}
+                        height={14}
+                        className="mr-1"
                       />
-                      <span><LocalizedContent content={feature.title} /></span>
+                      <span>
+                        <LocalizedContent content={feature.title} />
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -202,10 +212,10 @@ export const CategoryShowcase: React.FC<CategoryShowcaseProps> = ({
           )}
         </div>
 
-        {variant === 'grid' && renderGrid()}
-        {variant === 'featured' && renderFeatured()}
-        {variant === 'carousel' && renderCarousel()}
+        {variant === "grid" && renderGrid()}
+        {variant === "featured" && renderFeatured()}
+        {variant === "carousel" && renderCarousel()}
       </div>
     </section>
   );
-}; 
+};

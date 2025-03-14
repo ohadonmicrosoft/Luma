@@ -1,7 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Button } from '@/components/ui/Button';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/Button";
 
 export interface ProductGridItem {
   id: string;
@@ -38,7 +38,7 @@ export function ProductGrid({
   const formatPrice = (price: number) => {
     return `$${price.toFixed(2)}`;
   };
-  
+
   // Calculate discounted price
   const calculateDiscountedPrice = (price: number, discount: number) => {
     return price - (price * discount) / 100;
@@ -48,13 +48,13 @@ export function ProductGrid({
   const getGridClass = () => {
     switch (columns) {
       case 2:
-        return 'grid-cols-1 sm:grid-cols-2';
+        return "grid-cols-1 sm:grid-cols-2";
       case 3:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
       case 4:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
       default:
-        return 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
     }
   };
 
@@ -63,7 +63,10 @@ export function ProductGrid({
     return (
       <div className={`grid ${getGridClass()} gap-6`}>
         {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className="bg-white rounded-lg overflow-hidden shadow animate-pulse">
+          <div
+            key={index}
+            className="bg-white rounded-lg overflow-hidden shadow animate-pulse"
+          >
             <div className="h-64 bg-neutral-200"></div>
             <div className="p-4">
               <div className="h-4 bg-neutral-200 rounded w-3/4 mb-2"></div>
@@ -93,9 +96,12 @@ export function ProductGrid({
             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
           />
         </svg>
-        <h3 className="mt-2 text-sm font-medium text-neutral-900">No products found</h3>
+        <h3 className="mt-2 text-sm font-medium text-neutral-900">
+          No products found
+        </h3>
         <p className="mt-1 text-sm text-neutral-500">
-          Try adjusting your search or filter to find what you&apos;re looking for.
+          Try adjusting your search or filter to find what you&apos;re looking
+          for.
         </p>
       </div>
     );
@@ -117,7 +123,7 @@ export function ProductGrid({
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              
+
               {/* Badges */}
               <div className="absolute top-2 left-2 flex flex-col gap-1">
                 {product.isNew && (
@@ -131,7 +137,7 @@ export function ProductGrid({
                   </span>
                 )}
               </div>
-              
+
               {/* Quick actions */}
               {onAddToWishlist && (
                 <button
@@ -142,7 +148,12 @@ export function ProductGrid({
                   className="absolute top-2 right-2 bg-white bg-opacity-80 p-1.5 rounded-full text-neutral-600 hover:text-primary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   aria-label="Add to wishlist"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -154,24 +165,31 @@ export function ProductGrid({
               )}
             </div>
           </Link>
-          
+
           <div className="p-4">
             {product.brand && (
-              <div className="text-sm text-neutral-500 mb-1">{product.brand}</div>
+              <div className="text-sm text-neutral-500 mb-1">
+                {product.brand}
+              </div>
             )}
-            
+
             <Link href={`/products/${product.slug}`} className="block">
               <h3 className="text-neutral-900 font-medium text-lg mb-1 group-hover:text-primary-600 transition-colors">
                 {product.name}
               </h3>
             </Link>
-            
+
             <div className="flex items-center justify-between mb-2">
               <div>
                 {product.isOnSale && product.discount ? (
                   <div className="flex items-center gap-2">
                     <span className="text-red-600 font-semibold">
-                      {formatPrice(calculateDiscountedPrice(product.price, product.discount))}
+                      {formatPrice(
+                        calculateDiscountedPrice(
+                          product.price,
+                          product.discount
+                        )
+                      )}
                     </span>
                     <span className="text-neutral-500 text-sm line-through">
                       {formatPrice(product.price)}
@@ -183,7 +201,7 @@ export function ProductGrid({
                   </span>
                 )}
               </div>
-              
+
               {product.rating && (
                 <div className="flex items-center gap-1">
                   <svg
@@ -194,12 +212,13 @@ export function ProductGrid({
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   <span className="text-sm text-neutral-600">
-                    {product.rating} {product.reviewCount && `(${product.reviewCount})`}
+                    {product.rating}{" "}
+                    {product.reviewCount && `(${product.reviewCount})`}
                   </span>
                 </div>
               )}
             </div>
-            
+
             {showAddToCart && onAddToCart && (
               <Button
                 variant="outline"
@@ -214,4 +233,4 @@ export function ProductGrid({
       ))}
     </div>
   );
-} 
+}

@@ -1,8 +1,22 @@
-import { Request, Response, NextFunction } from 'express';
-import { ProductService, ProductFilterOptions, TechnicalSpecsFilterOptions, ProductOptions, SearchOptions, FeaturedProductOptions, CategoryProductOptions, RelatedProductOptions, UsageScenarioData } from '../services/product.service';
-import { AppError } from '../utils/AppError';
-import { StatusCode } from '../utils/constants';
-import { ProductType, DurabilityRating, WeatherResistance } from '../models/Product';
+import { Request, Response, NextFunction } from "express";
+import {
+  ProductService,
+  ProductFilterOptions,
+  TechnicalSpecsFilterOptions,
+  ProductOptions,
+  SearchOptions,
+  FeaturedProductOptions,
+  CategoryProductOptions,
+  RelatedProductOptions,
+  UsageScenarioData,
+} from "../services/product.service";
+import { AppError } from "../utils/AppError";
+import { StatusCode } from "../utils/constants";
+import {
+  ProductType,
+  DurabilityRating,
+  WeatherResistance,
+} from "../models/Product";
 
 export class ProductController {
   private productService: ProductService;
@@ -14,7 +28,11 @@ export class ProductController {
   /**
    * Get all products with filtering and pagination
    */
-  getAllProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getAllProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const {
         search,
@@ -35,7 +53,7 @@ export class ProductController {
         sort_by,
         sort_order,
         page,
-        limit
+        limit,
       } = req.query;
 
       // Parse query parameters
@@ -44,28 +62,34 @@ export class ProductController {
         category_id: category_id?.toString(),
         min_price: min_price ? parseFloat(min_price.toString()) : undefined,
         max_price: max_price ? parseFloat(max_price.toString()) : undefined,
-        in_stock: in_stock === 'true',
-        productType: product_type ? product_type.toString() as ProductType : undefined,
-        durabilityRating: durability_rating ? durability_rating.toString() as DurabilityRating : undefined,
-        weatherResistance: weather_resistance ? weather_resistance.toString() as WeatherResistance : undefined,
+        in_stock: in_stock === "true",
+        productType: product_type
+          ? (product_type.toString() as ProductType)
+          : undefined,
+        durabilityRating: durability_rating
+          ? (durability_rating.toString() as DurabilityRating)
+          : undefined,
+        weatherResistance: weather_resistance
+          ? (weather_resistance.toString() as WeatherResistance)
+          : undefined,
         material: material?.toString(),
         minWeight: min_weight ? parseFloat(min_weight.toString()) : undefined,
         maxWeight: max_weight ? parseFloat(max_weight.toString()) : undefined,
-        hasTechnicalSpecs: has_technical_specs === 'true',
+        hasTechnicalSpecs: has_technical_specs === "true",
         compatibleWith: compatible_with?.toString(),
         keywords: keywords?.toString(),
         brandName: brand_name?.toString(),
-        sortBy: sort_by?.toString() || 'createdAt',
-        sortOrder: sort_order?.toString() === 'asc' ? 'ASC' : 'DESC',
+        sortBy: sort_by?.toString() || "createdAt",
+        sortOrder: sort_order?.toString() === "asc" ? "ASC" : "DESC",
         page: page ? parseInt(page.toString(), 10) : 1,
-        limit: limit ? parseInt(limit.toString(), 10) : 10
+        limit: limit ? parseInt(limit.toString(), 10) : 10,
       };
 
       const result = await this.productService.getAllProducts(options);
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: result
+        status: "success",
+        data: result,
       });
     } catch (error) {
       next(error);
@@ -75,21 +99,25 @@ export class ProductController {
   /**
    * Get product by ID
    */
-  getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getProductById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const { include_compatible, locale } = req.query;
-      
+
       const options: ProductOptions = {
-        includeCompatible: include_compatible === 'true',
-        locale: locale?.toString()
+        includeCompatible: include_compatible === "true",
+        locale: locale?.toString(),
       };
 
       const product = await this.productService.getProductById(id, options);
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: product
+        status: "success",
+        data: product,
       });
     } catch (error) {
       next(error);
@@ -99,13 +127,17 @@ export class ProductController {
   /**
    * Create new product
    */
-  createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  createProduct = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const product = await this.productService.createProduct(req.body);
 
       res.status(StatusCode.CREATED).json({
-        status: 'success',
-        data: product
+        status: "success",
+        data: product,
       });
     } catch (error) {
       next(error);
@@ -115,14 +147,18 @@ export class ProductController {
   /**
    * Update product
    */
-  updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  updateProduct = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const product = await this.productService.updateProduct(id, req.body);
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: product
+        status: "success",
+        data: product,
       });
     } catch (error) {
       next(error);
@@ -132,7 +168,11 @@ export class ProductController {
   /**
    * Delete product
    */
-  deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  deleteProduct = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       await this.productService.deleteProduct(id);
@@ -146,20 +186,27 @@ export class ProductController {
   /**
    * Update product stock
    */
-  updateProductStock = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  updateProductStock = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const { quantity } = req.body;
 
-      if (typeof quantity !== 'number') {
-        throw new AppError('Quantity must be a number', StatusCode.BAD_REQUEST);
+      if (typeof quantity !== "number") {
+        throw new AppError("Quantity must be a number", StatusCode.BAD_REQUEST);
       }
 
-      const product = await this.productService.updateProductStock(id, quantity);
+      const product = await this.productService.updateProductStock(
+        id,
+        quantity
+      );
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: product
+        status: "success",
+        data: product,
       });
     } catch (error) {
       next(error);
@@ -169,24 +216,33 @@ export class ProductController {
   /**
    * Search products
    */
-  searchProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  searchProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { q, product_type, locale } = req.query;
 
       if (!q) {
-        throw new AppError('Search query is required', StatusCode.BAD_REQUEST);
+        throw new AppError("Search query is required", StatusCode.BAD_REQUEST);
       }
 
       const options: SearchOptions = {
-        productType: product_type ? product_type.toString() as ProductType : undefined,
-        locale: locale?.toString()
+        productType: product_type
+          ? (product_type.toString() as ProductType)
+          : undefined,
+        locale: locale?.toString(),
       };
 
-      const products = await this.productService.searchProducts(q.toString(), options);
+      const products = await this.productService.searchProducts(
+        q.toString(),
+        options
+      );
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: products
+        status: "success",
+        data: products,
       });
     } catch (error) {
       next(error);
@@ -196,21 +252,27 @@ export class ProductController {
   /**
    * Get featured products
    */
-  getFeaturedProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getFeaturedProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { limit, product_type, locale } = req.query;
 
       const options: FeaturedProductOptions = {
         limit: limit ? parseInt(limit.toString(), 10) : 8,
-        productType: product_type ? product_type.toString() as ProductType : undefined,
-        locale: locale?.toString()
+        productType: product_type
+          ? (product_type.toString() as ProductType)
+          : undefined,
+        locale: locale?.toString(),
       };
 
       const products = await this.productService.getFeaturedProducts(options);
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: products
+        status: "success",
+        data: products,
       });
     } catch (error) {
       next(error);
@@ -220,38 +282,51 @@ export class ProductController {
   /**
    * Get products by category
    */
-  getProductsByCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getProductsByCategory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { categoryId } = req.params;
-      const { 
-        include_subcategories, 
-        product_type, 
-        durability_rating, 
+      const {
+        include_subcategories,
+        product_type,
+        durability_rating,
         weather_resistance,
         min_price,
         max_price,
         locale,
-        page, 
-        limit 
+        page,
+        limit,
       } = req.query;
 
       const options: CategoryProductOptions = {
-        includeSubcategories: include_subcategories === 'true',
-        productType: product_type ? product_type.toString() as ProductType : undefined,
-        durabilityRating: durability_rating ? durability_rating.toString() as DurabilityRating : undefined,
-        weatherResistance: weather_resistance ? weather_resistance.toString() as WeatherResistance : undefined,
+        includeSubcategories: include_subcategories === "true",
+        productType: product_type
+          ? (product_type.toString() as ProductType)
+          : undefined,
+        durabilityRating: durability_rating
+          ? (durability_rating.toString() as DurabilityRating)
+          : undefined,
+        weatherResistance: weather_resistance
+          ? (weather_resistance.toString() as WeatherResistance)
+          : undefined,
         minPrice: min_price ? parseFloat(min_price.toString()) : undefined,
         maxPrice: max_price ? parseFloat(max_price.toString()) : undefined,
         locale: locale?.toString(),
         page: page ? parseInt(page.toString(), 10) : 1,
-        limit: limit ? parseInt(limit.toString(), 10) : 10
+        limit: limit ? parseInt(limit.toString(), 10) : 10,
       };
 
-      const result = await this.productService.getProductsByCategory(categoryId, options);
+      const result = await this.productService.getProductsByCategory(
+        categoryId,
+        options
+      );
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: result
+        status: "success",
+        data: result,
       });
     } catch (error) {
       next(error);
@@ -261,21 +336,28 @@ export class ProductController {
   /**
    * Get related products
    */
-  getRelatedProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getRelatedProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { productId } = req.params;
       const { limit, locale } = req.query;
 
       const options: RelatedProductOptions = {
         limit: limit ? parseInt(limit.toString(), 10) : 4,
-        locale: locale?.toString()
+        locale: locale?.toString(),
       };
 
-      const products = await this.productService.getRelatedProducts(productId, options);
+      const products = await this.productService.getRelatedProducts(
+        productId,
+        options
+      );
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: products
+        status: "success",
+        data: products,
       });
     } catch (error) {
       next(error);
@@ -285,19 +367,23 @@ export class ProductController {
   /**
    * Get compatible products
    */
-  getCompatibleProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getCompatibleProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { productId } = req.params;
       const { locale } = req.query;
 
       const products = await this.productService.getCompatibleProducts(
-        productId, 
+        productId,
         locale?.toString()
       );
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: products
+        status: "success",
+        data: products,
       });
     } catch (error) {
       next(error);
@@ -307,20 +393,30 @@ export class ProductController {
   /**
    * Update technical specifications
    */
-  updateTechnicalSpecs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  updateTechnicalSpecs = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const { technicalSpecs } = req.body;
 
       if (!technicalSpecs) {
-        throw new AppError('Technical specifications are required', StatusCode.BAD_REQUEST);
+        throw new AppError(
+          "Technical specifications are required",
+          StatusCode.BAD_REQUEST
+        );
       }
 
-      const product = await this.productService.updateTechnicalSpecs(id, technicalSpecs);
+      const product = await this.productService.updateTechnicalSpecs(
+        id,
+        technicalSpecs
+      );
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: product
+        status: "success",
+        data: product,
       });
     } catch (error) {
       next(error);
@@ -330,20 +426,35 @@ export class ProductController {
   /**
    * Add usage scenario
    */
-  addUsageScenario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  addUsageScenario = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { id } = req.params;
       const { scenarioData } = req.body;
 
-      if (!scenarioData || !scenarioData.name || !scenarioData.description || typeof scenarioData.suitabilityRating !== 'number') {
-        throw new AppError('Valid scenario data is required with name, description, and suitabilityRating', StatusCode.BAD_REQUEST);
+      if (
+        !scenarioData ||
+        !scenarioData.name ||
+        !scenarioData.description ||
+        typeof scenarioData.suitabilityRating !== "number"
+      ) {
+        throw new AppError(
+          "Valid scenario data is required with name, description, and suitabilityRating",
+          StatusCode.BAD_REQUEST
+        );
       }
 
-      const product = await this.productService.addUsageScenario(id, scenarioData as UsageScenarioData);
+      const product = await this.productService.addUsageScenario(
+        id,
+        scenarioData as UsageScenarioData
+      );
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: product
+        status: "success",
+        data: product,
       });
     } catch (error) {
       next(error);
@@ -353,7 +464,11 @@ export class ProductController {
   /**
    * Filter products by technical specifications
    */
-  filterByTechnicalSpecs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  filterByTechnicalSpecs = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const {
         material,
@@ -366,31 +481,37 @@ export class ProductController {
         max_price,
         locale,
         page,
-        limit
+        limit,
       } = req.query;
 
       const options: TechnicalSpecsFilterOptions = {
         material: material?.toString(),
         minWeight: min_weight ? parseFloat(min_weight.toString()) : undefined,
         maxWeight: max_weight ? parseFloat(max_weight.toString()) : undefined,
-        durabilityRating: durability_rating ? durability_rating.toString() as DurabilityRating : undefined,
-        weatherResistance: weather_resistance ? weather_resistance.toString() as WeatherResistance : undefined,
-        productType: product_type ? product_type.toString() as ProductType : undefined,
+        durabilityRating: durability_rating
+          ? (durability_rating.toString() as DurabilityRating)
+          : undefined,
+        weatherResistance: weather_resistance
+          ? (weather_resistance.toString() as WeatherResistance)
+          : undefined,
+        productType: product_type
+          ? (product_type.toString() as ProductType)
+          : undefined,
         minPrice: min_price ? parseFloat(min_price.toString()) : undefined,
         maxPrice: max_price ? parseFloat(max_price.toString()) : undefined,
         locale: locale?.toString(),
         page: page ? parseInt(page.toString(), 10) : 1,
-        limit: limit ? parseInt(limit.toString(), 10) : 10
+        limit: limit ? parseInt(limit.toString(), 10) : 10,
       };
 
       const result = await this.productService.filterByTechnicalSpecs(options);
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: result
+        status: "success",
+        data: result,
       });
     } catch (error) {
       next(error);
     }
   };
-} 
+}

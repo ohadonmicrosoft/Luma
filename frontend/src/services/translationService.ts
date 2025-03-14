@@ -2,10 +2,11 @@
  * Translation service for managing multilingual content
  */
 
-import { LocalizedString } from '@/types/product';
-import { useTranslation } from 'next-i18next';
+import { LocalizedString } from "@/types/product";
+import { useTranslation } from "next-i18next";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 /**
  * Interface for translation entry
@@ -28,27 +29,29 @@ export interface TranslationEntry {
 export function getLocalizedContent(
   content: LocalizedString | undefined,
   locale: string,
-  fallbackLocale: string = 'en'
+  fallbackLocale: string = "en"
 ): string | undefined {
   // Handle undefined or null content
-  if (!content) return '';
-  
+  if (!content) return "";
+
   // If exact locale match exists, return it
   if (content[locale]) return content[locale];
-  
+
   // Try language-only match (e.g., 'en' for 'en-US')
-  const langCode = locale?.split('-')?.[0] || '';
+  const langCode = locale?.split("-")?.[0] || "";
   if (langCode) {
-    const langMatch = Object.keys(content).find(key => key.startsWith(langCode));
+    const langMatch = Object.keys(content).find((key) =>
+      key.startsWith(langCode)
+    );
     if (langMatch && content[langMatch]) return content[langMatch];
   }
-  
+
   // Fall back to default locale
   if (content[fallbackLocale]) return content[fallbackLocale];
-  
+
   // Last resort: return any available translation
   const firstAvailable = Object.values(content)[0];
-  return firstAvailable || '';
+  return firstAvailable || "";
 }
 
 /**
@@ -57,14 +60,14 @@ export function getLocalizedContent(
  */
 export function useLocalizedContent() {
   const { i18n } = useTranslation();
-  
+
   const getContent = (
     content: LocalizedString | undefined,
-    fallbackLocale: string = 'en'
+    fallbackLocale: string = "en"
   ): string | undefined => {
     return getLocalizedContent(content, i18n.language, fallbackLocale);
   };
-  
+
   return {
     getContent,
     currentLocale: i18n.language,
@@ -80,18 +83,23 @@ export async function getTranslations(
 ): Promise<Record<string, string>> {
   try {
     const params = new URLSearchParams();
-    params.append('namespace', namespace);
-    params.append('locale', locale);
-    
-    const response = await fetch(`${API_BASE_URL}/translations?${params.toString()}`);
-    
+    params.append("namespace", namespace);
+    params.append("locale", locale);
+
+    const response = await fetch(
+      `${API_BASE_URL}/translations?${params.toString()}`
+    );
+
     if (!response.ok) {
       throw new Error(`Error fetching translations: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to fetch translations for namespace ${namespace}:`, error);
+    console.error(
+      `Failed to fetch translations for namespace ${namespace}:`,
+      error
+    );
     throw error;
   }
 }
@@ -106,9 +114,9 @@ export async function createTranslation(
 ): Promise<TranslationEntry> {
   try {
     const response = await fetch(`${API_BASE_URL}/translations`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         namespace,
@@ -116,14 +124,14 @@ export async function createTranslation(
         translations,
       }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error creating translation: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error('Failed to create translation:', error);
+    console.error("Failed to create translation:", error);
     throw error;
   }
 }
@@ -137,19 +145,19 @@ export async function updateTranslation(
 ): Promise<TranslationEntry> {
   try {
     const response = await fetch(`${API_BASE_URL}/translations/${id}`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         translations,
       }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error updating translation: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error(`Failed to update translation with ID ${id}:`, error);
@@ -163,9 +171,9 @@ export async function updateTranslation(
 export async function deleteTranslation(id: string): Promise<void> {
   try {
     const response = await fetch(`${API_BASE_URL}/translations/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error deleting translation: ${response.statusText}`);
     }
@@ -186,26 +194,31 @@ export async function synchronizeTranslations(
 ): Promise<{ total: number; updated: number; created: number }> {
   try {
     const params = new URLSearchParams();
-    params.append('sourceLocale', sourceLocale);
-    params.append('targetLocale', targetLocale);
-    
+    params.append("sourceLocale", sourceLocale);
+    params.append("targetLocale", targetLocale);
+
     if (namespace) {
-      params.append('namespace', namespace);
+      params.append("namespace", namespace);
     }
-    
-    params.append('overwriteExisting', overwriteExisting.toString());
-    
-    const response = await fetch(`${API_BASE_URL}/translations/synchronize?${params.toString()}`, {
-      method: 'POST',
-    });
-    
+
+    params.append("overwriteExisting", overwriteExisting.toString());
+
+    const response = await fetch(
+      `${API_BASE_URL}/translations/synchronize?${params.toString()}`,
+      {
+        method: "POST",
+      }
+    );
+
     if (!response.ok) {
-      throw new Error(`Error synchronizing translations: ${response.statusText}`);
+      throw new Error(
+        `Error synchronizing translations: ${response.statusText}`
+      );
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error('Failed to synchronize translations:', error);
+    console.error("Failed to synchronize translations:", error);
     throw error;
   }
 }
@@ -219,18 +232,20 @@ export async function exportTranslations(
 ): Promise<string> {
   try {
     const params = new URLSearchParams();
-    params.append('locale', locale);
-    
+    params.append("locale", locale);
+
     if (namespace) {
-      params.append('namespace', namespace);
+      params.append("namespace", namespace);
     }
-    
-    const response = await fetch(`${API_BASE_URL}/translations/export?${params.toString()}`);
-    
+
+    const response = await fetch(
+      `${API_BASE_URL}/translations/export?${params.toString()}`
+    );
+
     if (!response.ok) {
       throw new Error(`Error exporting translations: ${response.statusText}`);
     }
-    
+
     const blob = await response.blob();
     return URL.createObjectURL(blob);
   } catch (error) {
@@ -245,24 +260,29 @@ export async function exportTranslations(
 export async function importTranslations(
   file: File,
   overwriteExisting: boolean = false
-): Promise<{ total: number; imported: number; updated: number; errors: number }> {
+): Promise<{
+  total: number;
+  imported: number;
+  updated: number;
+  errors: number;
+}> {
   try {
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('overwriteExisting', overwriteExisting.toString());
-    
+    formData.append("file", file);
+    formData.append("overwriteExisting", overwriteExisting.toString());
+
     const response = await fetch(`${API_BASE_URL}/translations/import`, {
-      method: 'POST',
+      method: "POST",
       body: formData,
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error importing translations: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error('Failed to import translations:', error);
+    console.error("Failed to import translations:", error);
     throw error;
   }
-} 
+}

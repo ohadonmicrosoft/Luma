@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { CartService, CartItemInput } from '../services/cart.service';
-import { StatusCode } from '../utils/constants';
+import { Request, Response, NextFunction } from "express";
+import { CartService, CartItemInput } from "../services/cart.service";
+import { StatusCode } from "../utils/constants";
 
 export class CartController {
   private cartService: CartService;
@@ -12,26 +12,32 @@ export class CartController {
   /**
    * Get or create cart for the current user/session
    */
-  getOrCreateCart = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getOrCreateCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       let cart;
-      
+
       // If user is authenticated, use user ID
       if (req.user?.id) {
         cart = await this.cartService.getOrCreateCartByUserId(req.user.id);
-      } 
+      }
       // Otherwise use session ID
       else {
         // Create or use session ID
         if (!req.session.id) {
           req.session.id = Date.now().toString();
         }
-        cart = await this.cartService.getOrCreateCartBySessionId(req.session.id);
+        cart = await this.cartService.getOrCreateCartBySessionId(
+          req.session.id
+        );
       }
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -41,13 +47,17 @@ export class CartController {
   /**
    * Get cart by ID
    */
-  getCartById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getCartById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const cart = await this.cartService.getCartById(req.params.id);
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -57,7 +67,11 @@ export class CartController {
   /**
    * Add product to cart
    */
-  addItemToCart = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  addItemToCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId } = req.params;
       const itemInput: CartItemInput = req.body;
@@ -66,7 +80,7 @@ export class CartController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -76,24 +90,32 @@ export class CartController {
   /**
    * Update cart item quantity
    */
-  updateCartItemQuantity = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  updateCartItemQuantity = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId, itemId } = req.params;
       const { quantity } = req.body;
 
-      if (typeof quantity !== 'number' || quantity < 0) {
+      if (typeof quantity !== "number" || quantity < 0) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          error: 'Valid quantity required'
+          error: "Valid quantity required",
         });
         return;
       }
 
-      const cart = await this.cartService.updateCartItemQuantity(cartId, itemId, quantity);
+      const cart = await this.cartService.updateCartItemQuantity(
+        cartId,
+        itemId,
+        quantity
+      );
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -103,7 +125,11 @@ export class CartController {
   /**
    * Remove item from cart
    */
-  removeItemFromCart = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  removeItemFromCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId, itemId } = req.params;
 
@@ -111,7 +137,7 @@ export class CartController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -121,7 +147,11 @@ export class CartController {
   /**
    * Clear cart (remove all items)
    */
-  clearCart = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  clearCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId } = req.params;
 
@@ -129,7 +159,7 @@ export class CartController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -139,15 +169,19 @@ export class CartController {
   /**
    * Apply coupon to cart
    */
-  applyCoupon = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  applyCoupon = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId } = req.params;
       const { couponCode } = req.body;
 
-      if (!couponCode || typeof couponCode !== 'string') {
+      if (!couponCode || typeof couponCode !== "string") {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          error: 'Valid coupon code required'
+          error: "Valid coupon code required",
         });
         return;
       }
@@ -156,7 +190,7 @@ export class CartController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -166,24 +200,32 @@ export class CartController {
   /**
    * Update gift settings
    */
-  updateGiftSettings = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  updateGiftSettings = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId } = req.params;
       const { isGift, giftMessage } = req.body;
 
-      if (typeof isGift !== 'boolean') {
+      if (typeof isGift !== "boolean") {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          error: 'Valid isGift flag required'
+          error: "Valid isGift flag required",
         });
         return;
       }
 
-      const cart = await this.cartService.updateGiftSettings(cartId, isGift, giftMessage);
+      const cart = await this.cartService.updateGiftSettings(
+        cartId,
+        isGift,
+        giftMessage
+      );
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
@@ -193,7 +235,11 @@ export class CartController {
   /**
    * Calculate shipping
    */
-  calculateShipping = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  calculateShipping = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId } = req.params;
       const { countryCode, postalCode } = req.body;
@@ -201,16 +247,20 @@ export class CartController {
       if (!countryCode || !postalCode) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          error: 'Country code and postal code are required'
+          error: "Country code and postal code are required",
         });
         return;
       }
 
-      const shippingCost = await this.cartService.calculateShipping(cartId, countryCode, postalCode);
+      const shippingCost = await this.cartService.calculateShipping(
+        cartId,
+        countryCode,
+        postalCode
+      );
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: { shippingCost }
+        data: { shippingCost },
       });
     } catch (error) {
       next(error);
@@ -220,7 +270,11 @@ export class CartController {
   /**
    * Calculate tax
    */
-  calculateTax = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  calculateTax = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { cartId } = req.params;
       const { countryCode, postalCode } = req.body;
@@ -228,16 +282,20 @@ export class CartController {
       if (!countryCode || !postalCode) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          error: 'Country code and postal code are required'
+          error: "Country code and postal code are required",
         });
         return;
       }
 
-      const taxAmount = await this.cartService.calculateTax(cartId, countryCode, postalCode);
+      const taxAmount = await this.cartService.calculateTax(
+        cartId,
+        countryCode,
+        postalCode
+      );
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: { taxAmount }
+        data: { taxAmount },
       });
     } catch (error) {
       next(error);
@@ -247,24 +305,31 @@ export class CartController {
   /**
    * Merge guest cart into user cart after login
    */
-  mergeGuestCart = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  mergeGuestCart = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       if (!req.user?.id || !req.session?.id) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          error: 'User must be authenticated and have a session'
+          error: "User must be authenticated and have a session",
         });
         return;
       }
 
-      const cart = await this.cartService.mergeGuestCart(req.session.id, req.user.id);
+      const cart = await this.cartService.mergeGuestCart(
+        req.session.id,
+        req.user.id
+      );
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: cart
+        data: cart,
       });
     } catch (error) {
       next(error);
     }
   };
-} 
+}

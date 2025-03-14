@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // Base category schema for shared fields
 const categoryBaseSchema = {
@@ -8,7 +8,10 @@ const categoryBaseSchema = {
   isActive: z.boolean().default(true),
   sortOrder: z.number().int().min(0).default(0),
   attributes: z
-    .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]))
+    .record(
+      z.string(),
+      z.union([z.string(), z.number(), z.boolean(), z.array(z.string())])
+    )
     .optional(),
   image: z.string().url().optional(),
 };
@@ -20,12 +23,14 @@ const createCategorySchema = z.object({
 });
 
 // Schema for updating an existing category
-const updateCategorySchema = z.object({
-  ...categoryBaseSchema,
-}).partial();
+const updateCategorySchema = z
+  .object({
+    ...categoryBaseSchema,
+  })
+  .partial();
 
 // Export validation schemas
 export const categoryValidationSchemas = {
   createCategory: createCategorySchema,
   updateCategory: updateCategorySchema,
-}; 
+};

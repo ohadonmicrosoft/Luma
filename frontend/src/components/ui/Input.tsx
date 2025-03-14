@@ -1,6 +1,6 @@
-import React from 'react';
-import { cn } from '@/utils/cn';
-import { useDirectionalStyles } from '@/utils/rtl';
+import React from "react";
+import { cn } from "@/utils/cn";
+import { useDirectionalStyles } from "@/utils/rtl";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -12,15 +12,27 @@ export interface InputProps
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, error, label, helperText, type = 'text', startIcon, endIcon, ...props }, ref) => {
+  (
+    {
+      className,
+      error,
+      label,
+      helperText,
+      type = "text",
+      startIcon,
+      endIcon,
+      ...props
+    },
+    ref
+  ) => {
     const generatedId = React.useId();
     const id = props.id || generatedId;
     const { isRTL, direction, flip } = useDirectionalStyles();
-    
+
     // Adjust icon positions for RTL layout
     const actualStartIcon = flip(startIcon, endIcon);
     const actualEndIcon = flip(endIcon, startIcon);
-    
+
     return (
       <div className="space-y-2">
         {label && (
@@ -45,19 +57,21 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={id}
             type={type}
             className={cn(
-              'flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1',
+              "flex h-10 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1",
               error
-                ? 'border-red-300 bg-red-50 placeholder:text-red-400 focus:border-red-500 focus:ring-red-500'
-                : 'border-neutral-300 bg-white placeholder:text-neutral-400 focus:border-primary-500',
-              startIcon && 'ps-10',
-              endIcon && 'pe-10',
-              isRTL ? 'text-right' : 'text-left',
+                ? "border-red-300 bg-red-50 placeholder:text-red-400 focus:border-red-500 focus:ring-red-500"
+                : "border-neutral-300 bg-white placeholder:text-neutral-400 focus:border-primary-500",
+              startIcon && "ps-10",
+              endIcon && "pe-10",
+              isRTL ? "text-right" : "text-left",
               className
             )}
             dir={direction}
             ref={ref}
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? `${id}-error` : helperText ? `${id}-helper` : undefined}
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={
+              error ? `${id}-error` : helperText ? `${id}-helper` : undefined
+            }
             {...props}
           />
           {actualEndIcon && (
@@ -67,8 +81,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {error && (
-          <span 
-            id={`${id}-error`} 
+          <span
+            id={`${id}-error`}
             className={cn(
               "text-sm text-red-500",
               isRTL ? "text-right block" : "text-left block"
@@ -79,8 +93,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </span>
         )}
         {helperText && !error && (
-          <span 
-            id={`${id}-helper`} 
+          <span
+            id={`${id}-helper`}
             className={cn(
               "text-sm text-neutral-500",
               isRTL ? "text-right block" : "text-left block"
@@ -95,6 +109,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";
 
-export { Input }; 
+export { Input };

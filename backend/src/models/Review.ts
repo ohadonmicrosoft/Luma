@@ -1,41 +1,50 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
-import { Min, Max, IsNotEmpty, IsOptional, Length } from 'class-validator';
-import { User } from './User';
-import { Product } from './Product';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Index,
+} from "typeorm";
+import { Min, Max, IsNotEmpty, IsOptional, Length } from "class-validator";
+import { User } from "./User";
+import { Product } from "./Product";
 
-@Entity('reviews')
+@Entity("reviews")
 export class Review {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @ManyToOne(() => User, user => user.reviews)
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, (user) => user.reviews)
+  @JoinColumn({ name: "user_id" })
   user!: User;
 
   @Column()
   @Index()
   user_id!: string;
 
-  @ManyToOne(() => Product, product => product.reviews)
-  @JoinColumn({ name: 'product_id' })
+  @ManyToOne(() => Product, (product) => product.reviews)
+  @JoinColumn({ name: "product_id" })
   product!: Product;
 
   @Column()
   @Index()
   product_id!: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: "int" })
   @Min(1)
   @Max(5)
   @IsNotEmpty()
   rating!: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   @Length(3, 1000)
   @IsNotEmpty()
   comment!: string;
 
-  @Column({ type: 'text', array: true, nullable: true })
+  @Column({ type: "text", array: true, nullable: true })
   @IsOptional()
   images?: string[];
 
@@ -57,4 +66,4 @@ export class Review {
 
   @UpdateDateColumn()
   updatedAt!: Date;
-} 
+}

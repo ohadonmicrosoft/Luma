@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { CategoryService } from '../services/category.service';
-import { StatusCode } from '../utils/constants';
+import { Request, Response, NextFunction } from "express";
+import { CategoryService } from "../services/category.service";
+import { StatusCode } from "../utils/constants";
 
 export class CategoryController {
   private categoryService: CategoryService;
@@ -12,30 +12,36 @@ export class CategoryController {
   /**
    * Get all categories
    */
-  getAllCategories = async (req: Request, res: Response, next: NextFunction) => {
+  getAllCategories = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const {
         search,
         parent_id,
         is_active,
-        sort_by = 'sortOrder',
-        sort_order = 'ASC'
+        sort_by = "sortOrder",
+        sort_order = "ASC",
       } = req.query;
 
       // Convert query parameters to appropriate types
       const filterOptions = {
         search: search as string,
         parent_id: parent_id as string | null,
-        isActive: is_active === 'true',
-        sortBy: sort_by as 'name' | 'sortOrder' | 'createdAt',
-        sortOrder: sort_order as 'ASC' | 'DESC'
+        isActive: is_active === "true",
+        sortBy: sort_by as "name" | "sortOrder" | "createdAt",
+        sortOrder: sort_order as "ASC" | "DESC",
       };
 
-      const categories = await this.categoryService.getAllCategories(filterOptions);
+      const categories = await this.categoryService.getAllCategories(
+        filterOptions
+      );
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: categories
+        data: categories,
       });
     } catch (error) {
       next(error);
@@ -52,7 +58,7 @@ export class CategoryController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: category
+        data: category,
       });
     } catch (error) {
       next(error);
@@ -70,7 +76,7 @@ export class CategoryController {
       res.status(StatusCode.CREATED).json({
         success: true,
         data: category,
-        message: 'Category created successfully'
+        message: "Category created successfully",
       });
     } catch (error) {
       next(error);
@@ -84,12 +90,15 @@ export class CategoryController {
     try {
       const { id } = req.params;
       const categoryData = req.body;
-      const category = await this.categoryService.updateCategory(id, categoryData);
+      const category = await this.categoryService.updateCategory(
+        id,
+        categoryData
+      );
 
       res.status(StatusCode.OK).json({
         success: true,
         data: category,
-        message: 'Category updated successfully'
+        message: "Category updated successfully",
       });
     } catch (error) {
       next(error);
@@ -106,7 +115,7 @@ export class CategoryController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        message: 'Category deleted successfully'
+        message: "Category deleted successfully",
       });
     } catch (error) {
       next(error);
@@ -116,13 +125,17 @@ export class CategoryController {
   /**
    * Get root categories
    */
-  getRootCategories = async (req: Request, res: Response, next: NextFunction) => {
+  getRootCategories = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const categories = await this.categoryService.getRootCategories();
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: categories
+        data: categories,
       });
     } catch (error) {
       next(error);
@@ -132,14 +145,18 @@ export class CategoryController {
   /**
    * Get subcategories of a category
    */
-  getSubcategories = async (req: Request, res: Response, next: NextFunction) => {
+  getSubcategories = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const { id } = req.params;
       const categories = await this.categoryService.getSubcategories(id);
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: categories
+        data: categories,
       });
     } catch (error) {
       next(error);
@@ -155,7 +172,7 @@ export class CategoryController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: tree
+        data: tree,
       });
     } catch (error) {
       next(error);
@@ -172,10 +189,10 @@ export class CategoryController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: path
+        data: path,
       });
     } catch (error) {
       next(error);
     }
   };
-} 
+}

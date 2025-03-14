@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
+import React, { useState } from "react";
+import Link from "next/link";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 export interface ResetPasswordFormProps {
   onSubmit: (password: string) => void;
@@ -9,10 +9,17 @@ export interface ResetPasswordFormProps {
   isLoading?: boolean;
 }
 
-export function ResetPasswordForm({ onSubmit, token, isLoading = false }: ResetPasswordFormProps) {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
+export function ResetPasswordForm({
+  onSubmit,
+  token,
+  isLoading = false,
+}: ResetPasswordFormProps) {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<{
+    password?: string;
+    confirmPassword?: string;
+  }>({});
   const [isSuccess, setIsSuccess] = useState(false);
 
   const validateForm = () => {
@@ -20,18 +27,18 @@ export function ResetPasswordForm({ onSubmit, token, isLoading = false }: ResetP
     let isValid = true;
 
     if (!password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
       isValid = false;
     } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters long';
+      newErrors.password = "Password must be at least 8 characters long";
       isValid = false;
     }
 
     if (!confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
       isValid = false;
     } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
       isValid = false;
     }
 
@@ -70,12 +77,11 @@ export function ResetPasswordForm({ onSubmit, token, isLoading = false }: ResetP
           Password Reset Successfully
         </h2>
         <p className="text-neutral-600 mb-6">
-          Your password has been successfully reset. You can now use your new password to log in to your account.
+          Your password has been successfully reset. You can now use your new
+          password to log in to your account.
         </p>
         <Link href="/auth/login">
-          <Button className="mt-4">
-            Sign in
-          </Button>
+          <Button className="mt-4">Sign in</Button>
         </Link>
       </div>
     );
@@ -83,7 +89,9 @@ export function ResetPasswordForm({ onSubmit, token, isLoading = false }: ResetP
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h2 className="text-3xl font-bold text-center text-neutral-800 mb-3">Reset your password</h2>
+      <h2 className="text-3xl font-bold text-center text-neutral-800 mb-3">
+        Reset your password
+      </h2>
       <p className="text-center text-neutral-600 mb-8">
         Enter your new password below to update your account.
       </p>
@@ -107,14 +115,17 @@ export function ResetPasswordForm({ onSubmit, token, isLoading = false }: ResetP
         />
         <input type="hidden" name="token" value={token} />
         <Button type="submit" fullWidth={true} disabled={isLoading}>
-          {isLoading ? 'Resetting password...' : 'Reset password'}
+          {isLoading ? "Resetting password..." : "Reset password"}
         </Button>
       </form>
       <div className="mt-8 text-center">
-        <Link href="/auth/login" className="text-sm font-medium text-primary-600 hover:text-primary-500">
+        <Link
+          href="/auth/login"
+          className="text-sm font-medium text-primary-600 hover:text-primary-500"
+        >
           ← Back to sign in
         </Link>
       </div>
     </div>
   );
-} 
+}

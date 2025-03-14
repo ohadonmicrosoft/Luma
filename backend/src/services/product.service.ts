@@ -1,10 +1,26 @@
-import { Repository, FindOptionsWhere, ILike, FindOptionsOrder, Between, In, MoreThan, Not, Like, IsNull } from 'typeorm';
-import { AppDataSource } from '../config/database';
-import { Product, ProductType, DurabilityRating, WeatherResistance } from '../models/Product';
-import { Category } from '../models/Category';
-import { StatusCode } from '../utils/constants';
-import { AppError } from '../utils/AppError';
-import { logger } from '../utils/logger';
+import {
+  Repository,
+  FindOptionsWhere,
+  ILike,
+  FindOptionsOrder,
+  Between,
+  In,
+  MoreThan,
+  Not,
+  Like,
+  IsNull,
+} from "typeorm";
+import { AppDataSource } from "../config/database";
+import {
+  Product,
+  ProductType,
+  DurabilityRating,
+  WeatherResistance,
+} from "../models/Product";
+import { Category } from "../models/Category";
+import { StatusCode } from "../utils/constants";
+import { AppError } from "../utils/AppError";
+import { logger } from "../utils/logger";
 
 // Define product filter options interface
 export interface ProductFilterOptions {
@@ -23,8 +39,8 @@ export interface ProductFilterOptions {
   compatibleWith?: string;
   keywords?: string;
   brandName?: string;
-  sortBy?: 'price' | 'createdAt' | 'name' | 'averageRating' | string;
-  sortOrder?: 'ASC' | 'DESC';
+  sortBy?: "price" | "createdAt" | "name" | "averageRating" | string;
+  sortOrder?: "ASC" | "DESC";
   page?: number;
   limit?: number;
 }
@@ -102,7 +118,9 @@ export class ProductService {
   /**
    * Get all products with filtering, sorting, and pagination
    */
-  async getAllProducts(options: ProductFilterOptions = {}): Promise<{ products: Product[]; total: number; totalPages: number }> {
+  async getAllProducts(
+    options: ProductFilterOptions = {}
+  ): Promise<{ products: Product[]; total: number; totalPages: number }> {
     try {
       const {
         search,
@@ -120,10 +138,10 @@ export class ProductService {
         compatibleWith,
         keywords,
         brandName,
-        sortBy = 'createdAt',
-        sortOrder = 'DESC',
+        sortBy = "createdAt",
+        sortOrder = "DESC",
         page = 1,
-        limit = 10
+        limit = 10,
       } = options;
 
       // Calculate pagination
@@ -163,23 +181,35 @@ export class ProductService {
       const technicalSpecsConditions: any[] = [];
 
       if (durabilityRating) {
-        technicalSpecsConditions.push(`"technicalSpecs"->>'durabilityRating' = '${durabilityRating}'`);
+        technicalSpecsConditions.push(
+          `"technicalSpecs"->>'durabilityRating' = '${durabilityRating}'`
+        );
       }
 
       if (weatherResistance) {
-        technicalSpecsConditions.push(`"technicalSpecs"->>'weatherResistance' = '${weatherResistance}'`);
+        technicalSpecsConditions.push(
+          `"technicalSpecs"->>'weatherResistance' = '${weatherResistance}'`
+        );
       }
 
       if (material) {
-        technicalSpecsConditions.push(`"technicalSpecs"->>'material' ILIKE '%${material}%'`);
+        technicalSpecsConditions.push(
+          `"technicalSpecs"->>'material' ILIKE '%${material}%'`
+        );
       }
 
       if (minWeight !== undefined && maxWeight !== undefined) {
-        technicalSpecsConditions.push(`("technicalSpecs"->>'weight')::float BETWEEN ${minWeight} AND ${maxWeight}`);
+        technicalSpecsConditions.push(
+          `("technicalSpecs"->>'weight')::float BETWEEN ${minWeight} AND ${maxWeight}`
+        );
       } else if (minWeight !== undefined) {
-        technicalSpecsConditions.push(`("technicalSpecs"->>'weight')::float >= ${minWeight}`);
+        technicalSpecsConditions.push(
+          `("technicalSpecs"->>'weight')::float >= ${minWeight}`
+        );
       } else if (maxWeight !== undefined) {
-        technicalSpecsConditions.push(`("technicalSpecs"->>'weight')::float <= ${maxWeight}`);
+        technicalSpecsConditions.push(
+          `("technicalSpecs"->>'weight')::float <= ${maxWeight}`
+        );
       }
 
       if (hasTechnicalSpecs) {
@@ -187,7 +217,9 @@ export class ProductService {
       }
 
       if (compatibleWith) {
-        technicalSpecsConditions.push(`'${compatibleWith}' = ANY("compatibleWith")`);
+        technicalSpecsConditions.push(
+          `'${compatibleWith}' = ANY("compatibleWith")`
+        );
       }
 
       if (keywords) {
@@ -196,109 +228,133 @@ export class ProductService {
 
       // Set sort order
       const order: FindOptionsOrder<Product> = {};
-      if (sortBy === 'price' || sortBy === 'createdAt' || sortBy === 'name' || sortBy === 'averageRating') {
+      if (
+        sortBy === "price" ||
+        sortBy === "createdAt" ||
+        sortBy === "name" ||
+        sortBy === "averageRating"
+      ) {
         order[sortBy] = sortOrder;
       } else {
         order.createdAt = sortOrder;
       }
 
       // Create query builder for complex queries
-      let queryBuilder = this.productRepository.createQueryBuilder('product');
-      
+      let queryBuilder = this.productRepository.createQueryBuilder("product");
+
       // Join with category if needed
       if (category_id) {
-        queryBuilder = queryBuilder.leftJoinAndSelect('product.category', 'category');
+        queryBuilder = queryBuilder.leftJoinAndSelect(
+          "product.category",
+          "category"
+        );
       }
-      
+
       // Apply regular where conditions
       for (const [key, value] of Object.entries(query)) {
-        queryBuilder = queryBuilder.andWhere(`product.${key} = :${key}`, { [key]: value });
+        queryBuilder = queryBuilder.andWhere(`product.${key} = :${key}`, {
+          [key]: value,
+        });
       }
-      
+
       // Apply technical specs conditions
       if (technicalSpecsConditions.length > 0) {
         technicalSpecsConditions.forEach((condition, index) => {
           queryBuilder = queryBuilder.andWhere(condition);
         });
       }
-      
+
       // Get total count for pagination
       const total = await queryBuilder.getCount();
-      
+
       // Apply sorting and pagination
       queryBuilder = queryBuilder
         .orderBy(`product.${Object.keys(order)[0]}`, Object.values(order)[0])
         .skip(skip)
         .take(limit);
-      
+
       // Execute query
       const products = await queryBuilder.getMany();
-      
+
       // Calculate total pages
       const totalPages = Math.ceil(total / limit);
-      
+
       return { products, total, totalPages };
     } catch (error) {
-      logger.error('Error getting products:', error);
-      throw new AppError('Failed to retrieve products', StatusCode.INTERNAL_SERVER_ERROR);
+      logger.error("Error getting products:", error);
+      throw new AppError(
+        "Failed to retrieve products",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Get product by ID
    */
-  async getProductById(id: string, options: ProductOptions = {}): Promise<Product> {
+  async getProductById(
+    id: string,
+    options: ProductOptions = {}
+  ): Promise<Product> {
     try {
       const { includeCompatible = false, locale } = options;
-      
+
       // Build query
-      const queryBuilder = this.productRepository.createQueryBuilder('product')
-        .leftJoinAndSelect('product.category', 'category')
-        .where('product.id = :id', { id });
-        
+      const queryBuilder = this.productRepository
+        .createQueryBuilder("product")
+        .leftJoinAndSelect("product.category", "category")
+        .where("product.id = :id", { id });
+
       // Execute query
       const product = await queryBuilder.getOne();
-      
+
       if (!product) {
-        throw new AppError('Product not found', StatusCode.NOT_FOUND);
+        throw new AppError("Product not found", StatusCode.NOT_FOUND);
       }
-      
+
       // Get compatible products if needed
-      if (includeCompatible && product.compatibleWith && product.compatibleWith.length > 0) {
+      if (
+        includeCompatible &&
+        product.compatibleWith &&
+        product.compatibleWith.length > 0
+      ) {
         const compatibleProducts = await this.productRepository.find({
-          where: { id: In(product.compatibleWith) }
+          where: { id: In(product.compatibleWith) },
         });
-        
+
         // Add to product response
         (product as any).compatibleProducts = compatibleProducts;
       }
-      
+
       // Handle localization if needed
       if (locale && product.localizedData && product.localizedData[locale]) {
         const localizedData = product.localizedData[locale];
-        
+
         // Apply localized data
         if (localizedData.name) {
           (product as any).localizedName = localizedData.name;
         }
-        
+
         if (localizedData.description) {
           (product as any).localizedDescription = localizedData.description;
         }
-        
+
         if (localizedData.features) {
           (product as any).localizedFeatures = localizedData.features;
         }
       }
-      
+
       return product;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error getting product by ID:', error);
-      throw new AppError('Failed to retrieve product', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error getting product by ID:", error);
+      throw new AppError(
+        "Failed to retrieve product",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
@@ -308,43 +364,55 @@ export class ProductService {
   async createProduct(productData: Partial<Product>): Promise<Product> {
     try {
       const product = this.productRepository.create(productData);
-      
+
       // Apply defaults based on product type if needed
-      if (product.productType === ProductType.TACTICAL && !product.technicalSpecs) {
+      if (
+        product.productType === ProductType.TACTICAL &&
+        !product.technicalSpecs
+      ) {
         product.technicalSpecs = {
           durabilityRating: DurabilityRating.STANDARD,
-          weatherResistance: WeatherResistance.NONE
+          weatherResistance: WeatherResistance.NONE,
         };
       }
-      
+
       await this.productRepository.save(product);
       return product;
     } catch (error) {
-      logger.error('Error creating product:', error);
-      throw new AppError('Failed to create product', StatusCode.INTERNAL_SERVER_ERROR);
+      logger.error("Error creating product:", error);
+      throw new AppError(
+        "Failed to create product",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Update product
    */
-  async updateProduct(id: string, productData: Partial<Product>): Promise<Product> {
+  async updateProduct(
+    id: string,
+    productData: Partial<Product>
+  ): Promise<Product> {
     try {
       // Find product first
       const product = await this.getProductById(id);
-      
+
       // Update product
       this.productRepository.merge(product, productData);
-      
+
       await this.productRepository.save(product);
       return product;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error updating product:', error);
-      throw new AppError('Failed to update product', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error updating product:", error);
+      throw new AppError(
+        "Failed to update product",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
@@ -355,16 +423,19 @@ export class ProductService {
     try {
       // Find product first
       const product = await this.getProductById(id);
-      
+
       // Delete product
       await this.productRepository.remove(product);
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error deleting product:', error);
-      throw new AppError('Failed to delete product', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error deleting product:", error);
+      throw new AppError(
+        "Failed to delete product",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
@@ -375,113 +446,133 @@ export class ProductService {
     try {
       // Find product first
       const product = await this.getProductById(id);
-      
+
       // Update stock
       product.stock = Math.max(0, quantity);
-      
+
       await this.productRepository.save(product);
       return product;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error updating product stock:', error);
-      throw new AppError('Failed to update product stock', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error updating product stock:", error);
+      throw new AppError(
+        "Failed to update product stock",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Search products
    */
-  async searchProducts(query: string, options: SearchOptions = {}): Promise<Product[]> {
+  async searchProducts(
+    query: string,
+    options: SearchOptions = {}
+  ): Promise<Product[]> {
     try {
       const { productType, locale } = options;
-      
+
       // Build query
-      const queryBuilder = this.productRepository.createQueryBuilder('product')
-        .where('product.name ILIKE :query', { query: `%${query}%` })
-        .orWhere('product.description ILIKE :query', { query: `%${query}%` })
-        .orWhere(':query = ANY(product.keywords)', { query });
-        
+      const queryBuilder = this.productRepository
+        .createQueryBuilder("product")
+        .where("product.name ILIKE :query", { query: `%${query}%` })
+        .orWhere("product.description ILIKE :query", { query: `%${query}%` })
+        .orWhere(":query = ANY(product.keywords)", { query });
+
       // Filter by product type if specified
       if (productType) {
-        queryBuilder.andWhere('product.productType = :productType', { productType });
+        queryBuilder.andWhere("product.productType = :productType", {
+          productType,
+        });
       }
-      
+
       // Limit results
       queryBuilder.take(20);
-      
+
       // Execute query
       const products = await queryBuilder.getMany();
-      
+
       // Handle localization if needed
       if (locale) {
-        products.forEach(product => {
+        products.forEach((product) => {
           if (product.localizedData && product.localizedData[locale]) {
             const localizedData = product.localizedData[locale];
-            
+
             if (localizedData.name) {
               (product as any).localizedName = localizedData.name;
             }
-            
+
             if (localizedData.description) {
               (product as any).localizedDescription = localizedData.description;
             }
           }
         });
       }
-      
+
       return products;
     } catch (error) {
-      logger.error('Error searching products:', error);
-      throw new AppError('Failed to search products', StatusCode.INTERNAL_SERVER_ERROR);
+      logger.error("Error searching products:", error);
+      throw new AppError(
+        "Failed to search products",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Get featured products
    */
-  async getFeaturedProducts(options: FeaturedProductOptions = {}): Promise<Product[]> {
+  async getFeaturedProducts(
+    options: FeaturedProductOptions = {}
+  ): Promise<Product[]> {
     try {
       const { limit = 8, productType, locale } = options;
-      
+
       // Build query
-      const queryBuilder = this.productRepository.createQueryBuilder('product')
-        .where('product.isFeatured = :isFeatured', { isFeatured: true });
-        
+      const queryBuilder = this.productRepository
+        .createQueryBuilder("product")
+        .where("product.isFeatured = :isFeatured", { isFeatured: true });
+
       // Filter by product type if specified
       if (productType) {
-        queryBuilder.andWhere('product.productType = :productType', { productType });
+        queryBuilder.andWhere("product.productType = :productType", {
+          productType,
+        });
       }
-      
+
       // Limit results
       queryBuilder.take(limit);
-      
+
       // Execute query
       const products = await queryBuilder.getMany();
-      
+
       // Handle localization if needed
       if (locale) {
-        products.forEach(product => {
+        products.forEach((product) => {
           if (product.localizedData && product.localizedData[locale]) {
             const localizedData = product.localizedData[locale];
-            
+
             if (localizedData.name) {
               (product as any).localizedName = localizedData.name;
             }
-            
+
             if (localizedData.description) {
               (product as any).localizedDescription = localizedData.description;
             }
           }
         });
       }
-      
+
       return products;
     } catch (error) {
-      logger.error('Error getting featured products:', error);
-      throw new AppError('Failed to retrieve featured products', StatusCode.INTERNAL_SERVER_ERROR);
+      logger.error("Error getting featured products:", error);
+      throw new AppError(
+        "Failed to retrieve featured products",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
@@ -502,253 +593,295 @@ export class ProductService {
         maxPrice,
         locale,
         page = 1,
-        limit = 10
+        limit = 10,
       } = options;
-      
+
       // Calculate pagination
       const skip = (page - 1) * limit;
-      
+
       // Find the category first
       const category = await this.categoryRepository.findOne({
         where: { id: categoryId },
-        relations: ['children']
+        relations: ["children"],
       });
-      
+
       if (!category) {
-        throw new AppError('Category not found', StatusCode.NOT_FOUND);
+        throw new AppError("Category not found", StatusCode.NOT_FOUND);
       }
-      
+
       // Get all subcategory IDs if needed
       let categoryIds = [categoryId];
-      
+
       if (includeSubcategories && category.children.length > 0) {
         // Recursive function to get all subcategory IDs
         const getSubcategoryIds = (categories: Category[]): string[] => {
           let ids: string[] = [];
-          
-          categories.forEach(cat => {
+
+          categories.forEach((cat) => {
             ids.push(cat.id);
             if (cat.children && cat.children.length > 0) {
               ids = [...ids, ...getSubcategoryIds(cat.children)];
             }
           });
-          
+
           return ids;
         };
-        
+
         categoryIds = [...categoryIds, ...getSubcategoryIds(category.children)];
       }
-      
+
       // Build query
-      const queryBuilder = this.productRepository.createQueryBuilder('product')
-        .where('product.category_id IN (:...categoryIds)', { categoryIds });
-        
+      const queryBuilder = this.productRepository
+        .createQueryBuilder("product")
+        .where("product.category_id IN (:...categoryIds)", { categoryIds });
+
       // Apply additional filters
       if (productType) {
-        queryBuilder.andWhere('product.productType = :productType', { productType });
+        queryBuilder.andWhere("product.productType = :productType", {
+          productType,
+        });
       }
-      
+
       if (minPrice !== undefined && maxPrice !== undefined) {
-        queryBuilder.andWhere('product.price BETWEEN :minPrice AND :maxPrice', { minPrice, maxPrice });
+        queryBuilder.andWhere("product.price BETWEEN :minPrice AND :maxPrice", {
+          minPrice,
+          maxPrice,
+        });
       } else if (minPrice !== undefined) {
-        queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
+        queryBuilder.andWhere("product.price >= :minPrice", { minPrice });
       } else if (maxPrice !== undefined) {
-        queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+        queryBuilder.andWhere("product.price <= :maxPrice", { maxPrice });
       }
-      
+
       // Handle technical specifications filtering
       if (durabilityRating) {
-        queryBuilder.andWhere(`"technicalSpecs"->>'durabilityRating' = :durabilityRating`, { durabilityRating });
+        queryBuilder.andWhere(
+          `"technicalSpecs"->>'durabilityRating' = :durabilityRating`,
+          { durabilityRating }
+        );
       }
-      
+
       if (weatherResistance) {
-        queryBuilder.andWhere(`"technicalSpecs"->>'weatherResistance' = :weatherResistance`, { weatherResistance });
+        queryBuilder.andWhere(
+          `"technicalSpecs"->>'weatherResistance' = :weatherResistance`,
+          { weatherResistance }
+        );
       }
-      
+
       // Get total count for pagination
       const total = await queryBuilder.getCount();
-      
+
       // Apply pagination
       queryBuilder.skip(skip).take(limit);
-      
+
       // Execute query
       const products = await queryBuilder.getMany();
-      
+
       // Handle localization if needed
       if (locale) {
-        products.forEach(product => {
+        products.forEach((product) => {
           if (product.localizedData && product.localizedData[locale]) {
             const localizedData = product.localizedData[locale];
-            
+
             if (localizedData.name) {
               (product as any).localizedName = localizedData.name;
             }
-            
+
             if (localizedData.description) {
               (product as any).localizedDescription = localizedData.description;
             }
           }
         });
       }
-      
+
       // Calculate total pages
       const totalPages = Math.ceil(total / limit);
-      
+
       return { products, total, totalPages };
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error getting products by category:', error);
-      throw new AppError('Failed to retrieve products', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error getting products by category:", error);
+      throw new AppError(
+        "Failed to retrieve products",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Get related products
    */
-  async getRelatedProducts(productId: string, options: RelatedProductOptions = {}): Promise<Product[]> {
+  async getRelatedProducts(
+    productId: string,
+    options: RelatedProductOptions = {}
+  ): Promise<Product[]> {
     try {
       const { limit = 4, locale } = options;
-      
+
       // Find the product first
       const product = await this.getProductById(productId);
-      
+
       // Get products in the same category
-      const queryBuilder = this.productRepository.createQueryBuilder('product')
-        .where('product.category_id = :categoryId', { categoryId: product.category_id })
-        .andWhere('product.id != :productId', { productId })
+      const queryBuilder = this.productRepository
+        .createQueryBuilder("product")
+        .where("product.category_id = :categoryId", {
+          categoryId: product.category_id,
+        })
+        .andWhere("product.id != :productId", { productId })
         .take(limit);
-        
+
       // Execute query
       const products = await queryBuilder.getMany();
-      
+
       // Handle localization if needed
       if (locale) {
-        products.forEach(product => {
+        products.forEach((product) => {
           if (product.localizedData && product.localizedData[locale]) {
             const localizedData = product.localizedData[locale];
-            
+
             if (localizedData.name) {
               (product as any).localizedName = localizedData.name;
             }
-            
+
             if (localizedData.description) {
               (product as any).localizedDescription = localizedData.description;
             }
           }
         });
       }
-      
+
       return products;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error getting related products:', error);
-      throw new AppError('Failed to retrieve related products', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error getting related products:", error);
+      throw new AppError(
+        "Failed to retrieve related products",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Get compatible products
    */
-  async getCompatibleProducts(productId: string, locale?: string): Promise<Product[]> {
+  async getCompatibleProducts(
+    productId: string,
+    locale?: string
+  ): Promise<Product[]> {
     try {
       // Find the product first
       const product = await this.getProductById(productId);
-      
+
       // Check if product has compatible products
       if (!product.compatibleWith || product.compatibleWith.length === 0) {
         return [];
       }
-      
+
       // Get compatible products
       const compatibleProducts = await this.productRepository.find({
-        where: { id: In(product.compatibleWith) }
+        where: { id: In(product.compatibleWith) },
       });
-      
+
       // Handle localization if needed
       if (locale) {
-        compatibleProducts.forEach(product => {
+        compatibleProducts.forEach((product) => {
           if (product.localizedData && product.localizedData[locale]) {
             const localizedData = product.localizedData[locale];
-            
+
             if (localizedData.name) {
               (product as any).localizedName = localizedData.name;
             }
-            
+
             if (localizedData.description) {
               (product as any).localizedDescription = localizedData.description;
             }
           }
         });
       }
-      
+
       return compatibleProducts;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error getting compatible products:', error);
-      throw new AppError('Failed to retrieve compatible products', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error getting compatible products:", error);
+      throw new AppError(
+        "Failed to retrieve compatible products",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Update technical specifications
    */
-  async updateTechnicalSpecs(id: string, technicalSpecs: any): Promise<Product> {
+  async updateTechnicalSpecs(
+    id: string,
+    technicalSpecs: any
+  ): Promise<Product> {
     try {
       // Find product first
       const product = await this.getProductById(id);
-      
+
       // Update technical specs
       product.technicalSpecs = {
         ...(product.technicalSpecs || {}),
-        ...technicalSpecs
+        ...technicalSpecs,
       };
-      
+
       await this.productRepository.save(product);
       return product;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error updating technical specifications:', error);
-      throw new AppError('Failed to update technical specifications', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error updating technical specifications:", error);
+      throw new AppError(
+        "Failed to update technical specifications",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
   /**
    * Add usage scenario
    */
-  async addUsageScenario(id: string, scenarioData: UsageScenarioData): Promise<Product> {
+  async addUsageScenario(
+    id: string,
+    scenarioData: UsageScenarioData
+  ): Promise<Product> {
     try {
       // Find product first
       const product = await this.getProductById(id);
-      
+
       // Initialize usageScenarios if not exists
       if (!product.usageScenarios) {
         product.usageScenarios = [];
       }
-      
+
       // Add new scenario
       product.usageScenarios.push(scenarioData);
-      
+
       await this.productRepository.save(product);
       return product;
     } catch (error) {
       if (error instanceof AppError) {
         throw error;
       }
-      
-      logger.error('Error adding usage scenario:', error);
-      throw new AppError('Failed to add usage scenario', StatusCode.INTERNAL_SERVER_ERROR);
+
+      logger.error("Error adding usage scenario:", error);
+      throw new AppError(
+        "Failed to add usage scenario",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
 
@@ -770,85 +903,110 @@ export class ProductService {
         maxPrice,
         page = 1,
         limit = 10,
-        locale
+        locale,
       } = options;
-      
+
       // Calculate pagination
       const skip = (page - 1) * limit;
-      
+
       // Build query
-      const queryBuilder = this.productRepository.createQueryBuilder('product');
-      
+      const queryBuilder = this.productRepository.createQueryBuilder("product");
+
       // Apply technical specs filters
       if (material) {
-        queryBuilder.andWhere(`"technicalSpecs"->>'material' ILIKE :material`, { material: `%${material}%` });
+        queryBuilder.andWhere(`"technicalSpecs"->>'material' ILIKE :material`, {
+          material: `%${material}%`,
+        });
       }
-      
+
       if (minWeight !== undefined && maxWeight !== undefined) {
-        queryBuilder.andWhere(`("technicalSpecs"->>'weight')::float BETWEEN :minWeight AND :maxWeight`, { minWeight, maxWeight });
+        queryBuilder.andWhere(
+          `("technicalSpecs"->>'weight')::float BETWEEN :minWeight AND :maxWeight`,
+          { minWeight, maxWeight }
+        );
       } else if (minWeight !== undefined) {
-        queryBuilder.andWhere(`("technicalSpecs"->>'weight')::float >= :minWeight`, { minWeight });
+        queryBuilder.andWhere(
+          `("technicalSpecs"->>'weight')::float >= :minWeight`,
+          { minWeight }
+        );
       } else if (maxWeight !== undefined) {
-        queryBuilder.andWhere(`("technicalSpecs"->>'weight')::float <= :maxWeight`, { maxWeight });
+        queryBuilder.andWhere(
+          `("technicalSpecs"->>'weight')::float <= :maxWeight`,
+          { maxWeight }
+        );
       }
-      
+
       if (durabilityRating) {
-        queryBuilder.andWhere(`"technicalSpecs"->>'durabilityRating' = :durabilityRating`, { durabilityRating });
+        queryBuilder.andWhere(
+          `"technicalSpecs"->>'durabilityRating' = :durabilityRating`,
+          { durabilityRating }
+        );
       }
-      
+
       if (weatherResistance) {
-        queryBuilder.andWhere(`"technicalSpecs"->>'weatherResistance' = :weatherResistance`, { weatherResistance });
+        queryBuilder.andWhere(
+          `"technicalSpecs"->>'weatherResistance' = :weatherResistance`,
+          { weatherResistance }
+        );
       }
-      
+
       // Apply regular filters
       if (productType) {
-        queryBuilder.andWhere('product.productType = :productType', { productType });
+        queryBuilder.andWhere("product.productType = :productType", {
+          productType,
+        });
       }
-      
+
       if (minPrice !== undefined && maxPrice !== undefined) {
-        queryBuilder.andWhere('product.price BETWEEN :minPrice AND :maxPrice', { minPrice, maxPrice });
+        queryBuilder.andWhere("product.price BETWEEN :minPrice AND :maxPrice", {
+          minPrice,
+          maxPrice,
+        });
       } else if (minPrice !== undefined) {
-        queryBuilder.andWhere('product.price >= :minPrice', { minPrice });
+        queryBuilder.andWhere("product.price >= :minPrice", { minPrice });
       } else if (maxPrice !== undefined) {
-        queryBuilder.andWhere('product.price <= :maxPrice', { maxPrice });
+        queryBuilder.andWhere("product.price <= :maxPrice", { maxPrice });
       }
-      
+
       // Ensure technicalSpecs is not null
-      queryBuilder.andWhere('product.technicalSpecs IS NOT NULL');
-      
+      queryBuilder.andWhere("product.technicalSpecs IS NOT NULL");
+
       // Get total count for pagination
       const total = await queryBuilder.getCount();
-      
+
       // Apply pagination
       queryBuilder.skip(skip).take(limit);
-      
+
       // Execute query
       const products = await queryBuilder.getMany();
-      
+
       // Handle localization if needed
       if (locale) {
-        products.forEach(product => {
+        products.forEach((product) => {
           if (product.localizedData && product.localizedData[locale]) {
             const localizedData = product.localizedData[locale];
-            
+
             if (localizedData.name) {
               (product as any).localizedName = localizedData.name;
             }
-            
+
             if (localizedData.description) {
               (product as any).localizedDescription = localizedData.description;
             }
           }
         });
       }
-      
+
       // Calculate total pages
       const totalPages = Math.ceil(total / limit);
-      
+
       return { products, total, totalPages };
     } catch (error) {
-      logger.error('Error filtering products by technical specs:', error);
-      throw new AppError('Failed to filter products', StatusCode.INTERNAL_SERVER_ERROR);
+      logger.error("Error filtering products by technical specs:", error);
+      throw new AppError(
+        "Failed to filter products",
+        StatusCode.INTERNAL_SERVER_ERROR
+      );
     }
   }
-} 
+}

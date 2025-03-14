@@ -1,12 +1,16 @@
-import { z } from 'zod';
-import { ProductType, DurabilityRating, WeatherResistance } from '../models/Product';
+import { z } from "zod";
+import {
+  ProductType,
+  DurabilityRating,
+  WeatherResistance,
+} from "../models/Product";
 
 // Define enum schemas based on the actual values in the model
 const productTypeEnum = z.enum([
   ProductType.STANDARD,
   ProductType.TACTICAL,
   ProductType.OUTDOOR,
-  ProductType.HOME
+  ProductType.HOME,
 ]);
 
 const durabilityRatingEnum = z.enum([
@@ -14,7 +18,7 @@ const durabilityRatingEnum = z.enum([
   DurabilityRating.STANDARD,
   DurabilityRating.ENHANCED,
   DurabilityRating.PROFESSIONAL,
-  DurabilityRating.MILITARY
+  DurabilityRating.MILITARY,
 ]);
 
 const weatherResistanceEnum = z.enum([
@@ -22,7 +26,7 @@ const weatherResistanceEnum = z.enum([
   WeatherResistance.WATER_RESISTANT,
   WeatherResistance.WEATHER_RESISTANT,
   WeatherResistance.WATERPROOF,
-  WeatherResistance.ALL_WEATHER
+  WeatherResistance.ALL_WEATHER,
 ]);
 
 // Technical specifications schema
@@ -30,12 +34,14 @@ const technicalSpecsSchema = z.object({
   material: z.string().optional(),
   weight: z.number().min(0).optional(),
   weightUnit: z.string().optional(),
-  dimensions: z.object({
-    length: z.number().min(0).optional(),
-    width: z.number().min(0).optional(),
-    height: z.number().min(0).optional(),
-    unit: z.string().optional(),
-  }).optional(),
+  dimensions: z
+    .object({
+      length: z.number().min(0).optional(),
+      width: z.number().min(0).optional(),
+      height: z.number().min(0).optional(),
+      unit: z.string().optional(),
+    })
+    .optional(),
   durabilityRating: durabilityRatingEnum.optional(),
   weatherResistance: weatherResistanceEnum.optional(),
   batteryLife: z.number().min(0).optional(),
@@ -77,7 +83,10 @@ const productBaseSchema = {
   isFeatured: z.boolean().default(false),
   images: z.array(z.string().url()).optional(),
   attributes: z
-    .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.array(z.string())]))
+    .record(
+      z.string(),
+      z.union([z.string(), z.number(), z.boolean(), z.array(z.string())])
+    )
     .optional(),
   // Add new fields
   productType: productTypeEnum.optional(),
@@ -100,9 +109,11 @@ const createProductSchema = z.object({
 });
 
 // Schema for updating an existing product
-const updateProductSchema = z.object({
-  ...productBaseSchema,
-}).partial();
+const updateProductSchema = z
+  .object({
+    ...productBaseSchema,
+  })
+  .partial();
 
 // Schema for updating product stock
 const updateStockSchema = z.object({
@@ -126,4 +137,4 @@ export const productValidationSchemas = {
   updateStock: updateStockSchema,
   updateTechnicalSpecs: updateTechnicalSpecsSchema,
   addUsageScenario: addUsageScenarioSchema,
-}; 
+};

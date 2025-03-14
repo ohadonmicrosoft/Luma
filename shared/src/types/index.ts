@@ -10,9 +10,9 @@ export interface User {
 }
 
 export enum UserRole {
-  Customer = 'customer',
-  Admin = 'admin',
-  Staff = 'staff'
+  Customer = "customer",
+  Admin = "admin",
+  Staff = "staff",
 }
 
 // Product types
@@ -70,14 +70,14 @@ export interface OrderItem {
 }
 
 export enum OrderStatus {
-  Cart = 'cart',
-  Checkout = 'checkout',
-  Paid = 'paid',
-  Processing = 'processing',
-  Shipped = 'shipped',
-  Delivered = 'delivered',
-  Canceled = 'canceled',
-  Refunded = 'refunded'
+  Cart = "cart",
+  Checkout = "checkout",
+  Paid = "paid",
+  Processing = "processing",
+  Shipped = "shipped",
+  Delivered = "delivered",
+  Canceled = "canceled",
+  Refunded = "refunded",
 }
 
 // Address type
@@ -111,4 +111,4 @@ export interface PaginatedResponse<T> {
   page: number;
   limit: number;
   totalPages: number;
-} 
+}

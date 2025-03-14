@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Specification } from './TechnicalSpecs';
-import { useTranslation } from 'next-i18next';
-import { ChevronDown, ChevronUp, X } from 'lucide-react';
+import React, { useState } from "react";
+import { Specification } from "./TechnicalSpecs";
+import { useTranslation } from "next-i18next";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
 // Comment out or remove the Tag import since we don't have that component yet
 // import { Tag } from '@/components/ui/Tag';
 
@@ -18,7 +18,10 @@ export interface ProductComparisonProps {
   onClose: () => void;
 }
 
-const ProductComparison: React.FC<ProductComparisonProps> = ({ products, onClose }) => {
+const ProductComparison: React.FC<ProductComparisonProps> = ({
+  products,
+  onClose,
+}) => {
   // We're creating a simple placeholder component for now
   return (
     <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg border-t p-4 z-50">
@@ -28,12 +31,14 @@ const ProductComparison: React.FC<ProductComparisonProps> = ({ products, onClose
           <X className="w-5 h-5" />
         </button>
       </div>
-      
+
       <div className="flex overflow-x-auto pb-4">
         {products.map((product) => (
           <div key={product.id} className="min-w-[250px] p-4 border-r">
             <h4 className="font-medium">{product.name}</h4>
-            <p className="text-sm text-gray-500 mt-1">${product.price.toFixed(2)}</p>
+            <p className="text-sm text-gray-500 mt-1">
+              ${product.price.toFixed(2)}
+            </p>
           </div>
         ))}
       </div>

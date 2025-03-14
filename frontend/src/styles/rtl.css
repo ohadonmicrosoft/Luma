@@ -173,4 +173,4 @@ html[dir="ltr"] .rtl\:only {
   html[dir="rtl"] .animate-slide-ltr {
     animation-direction: reverse;
   }
-} 
+}

@@ -7,16 +7,25 @@
   },
   "rules": {
     // Common rules for all files
-    "@typescript-eslint/no-unused-vars": ["warn", {
-      "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_"
-    }],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "react/react-in-jsx-scope": "off"
   },
   "overrides": [
     // Config files override
     {
-      "files": ["*.config.js", "next.config.js", "postcss.config.js", "tailwind.config.js", "next-i18next.config.js"],
+      "files": [
+        "*.config.js",
+        "next.config.js",
+        "postcss.config.js",
+        "tailwind.config.js",
+        "next-i18next.config.js"
+      ],
       "rules": {
         "@typescript-eslint/no-require-imports": "off",
         "no-undef": "off",
@@ -63,4 +72,4 @@
     "next-i18next.config.js",
     "infrastructure/**/*"
   ]
-} 
+}

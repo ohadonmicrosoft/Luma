@@ -1,4 +1,4 @@
-import { PAGINATION } from '../constants';
+import { PAGINATION } from "../constants";
 
 /**
  * Format currency for display
@@ -6,10 +6,10 @@ import { PAGINATION } from '../constants';
  * @param currency Currency code (defaults to USD)
  * @returns Formatted currency string
  */
-export function formatCurrency(amount: number, currency = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency
+export function formatCurrency(amount: number, currency = "USD"): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
   }).format(amount / 100);
 }
 
@@ -23,12 +23,12 @@ export function parsePagination(query: { page?: string; limit?: string }) {
     1,
     parseInt(query.page || String(PAGINATION.DEFAULT_PAGE), 10)
   );
-  
+
   const limit = Math.min(
     PAGINATION.MAX_LIMIT,
     Math.max(1, parseInt(query.limit || String(PAGINATION.DEFAULT_LIMIT), 10))
   );
-  
+
   return { page, limit, offset: (page - 1) * limit };
 }
 
@@ -40,11 +40,11 @@ export function parsePagination(query: { page?: string; limit?: string }) {
 export function slugify(text: string): string {
   return text
     .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 }
 
 /**
@@ -53,13 +53,14 @@ export function slugify(text: string): string {
  * @returns Random string
  */
 export function generateRandomString(length = 16): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
+
   return result;
 }
 
@@ -80,4 +81,4 @@ export function deepClone<T>(obj: T): T {
  */
 export function calculateTotalPages(totalItems: number, limit: number): number {
   return Math.ceil(totalItems / limit);
-} 
+}

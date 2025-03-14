@@ -1,6 +1,6 @@
 /**
  * Cloudinary configuration for Luma e-commerce platform
- * 
+ *
  * This file contains the configuration for Cloudinary, which is used for:
  * - Product image storage and optimization
  * - Image transformations (resizing, cropping, etc.)
@@ -17,11 +17,11 @@ const cloudinaryConfig = {
 
   // Folder structure
   folders: {
-    products: 'luma/products',
-    categories: 'luma/categories',
-    banners: 'luma/banners',
-    blog: 'luma/blog',
-    users: 'luma/users'
+    products: "luma/products",
+    categories: "luma/categories",
+    banners: "luma/banners",
+    blog: "luma/blog",
+    users: "luma/users",
   },
 
   // Image transformations
@@ -30,54 +30,54 @@ const cloudinaryConfig = {
     productThumbnail: {
       width: 200,
       height: 200,
-      crop: 'fill',
-      quality: 'auto',
-      format: 'auto',
-      fetch_format: 'auto'
+      crop: "fill",
+      quality: "auto",
+      format: "auto",
+      fetch_format: "auto",
     },
     productCard: {
       width: 600,
       height: 600,
-      crop: 'fill',
-      quality: 'auto',
-      format: 'auto',
-      fetch_format: 'auto'
+      crop: "fill",
+      quality: "auto",
+      format: "auto",
+      fetch_format: "auto",
     },
     productDetail: {
       width: 1200,
       height: 1200,
-      crop: 'limit',
-      quality: 'auto',
-      format: 'auto',
-      fetch_format: 'auto'
+      crop: "limit",
+      quality: "auto",
+      format: "auto",
+      fetch_format: "auto",
     },
     // Category image transformations
     categoryThumbnail: {
       width: 300,
       height: 300,
-      crop: 'fill',
-      quality: 'auto',
-      format: 'auto',
-      fetch_format: 'auto'
+      crop: "fill",
+      quality: "auto",
+      format: "auto",
+      fetch_format: "auto",
     },
     // Banner image transformations
     banner: {
       width: 1920,
       height: 600,
-      crop: 'fill',
-      quality: 'auto',
-      format: 'auto',
-      fetch_format: 'auto'
+      crop: "fill",
+      quality: "auto",
+      format: "auto",
+      fetch_format: "auto",
     },
     mobileBanner: {
       width: 768,
       height: 500,
-      crop: 'fill',
-      quality: 'auto',
-      format: 'auto',
-      fetch_format: 'auto'
-    }
-  }
+      crop: "fill",
+      quality: "auto",
+      format: "auto",
+      fetch_format: "auto",
+    },
+  },
 };
 
-module.exports = cloudinaryConfig; 
+module.exports = cloudinaryConfig;

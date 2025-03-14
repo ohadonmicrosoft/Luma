@@ -1,25 +1,33 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Min, IsNotEmpty } from 'class-validator';
-import { Order } from './Order';
-import { Product } from './Product';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { Min, IsNotEmpty } from "class-validator";
+import { Order } from "./Order";
+import { Product } from "./Product";
 
 // Define a type for product attributes in order items
 type OrderItemAttributes = Record<string, string | number | boolean | null>;
 
-@Entity('order_items')
+@Entity("order_items")
 export class OrderItem {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @ManyToOne(() => Order, order => order.items)
-  @JoinColumn({ name: 'order_id' })
+  @ManyToOne(() => Order, (order) => order.items)
+  @JoinColumn({ name: "order_id" })
   order!: Order;
 
   @Column()
   order_id!: string;
 
-  @ManyToOne(() => Product, product => product.orderItems)
-  @JoinColumn({ name: 'product_id' })
+  @ManyToOne(() => Product, (product) => product.orderItems)
+  @JoinColumn({ name: "product_id" })
   product!: Product;
 
   @Column()
@@ -29,7 +37,7 @@ export class OrderItem {
   @IsNotEmpty()
   productName!: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   @Min(0)
   @IsNotEmpty()
   price!: number;
@@ -39,11 +47,11 @@ export class OrderItem {
   @IsNotEmpty()
   quantity!: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   @IsNotEmpty()
   subtotal!: number;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   productAttributes?: OrderItemAttributes;
 
   @Column({ nullable: true })
@@ -59,4 +67,4 @@ export class OrderItem {
   calculateSubtotal(): void {
     this.subtotal = this.price * this.quantity;
   }
-} 
+}

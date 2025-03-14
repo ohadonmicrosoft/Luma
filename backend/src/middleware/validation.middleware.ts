@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError } from 'zod';
-import { StatusCode } from '../utils/constants';
-import { logger } from '../utils/logger';
+import { Request, Response, NextFunction } from "express";
+import { AnyZodObject, ZodError } from "zod";
+import { StatusCode } from "../utils/constants";
+import { logger } from "../utils/logger";
 
 /**
  * Middleware to validate request data against a Zod schema
@@ -16,29 +16,29 @@ export const validateRequest = (schema: AnyZodObject) => {
         query: req.query,
         params: req.params,
       });
-      
+
       next();
     } catch (error) {
       // Handle Zod validation errors
       if (error instanceof ZodError) {
-        logger.debug('Validation error:', error.errors);
-        
+        logger.debug("Validation error:", error.errors);
+
         // Format error messages
         const formattedErrors = error.errors.map((err) => ({
-          path: err.path.join('.'),
+          path: err.path.join("."),
           message: err.message,
         }));
-        
+
         // Return validation error response
         return res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          message: 'Validation failed',
+          message: "Validation failed",
           errors: formattedErrors,
         });
       }
-      
+
       // Pass other errors to global error handler
       next(error);
     }
   };
-}; 
+};

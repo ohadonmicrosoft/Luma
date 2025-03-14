@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 env:
   CI: true
@@ -17,8 +17,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - name: Install dependencies
         run: npm ci
       - name: Run linting
@@ -32,8 +32,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - name: Install dependencies
         run: npm ci
       - name: Run tests
@@ -57,8 +57,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - name: Install root dependencies
         run: npm ci
       - name: Install frontend dependencies
@@ -83,8 +83,8 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
       - name: Install root dependencies
         run: npm ci
       - name: Install frontend dependencies
@@ -97,4 +97,4 @@ jobs:
           npm run build
       - name: Deploy to production
         run: echo "Deploy to production environment"
-        # Add actual deployment steps here 
+        # Add actual deployment steps here

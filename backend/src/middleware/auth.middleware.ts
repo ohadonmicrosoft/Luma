@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
-import * as jwt from 'jsonwebtoken';
-import { AppDataSource } from '../config/database';
-import { User } from '../models/User';
-import { AppError } from '../utils/AppError';
-import { StatusCode, ErrorCode, UserRole } from '../utils/constants';
-import { logger } from '../utils/logger';
+import { Request, Response, NextFunction } from "express";
+import * as jwt from "jsonwebtoken";
+import { AppDataSource } from "../config/database";
+import { User } from "../models/User";
+import { AppError } from "../utils/AppError";
+import { StatusCode, ErrorCode, UserRole } from "../utils/constants";
+import { logger } from "../utils/logger";
 
 export interface JwtPayload {
   userId: string;
@@ -25,16 +25,16 @@ export const authenticate = async (
   try {
     // Get token from Authorization header
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new AppError(
-        'Authentication required',
+        "Authentication required",
         StatusCode.UNAUTHORIZED,
         ErrorCode.UNAUTHORIZED
       );
     }
 
-    const token = authHeader.split(' ')[1];
-    const jwtSecret = process.env.JWT_SECRET || 'default_jwt_secret_for_dev';
+    const token = authHeader.split(" ")[1];
+    const jwtSecret = process.env.JWT_SECRET || "default_jwt_secret_for_dev";
 
     // Verify token
     let decoded: JwtPayload;
@@ -43,13 +43,13 @@ export const authenticate = async (
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {
         throw new AppError(
-          'Token expired',
+          "Token expired",
           StatusCode.UNAUTHORIZED,
           ErrorCode.TOKEN_EXPIRED
         );
       }
       throw new AppError(
-        'Invalid token',
+        "Invalid token",
         StatusCode.UNAUTHORIZED,
         ErrorCode.INVALID_TOKEN
       );
@@ -58,12 +58,12 @@ export const authenticate = async (
     // Get user from database
     const userRepository = AppDataSource.getRepository(User);
     const user = await userRepository.findOne({
-      where: { id: decoded.userId }
+      where: { id: decoded.userId },
     });
 
     if (!user) {
       throw new AppError(
-        'User not found',
+        "User not found",
         StatusCode.UNAUTHORIZED,
         ErrorCode.USER_NOT_FOUND
       );
@@ -79,12 +79,12 @@ export const authenticate = async (
       // Add additional properties from JWT
       userId: decoded.userId,
       iat: decoded.iat,
-      exp: decoded.exp
+      exp: decoded.exp,
     };
 
     next();
   } catch (error) {
-    logger.error('Authentication error:', error);
+    logger.error("Authentication error:", error);
     next(error);
   }
 };
@@ -97,7 +97,7 @@ export const restrictTo = (...allowedRoles: UserRole[]) => {
     if (!req.user) {
       next(
         new AppError(
-          'User not authenticated',
+          "User not authenticated",
           StatusCode.UNAUTHORIZED,
           ErrorCode.UNAUTHORIZED
         )
@@ -108,7 +108,7 @@ export const restrictTo = (...allowedRoles: UserRole[]) => {
     if (!allowedRoles.includes(req.user.role)) {
       next(
         new AppError(
-          'You do not have permission to perform this action',
+          "You do not have permission to perform this action",
           StatusCode.FORBIDDEN,
           ErrorCode.FORBIDDEN
         )
@@ -118,4 +118,4 @@ export const restrictTo = (...allowedRoles: UserRole[]) => {
 
     next();
   };
-}; 
+};

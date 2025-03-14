@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
-import { AuthService } from '../services/auth.service';
-import { StatusCode } from '../utils/constants';
-import { AppError } from '../utils/AppError';
-import { logger } from '../utils/logger';
-import { User } from '../models/User';
+import { Request, Response, NextFunction } from "express";
+import { AuthService } from "../services/auth.service";
+import { StatusCode } from "../utils/constants";
+import { AppError } from "../utils/AppError";
+import { logger } from "../utils/logger";
+import { User } from "../models/User";
 
 export class AuthController {
   private authService: AuthService;
@@ -15,24 +15,28 @@ export class AuthController {
   /**
    * Register a new user
    */
-  register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  register = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const userData: Partial<User> = {
         email: req.body.email,
         password: req.body.password,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
-        role: req.body.role // Role will be validated and defaulted in the User entity
+        role: req.body.role, // Role will be validated and defaulted in the User entity
       };
 
       const user = await this.authService.register(userData);
 
       res.status(StatusCode.CREATED).json({
-        status: 'success',
-        data: { user }
+        status: "success",
+        data: { user },
       });
     } catch (error) {
-      logger.error('Error in register controller:', error);
+      logger.error("Error in register controller:", error);
       next(error);
     }
   };
@@ -40,28 +44,32 @@ export class AuthController {
   /**
    * Login a user
    */
-  login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  login = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { email, password } = req.body;
 
       const { user, tokens } = await this.authService.login(email, password);
 
       // Set refresh token as HTTP-only cookie
-      res.cookie('refreshToken', tokens.refreshToken, {
+      res.cookie("refreshToken", tokens.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
       res.status(StatusCode.OK).json({
-        status: 'success',
+        status: "success",
         data: {
           user,
-          accessToken: tokens.accessToken
-        }
+          accessToken: tokens.accessToken,
+        },
       });
     } catch (error) {
-      logger.error('Error in login controller:', error);
+      logger.error("Error in login controller:", error);
       next(error);
     }
   };
@@ -69,32 +77,39 @@ export class AuthController {
   /**
    * Refresh access token
    */
-  refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  refreshToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       // Get refresh token from cookie
       const refreshToken = req.cookies.refreshToken;
 
       if (!refreshToken) {
-        throw new AppError('Refresh token not provided', StatusCode.UNAUTHORIZED);
+        throw new AppError(
+          "Refresh token not provided",
+          StatusCode.UNAUTHORIZED
+        );
       }
 
       const tokens = await this.authService.refreshToken(refreshToken);
 
       // Set new refresh token as HTTP-only cookie
-      res.cookie('refreshToken', tokens.refreshToken, {
+      res.cookie("refreshToken", tokens.refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
       res.status(StatusCode.OK).json({
-        status: 'success',
+        status: "success",
         data: {
-          accessToken: tokens.accessToken
-        }
+          accessToken: tokens.accessToken,
+        },
       });
     } catch (error) {
-      logger.error('Error in refreshToken controller:', error);
+      logger.error("Error in refreshToken controller:", error);
       next(error);
     }
   };
@@ -102,26 +117,30 @@ export class AuthController {
   /**
    * Logout a user
    */
-  logout = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  logout = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       // Get user ID from authenticated request
       if (!req.user) {
-        throw new AppError('User not authenticated', StatusCode.UNAUTHORIZED);
+        throw new AppError("User not authenticated", StatusCode.UNAUTHORIZED);
       }
-      
+
       const userId = req.user.id;
 
       await this.authService.logout(userId);
 
       // Clear refresh token cookie
-      res.clearCookie('refreshToken');
+      res.clearCookie("refreshToken");
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: null
+        status: "success",
+        data: null,
       });
     } catch (error) {
-      logger.error('Error in logout controller:', error);
+      logger.error("Error in logout controller:", error);
       next(error);
     }
   };
@@ -129,18 +148,22 @@ export class AuthController {
   /**
    * Verify email with token
    */
-  verifyEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  verifyEmail = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { token } = req.params;
 
       const user = await this.authService.verifyEmail(token);
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        data: { user }
+        status: "success",
+        data: { user },
       });
     } catch (error) {
-      logger.error('Error in verifyEmail controller:', error);
+      logger.error("Error in verifyEmail controller:", error);
       next(error);
     }
   };
@@ -148,7 +171,11 @@ export class AuthController {
   /**
    * Request password reset
    */
-  requestPasswordReset = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  requestPasswordReset = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { email } = req.body;
 
@@ -156,11 +183,12 @@ export class AuthController {
 
       // Always return success even if email doesn't exist (security)
       res.status(StatusCode.OK).json({
-        status: 'success',
-        message: 'If a user with that email exists, a password reset link has been sent'
+        status: "success",
+        message:
+          "If a user with that email exists, a password reset link has been sent",
       });
     } catch (error) {
-      logger.error('Error in requestPasswordReset controller:', error);
+      logger.error("Error in requestPasswordReset controller:", error);
       next(error);
     }
   };
@@ -168,7 +196,11 @@ export class AuthController {
   /**
    * Reset password with token
    */
-  resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  resetPassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { token } = req.params;
       const { password } = req.body;
@@ -176,12 +208,12 @@ export class AuthController {
       await this.authService.resetPassword(token, password);
 
       res.status(StatusCode.OK).json({
-        status: 'success',
-        message: 'Password has been reset successfully'
+        status: "success",
+        message: "Password has been reset successfully",
       });
     } catch (error) {
-      logger.error('Error in resetPassword controller:', error);
+      logger.error("Error in resetPassword controller:", error);
       next(error);
     }
   };
-} 
+}

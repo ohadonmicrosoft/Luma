@@ -1,37 +1,58 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn, Index } from 'typeorm';
-import { Length, IsNotEmpty, Min, IsOptional, IsNumber, IsEnum, IsArray } from 'class-validator';
-import { Category } from './Category';
-import { OrderItem } from './OrderItem';
-import { Review } from './Review';
-import { WishlistItem } from './WishlistItem';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+  Index,
+} from "typeorm";
+import {
+  Length,
+  IsNotEmpty,
+  Min,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsArray,
+} from "class-validator";
+import { Category } from "./Category";
+import { OrderItem } from "./OrderItem";
+import { Review } from "./Review";
+import { WishlistItem } from "./WishlistItem";
 
 // Define a type for product attributes
-type ProductAttributes = Record<string, string | number | boolean | string[] | null>;
+type ProductAttributes = Record<
+  string,
+  string | number | boolean | string[] | null
+>;
 
 // Define product types for tactical and outdoor equipment
 export enum ProductType {
-  STANDARD = 'standard',
-  TACTICAL = 'tactical',
-  OUTDOOR = 'outdoor',
-  HOME = 'home'
+  STANDARD = "standard",
+  TACTICAL = "tactical",
+  OUTDOOR = "outdoor",
+  HOME = "home",
 }
 
 // Define durability rating scale
 export enum DurabilityRating {
-  BASIC = 'basic',
-  STANDARD = 'standard',
-  ENHANCED = 'enhanced',
-  PROFESSIONAL = 'professional',
-  MILITARY = 'military'
+  BASIC = "basic",
+  STANDARD = "standard",
+  ENHANCED = "enhanced",
+  PROFESSIONAL = "professional",
+  MILITARY = "military",
 }
 
 // Define weather resistance levels
 export enum WeatherResistance {
-  NONE = 'none',
-  WATER_RESISTANT = 'water-resistant',
-  WEATHER_RESISTANT = 'weather-resistant',
-  WATERPROOF = 'waterproof',
-  ALL_WEATHER = 'all-weather'
+  NONE = "none",
+  WATER_RESISTANT = "water-resistant",
+  WEATHER_RESISTANT = "weather-resistant",
+  WATERPROOF = "waterproof",
+  ALL_WEATHER = "all-weather",
 }
 
 // Define a type for technical specifications
@@ -69,9 +90,9 @@ interface UsageScenario {
   imageUrl?: string;
 }
 
-@Entity('products')
+@Entity("products")
 export class Product {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Column({ length: 100 })
@@ -80,17 +101,17 @@ export class Product {
   @Index()
   name!: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   @Length(10, 5000)
   @IsNotEmpty()
   description!: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   @Min(0)
   @IsNotEmpty()
   price!: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
   @IsOptional()
   @Min(0)
   compareAtPrice?: number;
@@ -110,35 +131,35 @@ export class Product {
   isFeatured!: boolean;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: ProductType,
-    default: ProductType.STANDARD
+    default: ProductType.STANDARD,
   })
   @IsEnum(ProductType)
   productType!: ProductType;
 
-  @Column({ nullable: true, type: 'text', array: true })
+  @Column({ nullable: true, type: "text", array: true })
   @IsOptional()
   @IsArray()
   images?: string[];
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   @IsOptional()
   attributes?: ProductAttributes;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   @IsOptional()
   technicalSpecs?: TechnicalSpecifications;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   @IsOptional()
   usageScenarios?: UsageScenario[];
 
-  @Column({ type: 'text', array: true, nullable: true })
+  @Column({ type: "text", array: true, nullable: true })
   @IsOptional()
   compatibleWith?: string[];
 
-  @Column({ type: 'text', array: true, nullable: true })
+  @Column({ type: "text", array: true, nullable: true })
   @IsOptional()
   keywords?: string[];
 
@@ -158,28 +179,31 @@ export class Product {
   @IsOptional()
   isDiscontinued?: boolean;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   @IsOptional()
-  localizedData?: Record<string, {
-    name?: string;
-    description?: string;
-    features?: string[];
-  }>;
+  localizedData?: Record<
+    string,
+    {
+      name?: string;
+      description?: string;
+      features?: string[];
+    }
+  >;
 
-  @ManyToOne(() => Category, category => category.products)
-  @JoinColumn({ name: 'category_id' })
+  @ManyToOne(() => Category, (category) => category.products)
+  @JoinColumn({ name: "category_id" })
   category!: Category;
 
   @Column({ nullable: true })
   category_id?: string;
 
-  @OneToMany(() => OrderItem, orderItem => orderItem.product)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
   orderItems!: OrderItem[];
 
-  @OneToMany(() => Review, review => review.product)
+  @OneToMany(() => Review, (review) => review.product)
   reviews!: Review[];
 
-  @OneToMany(() => WishlistItem, wishlistItem => wishlistItem.product)
+  @OneToMany(() => WishlistItem, (wishlistItem) => wishlistItem.product)
   wishlistItems!: WishlistItem[];
 
   @Column({ default: 0 })
@@ -210,4 +234,4 @@ export class Product {
   async getCompatibleProducts(): Promise<string[]> {
     return this.compatibleWith || [];
   }
-} 
+}

@@ -1,10 +1,11 @@
-import { Product, ProductVariant } from '@/types/product';
+import { Product, ProductVariant } from "@/types/product";
 
 /**
  * Service for handling inventory-related operations
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 /**
  * Interface for inventory item
@@ -33,7 +34,7 @@ export interface InventoryHistoryEntry {
   variantId?: string;
   sku: string;
   date: string;
-  type: 'restock' | 'sale' | 'return' | 'adjustment' | 'reservation';
+  type: "restock" | "sale" | "return" | "adjustment" | "reservation";
   quantity: number;
   previousQuantity: number;
   newQuantity: number;
@@ -53,16 +54,21 @@ export async function getInventoryStatus(
     const endpoint = variantId
       ? `${API_BASE_URL}/inventory/status?productId=${productId}&variantId=${variantId}`
       : `${API_BASE_URL}/inventory/status?productId=${productId}`;
-      
+
     const response = await fetch(endpoint);
-    
+
     if (!response.ok) {
-      throw new Error(`Error fetching inventory status: ${response.statusText}`);
+      throw new Error(
+        `Error fetching inventory status: ${response.statusText}`
+      );
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to fetch inventory status for product ${productId}:`, error);
+    console.error(
+      `Failed to fetch inventory status for product ${productId}:`,
+      error
+    );
     throw error;
   }
 }
@@ -77,24 +83,31 @@ export async function getInventoryHistory(
 ): Promise<InventoryHistoryEntry[]> {
   try {
     const params = new URLSearchParams();
-    params.append('productId', productId);
-    params.append('_limit', limit.toString());
-    params.append('_sort', 'date');
-    params.append('_order', 'desc');
-    
+    params.append("productId", productId);
+    params.append("_limit", limit.toString());
+    params.append("_sort", "date");
+    params.append("_order", "desc");
+
     if (variantId) {
-      params.append('variantId', variantId);
+      params.append("variantId", variantId);
     }
-    
-    const response = await fetch(`${API_BASE_URL}/inventory/history?${params.toString()}`);
-    
+
+    const response = await fetch(
+      `${API_BASE_URL}/inventory/history?${params.toString()}`
+    );
+
     if (!response.ok) {
-      throw new Error(`Error fetching inventory history: ${response.statusText}`);
+      throw new Error(
+        `Error fetching inventory history: ${response.statusText}`
+      );
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to fetch inventory history for product ${productId}:`, error);
+    console.error(
+      `Failed to fetch inventory history for product ${productId}:`,
+      error
+    );
     throw error;
   }
 }
@@ -105,24 +118,33 @@ export async function getInventoryHistory(
 export async function getLowStockProducts(
   limit: number = 20,
   page: number = 1
-): Promise<{ items: InventoryItem[]; total: number; page: number; totalPages: number }> {
+): Promise<{
+  items: InventoryItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+}> {
   try {
     const params = new URLSearchParams();
-    params.append('isLowStock', 'true');
-    params.append('_page', page.toString());
-    params.append('_limit', limit.toString());
-    params.append('_sort', 'stockQuantity');
-    params.append('_order', 'asc');
-    
-    const response = await fetch(`${API_BASE_URL}/inventory/status?${params.toString()}`);
-    
+    params.append("isLowStock", "true");
+    params.append("_page", page.toString());
+    params.append("_limit", limit.toString());
+    params.append("_sort", "stockQuantity");
+    params.append("_order", "asc");
+
+    const response = await fetch(
+      `${API_BASE_URL}/inventory/status?${params.toString()}`
+    );
+
     if (!response.ok) {
-      throw new Error(`Error fetching low stock products: ${response.statusText}`);
+      throw new Error(
+        `Error fetching low stock products: ${response.statusText}`
+      );
     }
-    
-    const total = parseInt(response.headers.get('X-Total-Count') || '0', 10);
+
+    const total = parseInt(response.headers.get("X-Total-Count") || "0", 10);
     const items = await response.json();
-    
+
     return {
       items,
       total,
@@ -130,7 +152,7 @@ export async function getLowStockProducts(
       totalPages: Math.ceil(total / limit),
     };
   } catch (error) {
-    console.error('Failed to fetch low stock products:', error);
+    console.error("Failed to fetch low stock products:", error);
     throw error;
   }
 }
@@ -146,9 +168,9 @@ export async function updateInventoryQuantity(
 ): Promise<InventoryItem> {
   try {
     const response = await fetch(`${API_BASE_URL}/inventory/update`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         productId,
@@ -157,14 +179,17 @@ export async function updateInventoryQuantity(
         notes,
       }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error updating inventory: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to update inventory for product ${productId}:`, error);
+    console.error(
+      `Failed to update inventory for product ${productId}:`,
+      error
+    );
     throw error;
   }
 }
@@ -179,9 +204,9 @@ export async function setLowStockThreshold(
 ): Promise<InventoryItem> {
   try {
     const response = await fetch(`${API_BASE_URL}/inventory/threshold`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         productId,
@@ -189,14 +214,19 @@ export async function setLowStockThreshold(
         threshold,
       }),
     });
-    
+
     if (!response.ok) {
-      throw new Error(`Error setting low stock threshold: ${response.statusText}`);
+      throw new Error(
+        `Error setting low stock threshold: ${response.statusText}`
+      );
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to set low stock threshold for product ${productId}:`, error);
+    console.error(
+      `Failed to set low stock threshold for product ${productId}:`,
+      error
+    );
     throw error;
   }
 }
@@ -207,23 +237,30 @@ export async function setLowStockThreshold(
 export async function getReplacementSuggestions(
   productId: string,
   limit: number = 5,
-  locale: string = 'en'
+  locale: string = "en"
 ): Promise<Product[]> {
   try {
     const params = new URLSearchParams();
-    params.append('productId', productId);
-    params.append('_limit', limit.toString());
-    params.append('locale', locale);
-    
-    const response = await fetch(`${API_BASE_URL}/products/replacements?${params.toString()}`);
-    
+    params.append("productId", productId);
+    params.append("_limit", limit.toString());
+    params.append("locale", locale);
+
+    const response = await fetch(
+      `${API_BASE_URL}/products/replacements?${params.toString()}`
+    );
+
     if (!response.ok) {
-      throw new Error(`Error fetching replacement suggestions: ${response.statusText}`);
+      throw new Error(
+        `Error fetching replacement suggestions: ${response.statusText}`
+      );
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to fetch replacement suggestions for product ${productId}:`, error);
+    console.error(
+      `Failed to fetch replacement suggestions for product ${productId}:`,
+      error
+    );
     throw error;
   }
 }
@@ -239,9 +276,9 @@ export async function reserveInventory(
 ): Promise<InventoryItem> {
   try {
     const response = await fetch(`${API_BASE_URL}/inventory/reserve`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         productId,
@@ -250,14 +287,17 @@ export async function reserveInventory(
         orderId,
       }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Error reserving inventory: ${response.statusText}`);
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to reserve inventory for product ${productId}:`, error);
+    console.error(
+      `Failed to reserve inventory for product ${productId}:`,
+      error
+    );
     throw error;
   }
 }
@@ -273,9 +313,9 @@ export async function releaseReservedInventory(
 ): Promise<InventoryItem> {
   try {
     const response = await fetch(`${API_BASE_URL}/inventory/release`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         productId,
@@ -284,14 +324,19 @@ export async function releaseReservedInventory(
         orderId,
       }),
     });
-    
+
     if (!response.ok) {
-      throw new Error(`Error releasing reserved inventory: ${response.statusText}`);
+      throw new Error(
+        `Error releasing reserved inventory: ${response.statusText}`
+      );
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error(`Failed to release reserved inventory for product ${productId}:`, error);
+    console.error(
+      `Failed to release reserved inventory for product ${productId}:`,
+      error
+    );
     throw error;
   }
 }
@@ -305,20 +350,24 @@ export async function getInventoryAlerts(
 ): Promise<{ alerts: any[]; total: number; page: number; totalPages: number }> {
   try {
     const params = new URLSearchParams();
-    params.append('_page', page.toString());
-    params.append('_limit', limit.toString());
-    params.append('_sort', 'createdAt');
-    params.append('_order', 'desc');
-    
-    const response = await fetch(`${API_BASE_URL}/inventory/alerts?${params.toString()}`);
-    
+    params.append("_page", page.toString());
+    params.append("_limit", limit.toString());
+    params.append("_sort", "createdAt");
+    params.append("_order", "desc");
+
+    const response = await fetch(
+      `${API_BASE_URL}/inventory/alerts?${params.toString()}`
+    );
+
     if (!response.ok) {
-      throw new Error(`Error fetching inventory alerts: ${response.statusText}`);
+      throw new Error(
+        `Error fetching inventory alerts: ${response.statusText}`
+      );
     }
-    
-    const total = parseInt(response.headers.get('X-Total-Count') || '0', 10);
+
+    const total = parseInt(response.headers.get("X-Total-Count") || "0", 10);
     const alerts = await response.json();
-    
+
     return {
       alerts,
       total,
@@ -326,7 +375,7 @@ export async function getInventoryAlerts(
       totalPages: Math.ceil(total / limit),
     };
   } catch (error) {
-    console.error('Failed to fetch inventory alerts:', error);
+    console.error("Failed to fetch inventory alerts:", error);
     throw error;
   }
-} 
+}

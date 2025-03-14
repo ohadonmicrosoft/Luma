@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import Head from 'next/head';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { Layout } from '@/components/layout/Layout';
-import { LoginForm } from '@/components/auth/LoginForm';
+import React, { useState } from "react";
+import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Layout } from "@/components/layout/Layout";
+import { LoginForm } from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
     try {
       // Here you would make an API call to authenticate the user
-      console.log('Login attempt with:', { email, password });
-      
+      console.log("Login attempt with:", { email, password });
+
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      
+
       // On successful login, redirect to the dashboard or home page
-      router.push('/account/dashboard');
+      router.push("/account/dashboard");
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       // Handle login error
       setIsLoading(false);
     }
   };
-  
+
   return (
     <Layout>
       <Head>
@@ -54,4 +54,4 @@ export default function LoginPage() {
       </div>
     </Layout>
   );
-} 
+}

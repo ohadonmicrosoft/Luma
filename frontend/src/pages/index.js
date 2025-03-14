@@ -1,16 +1,16 @@
-import React from 'react';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Layout } from '@/components/layout/Layout';
+import React from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { Layout } from "@/components/layout/Layout";
 
 export default function IndexPage() {
   const router = useRouter();
-  
+
   useEffect(() => {
     // Redirect to the home page
-    router.replace('/home');
+    router.replace("/home");
   }, [router]);
-  
+
   return (
     <Layout>
       <div className="container mx-auto p-8 flex items-center justify-center min-h-[50vh]">
@@ -22,4 +22,4 @@ export default function IndexPage() {
       </div>
     </Layout>
   );
-} 
+}

@@ -2,43 +2,46 @@
  * RTL/LTR utility functions for managing directional styling
  */
 
-import { useLayout } from '@/contexts/LayoutContext';
-import { useCallback } from 'react';
+import { useLayout } from "@/contexts/LayoutContext";
+import { useCallback } from "react";
 
 /**
  * CSS logical properties mapping (physical to logical)
  */
-export const LOGICAL_PROPERTIES: Record<string, string | Record<string, string>> = {
+export const LOGICAL_PROPERTIES: Record<
+  string,
+  string | Record<string, string>
+> = {
   // Margins
-  marginLeft: 'marginInlineStart',
-  marginRight: 'marginInlineEnd',
-  
+  marginLeft: "marginInlineStart",
+  marginRight: "marginInlineEnd",
+
   // Paddings
-  paddingLeft: 'paddingInlineStart',
-  paddingRight: 'paddingInlineEnd',
-  
+  paddingLeft: "paddingInlineStart",
+  paddingRight: "paddingInlineEnd",
+
   // Positions
-  left: 'inset-inline-start',
-  right: 'inset-inline-end',
-  
+  left: "inset-inline-start",
+  right: "inset-inline-end",
+
   // Borders
-  borderLeft: 'borderInlineStart',
-  borderRight: 'borderInlineEnd',
-  borderTopLeft: 'borderStartStart',
-  borderTopRight: 'borderStartEnd',
-  borderBottomLeft: 'borderEndStart',
-  borderBottomRight: 'borderEndEnd',
-  
+  borderLeft: "borderInlineStart",
+  borderRight: "borderInlineEnd",
+  borderTopLeft: "borderStartStart",
+  borderTopRight: "borderStartEnd",
+  borderBottomLeft: "borderEndStart",
+  borderBottomRight: "borderEndEnd",
+
   // Text alignment
   textAlign: {
-    left: 'start',
-    right: 'end',
+    left: "start",
+    right: "end",
   },
-  
+
   // Float
   float: {
-    left: 'inline-start',
-    right: 'inline-end',
+    left: "inline-start",
+    right: "inline-end",
   },
 };
 
@@ -49,7 +52,7 @@ export const LOGICAL_PROPERTIES: Record<string, string | Record<string, string>>
  */
 export function getLogicalProperty(property: string): string {
   const value = LOGICAL_PROPERTIES[property];
-  return typeof value === 'string' ? value : property;
+  return typeof value === "string" ? value : property;
 }
 
 /**
@@ -60,11 +63,11 @@ export function getLogicalProperty(property: string): string {
  */
 export function getLogicalValue(property: string, value: string): string {
   const valueMap = LOGICAL_PROPERTIES[property];
-  
-  if (typeof valueMap === 'object' && valueMap !== null) {
+
+  if (typeof valueMap === "object" && valueMap !== null) {
     return valueMap[value] || value;
   }
-  
+
   return value;
 }
 
@@ -75,34 +78,41 @@ export function getLogicalValue(property: string, value: string): string {
  */
 export function useDirectionalStyles() {
   const { isRTL, direction } = useLayout();
-  
+
   /**
    * Get a style object with logical properties
    * @param styles - The physical style object
    * @returns The logical style object
    */
-  const getLogicalStyles = (styles: Record<string, any>): Record<string, any> => {
+  const getLogicalStyles = (
+    styles: Record<string, any>
+  ): Record<string, any> => {
     const logicalStyles: Record<string, any> = {};
-    
+
     Object.entries(styles).forEach(([property, value]) => {
       // Handle property mappings
       const propValue = LOGICAL_PROPERTIES[property];
-      const logicalProperty = typeof propValue === 'string' ? propValue : property;
-      
+      const logicalProperty =
+        typeof propValue === "string" ? propValue : property;
+
       // Handle value mappings for certain properties
       const valueMap = LOGICAL_PROPERTIES[property];
       let logicalValue = value;
-      
-      if (typeof valueMap === 'object' && valueMap !== null && typeof value === 'string') {
+
+      if (
+        typeof valueMap === "object" &&
+        valueMap !== null &&
+        typeof value === "string"
+      ) {
         logicalValue = valueMap[value] || value;
       }
-      
+
       logicalStyles[logicalProperty] = logicalValue;
     });
-    
+
     return logicalStyles;
   };
-  
+
   /**
    * Get a class name with directional suffix
    * @param baseClassName - The base class name
@@ -111,7 +121,7 @@ export function useDirectionalStyles() {
   const getDirectionalClassName = (baseClassName: string): string => {
     return `${baseClassName}-${direction}`;
   };
-  
+
   /**
    * Flip a value based on direction
    * @param ltrValue - The value for LTR
@@ -121,7 +131,7 @@ export function useDirectionalStyles() {
   const flip = <T>(ltrValue: T, rtlValue: T): T => {
     return isRTL ? rtlValue : ltrValue;
   };
-  
+
   /**
    * Get a margin or padding CSS object with logical properties
    * @param top - Top value
@@ -143,7 +153,7 @@ export function useDirectionalStyles() {
       marginInlineStart: isRTL ? right : left,
     };
   };
-  
+
   /**
    * Swap values for RTL
    * @param value - The value to potentially swap
@@ -152,7 +162,7 @@ export function useDirectionalStyles() {
   const swap = <T>(value: [T, T]): T => {
     return isRTL ? value[1] : value[0];
   };
-  
+
   /**
    * Apply RTL transform if needed
    * @param transformFn - The transform function to apply
@@ -162,7 +172,7 @@ export function useDirectionalStyles() {
   const transform = <T>(transformFn: (value: T) => T, value: T): T => {
     return isRTL ? transformFn(value) : value;
   };
-  
+
   return {
     isRTL,
     direction,
@@ -181,7 +191,7 @@ export function useDirectionalStyles() {
  */
 export const useRtlUtils = () => {
   const { isRTL } = useLayout();
-  
+
   /**
    * Returns the appropriate class based on the direction
    * @param ltrClass - Class to use in LTR mode
@@ -194,7 +204,7 @@ export const useRtlUtils = () => {
     },
     [isRTL]
   );
-  
+
   /**
    * Creates a conditional class string for RTL/LTR scenarios
    * @param baseClasses - Classes to always apply
@@ -203,13 +213,17 @@ export const useRtlUtils = () => {
    * @returns Combined class string
    */
   const cx = useCallback(
-    (baseClasses: string = '', ltrClasses: string = '', rtlClasses: string = ''): string => {
+    (
+      baseClasses: string = "",
+      ltrClasses: string = "",
+      rtlClasses: string = ""
+    ): string => {
       const directionClasses = isRTL ? rtlClasses : ltrClasses;
       return `${baseClasses} ${directionClasses}`.trim();
     },
     [isRTL]
   );
-  
+
   /**
    * Maps logical CSS properties to physical ones
    * @param property - The logical CSS property
@@ -218,39 +232,39 @@ export const useRtlUtils = () => {
   const mapLogicalToPhysical = useCallback(
     (property: string): string => {
       const mappings: Record<string, Record<string, string>> = {
-        'ltr': {
-          'margin-inline-start': 'margin-left',
-          'margin-inline-end': 'margin-right',
-          'padding-inline-start': 'padding-left',
-          'padding-inline-end': 'padding-right',
-          'border-inline-start': 'border-left',
-          'border-inline-end': 'border-right',
-          'inset-inline-start': 'left',
-          'inset-inline-end': 'right',
+        ltr: {
+          "margin-inline-start": "margin-left",
+          "margin-inline-end": "margin-right",
+          "padding-inline-start": "padding-left",
+          "padding-inline-end": "padding-right",
+          "border-inline-start": "border-left",
+          "border-inline-end": "border-right",
+          "inset-inline-start": "left",
+          "inset-inline-end": "right",
         },
-        'rtl': {
-          'margin-inline-start': 'margin-right',
-          'margin-inline-end': 'margin-left',
-          'padding-inline-start': 'padding-right',
-          'padding-inline-end': 'padding-left',
-          'border-inline-start': 'border-right',
-          'border-inline-end': 'border-left',
-          'inset-inline-start': 'right',
-          'inset-inline-end': 'left',
-        }
+        rtl: {
+          "margin-inline-start": "margin-right",
+          "margin-inline-end": "margin-left",
+          "padding-inline-start": "padding-right",
+          "padding-inline-end": "padding-left",
+          "border-inline-start": "border-right",
+          "border-inline-end": "border-left",
+          "inset-inline-start": "right",
+          "inset-inline-end": "left",
+        },
       };
-      
-      const direction = isRTL ? 'rtl' : 'ltr';
+
+      const direction = isRTL ? "rtl" : "ltr";
       return mappings[direction][property] || property;
     },
     [isRTL]
   );
-  
+
   return {
     isRTL,
     getDirectionalClass,
     cx,
-    mapLogicalToPhysical
+    mapLogicalToPhysical,
   };
 };
 
@@ -260,6 +274,6 @@ export const useRtlUtils = () => {
  * @returns Whether the current locale is RTL
  */
 export const isRtlLocale = (locale: string | undefined): boolean => {
-  const rtlLocales = ['he', 'ar', 'fa', 'ur'];
-  return rtlLocales.some(rtlLocale => locale?.startsWith(rtlLocale));
-}; 
+  const rtlLocales = ["he", "ar", "fa", "ur"];
+  return rtlLocales.some((rtlLocale) => locale?.startsWith(rtlLocale));
+};

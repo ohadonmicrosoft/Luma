@@ -1,4 +1,4 @@
-import { ErrorCode, StatusCode } from './constants';
+import { ErrorCode, StatusCode } from "./constants";
 
 export class AppError extends Error {
   public readonly statusCode: StatusCode;
@@ -15,11 +15,11 @@ export class AppError extends Error {
     this.statusCode = statusCode;
     this.errorCode = errorCode;
     this.isOperational = isOperational;
-    
+
     // Capture stack trace
     Error.captureStackTrace(this, this.constructor);
-    
+
     // Set the prototype explicitly
     Object.setPrototypeOf(this, AppError.prototype);
   }
-} 
+}

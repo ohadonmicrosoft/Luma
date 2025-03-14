@@ -1,9 +1,9 @@
-
 This action plan focuses on making the current implementation solid and robust without adding new features, addressing critical issues first and ensuring alignment with the implementation plan up to section 3.1.
 
 ## Phase 1: Critical Fixes (Immediate Priority)
 
 ### 1.1 Fix Tailwind CSS Dependency Issue
+
 - **Task**: Resolve the Tailwind CSS and PostCSS version incompatibility
 - **Steps**:
   1. Update the frontend package.json to use compatible versions:
@@ -14,6 +14,7 @@ This action plan focuses on making the current implementation solid and robust w
   4. Verify the application builds without errors
 
 ### 1.2 Fix Basic Project Structure
+
 - **Task**: Ensure proper project organization and configuration
 - **Steps**:
   1. Update tsconfig.json to include proper path aliases
@@ -22,6 +23,7 @@ This action plan focuses on making the current implementation solid and robust w
   4. Validate Next.js configuration for proper path resolution
 
 ### 1.3 Complete Essential UI Components
+
 - **Task**: Ensure core UI components are properly implemented and functioning
 - **Steps**:
   1. Fix any issues in the Button, Card, Input, and Modal components
@@ -32,6 +34,7 @@ This action plan focuses on making the current implementation solid and robust w
 ## Phase 2: Core Functionality Enhancement (High Priority)
 
 ### 2.1 Enhance Product Data Model
+
 - **Task**: Update product model to support tactical/outdoor equipment
 - **Steps**:
   1. Add technical specification fields to Product model:
@@ -43,6 +46,7 @@ This action plan focuses on making the current implementation solid and robust w
   4. Ensure backwards compatibility with existing data
 
 ### 2.2 Implement Basic RTL Support
+
 - **Task**: Add RTL layout support for Hebrew content
 - **Steps**:
   1. Configure Tailwind CSS for RTL support
@@ -51,6 +55,7 @@ This action plan focuses on making the current implementation solid and robust w
   4. Test basic layout with Hebrew content
 
 ### 2.3 Fix Localization Framework
+
 - **Task**: Ensure i18n works properly throughout the application
 - **Steps**:
   1. Validate translation files for completeness
@@ -61,6 +66,7 @@ This action plan focuses on making the current implementation solid and robust w
 ## Phase 3: Home Page Implementation (High Priority)
 
 ### 3.1 Complete Hero Section
+
 - **Task**: Implement proper hero section for tactical/outdoor focus
 - **Steps**:
   1. Review the existing HeroSection.tsx implementation
@@ -70,6 +76,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Implement RTL layout compatibility
 
 ### 3.2 Implement Category Showcase
+
 - **Task**: Complete the category display for tactical equipment
 - **Steps**:
   1. Review existing FeaturedCategories.tsx implementation
@@ -79,6 +86,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Add proper links to category pages
 
 ### 3.3 Complete Product Highlights
+
 - **Task**: Implement product highlights with technical focus
 - **Steps**:
   1. Review existing ProductHighlights.tsx implementation
@@ -90,6 +98,7 @@ This action plan focuses on making the current implementation solid and robust w
 ## Phase 4: Product Components Enhancement (Medium Priority)
 
 ### 4.1 Fix Product Card Implementation
+
 - **Task**: Ensure product cards display tactical product information properly
 - **Steps**:
   1. Review existing ProductCard.tsx implementation
@@ -99,6 +108,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Test responsive layout and RTL compatibility
 
 ### 4.2 Enhance Product Grid
+
 - **Task**: Fix product grid display and unify duplicated components
 - **Steps**:
   1. Compare ProductGrid.tsx and ProductResultsGrid.tsx implementations
@@ -108,6 +118,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Test with various product data
 
 ### 4.3 Fix Filter Sidebar
+
 - **Task**: Update filter sidebar for technical specifications
 - **Steps**:
   1. Review existing FilterSidebar.tsx implementation
@@ -119,6 +130,7 @@ This action plan focuses on making the current implementation solid and robust w
 ## Phase 5: Backend Enhancements (Medium Priority)
 
 ### 5.1 Improve Product Services
+
 - **Task**: Enhance product services to support tactical equipment
 - **Steps**:
   1. Update productService.ts to handle technical specifications
@@ -128,6 +140,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Test with various product data
 
 ### 5.2 Fix Category Services
+
 - **Task**: Update category services for tactical equipment categories
 - **Steps**:
   1. Review categoryService.ts implementation
@@ -137,6 +150,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Test with various category data
 
 ### 5.3 Enhance API Controllers
+
 - **Task**: Update API controllers to support new requirements
 - **Steps**:
   1. Fix product controller to handle technical specifications
@@ -148,6 +162,7 @@ This action plan focuses on making the current implementation solid and robust w
 ## Phase 6: Frontend-Backend Integration (Medium Priority)
 
 ### 6.1 Fix API Integration Services
+
 - **Task**: Ensure frontend services properly connect to backend APIs
 - **Steps**:
   1. Review and fix productService.ts in frontend
@@ -157,6 +172,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Test integration with various API scenarios
 
 ### 6.2 Implement Proper Error Handling
+
 - **Task**: Add robust error handling throughout the application
 - **Steps**:
   1. Create consistent error handling utilities
@@ -166,6 +182,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Test with various error scenarios
 
 ### 6.3 Optimize API Request Performance
+
 - **Task**: Improve performance of API requests
 - **Steps**:
   1. Implement request batching where appropriate
@@ -177,6 +194,7 @@ This action plan focuses on making the current implementation solid and robust w
 ## Phase 7: Testing & Quality Assurance (Low Priority)
 
 ### 7.1 Implement Component Testing
+
 - **Task**: Add basic tests for critical components
 - **Steps**:
   1. Set up testing framework if not already done
@@ -186,6 +204,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Validate multilingual component behavior
 
 ### 7.2 Add API Testing
+
 - **Task**: Implement tests for API endpoints
 - **Steps**:
   1. Set up API testing framework
@@ -195,6 +214,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Ensure performance is acceptable
 
 ### 7.3 Perform Cross-Browser Testing
+
 - **Task**: Validate application works in major browsers
 - **Steps**:
   1. Test in Chrome, Firefox, Safari, and Edge
@@ -206,6 +226,7 @@ This action plan focuses on making the current implementation solid and robust w
 ## Phase 8: Documentation & Cleanup (Low Priority)
 
 ### 8.1 Update Project Documentation
+
 - **Task**: Ensure documentation reflects current state
 - **Steps**:
   1. Update README files with current information
@@ -215,6 +236,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Add development environment setup instructions
 
 ### 8.2 Code Cleanup
+
 - **Task**: Clean up code and remove unused components
 - **Steps**:
   1. Remove duplicate components (ProductGrid vs ProductResultsGrid)
@@ -224,6 +246,7 @@ This action plan focuses on making the current implementation solid and robust w
   5. Ensure consistent naming conventions
 
 ### 8.3 Performance Optimization
+
 - **Task**: Implement basic performance improvements
 - **Steps**:
   1. Optimize image loading and display
@@ -234,16 +257,16 @@ This action plan focuses on making the current implementation solid and robust w
 
 ## Implementation Timeline
 
-| Phase | Estimated Duration | Dependencies |
-|-------|-------------------|--------------|
-| Phase 1: Critical Fixes | 2-3 days | None |
-| Phase 2: Core Functionality | 3-5 days | Phase 1 |
-| Phase 3: Home Page Implementation | 3-4 days | Phases 1-2 |
-| Phase 4: Product Components | 4-6 days | Phases 1-3 |
-| Phase 5: Backend Enhancements | 5-7 days | Phases 1-2 |
-| Phase 6: Frontend-Backend Integration | 3-5 days | Phases 4-5 |
-| Phase 7: Testing & QA | 3-4 days | Phases 1-6 |
-| Phase 8: Documentation & Cleanup | 2-3 days | Phases 1-7 |
+| Phase                                 | Estimated Duration | Dependencies |
+| ------------------------------------- | ------------------ | ------------ |
+| Phase 1: Critical Fixes               | 2-3 days           | None         |
+| Phase 2: Core Functionality           | 3-5 days           | Phase 1      |
+| Phase 3: Home Page Implementation     | 3-4 days           | Phases 1-2   |
+| Phase 4: Product Components           | 4-6 days           | Phases 1-3   |
+| Phase 5: Backend Enhancements         | 5-7 days           | Phases 1-2   |
+| Phase 6: Frontend-Backend Integration | 3-5 days           | Phases 4-5   |
+| Phase 7: Testing & QA                 | 3-4 days           | Phases 1-6   |
+| Phase 8: Documentation & Cleanup      | 2-3 days           | Phases 1-7   |
 
 ## Success Criteria
 

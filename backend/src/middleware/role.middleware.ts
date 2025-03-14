@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import { UserRole } from '../utils/constants';
-import { StatusCode } from '../utils/constants';
-import { AppError } from '../utils/AppError';
+import { Request, Response, NextFunction } from "express";
+import { UserRole } from "../utils/constants";
+import { StatusCode } from "../utils/constants";
+import { AppError } from "../utils/AppError";
 
 /**
  * Middleware to check if the authenticated user has the required role(s)
@@ -12,12 +12,15 @@ export const checkRole = (roles: UserRole[]) => {
     try {
       // Ensure user object exists (should be attached by auth middleware)
       if (!req.user) {
-        throw new AppError('User not authenticated', StatusCode.UNAUTHORIZED);
+        throw new AppError("User not authenticated", StatusCode.UNAUTHORIZED);
       }
 
       // Check if user role is in the allowed roles
       if (!roles.includes(req.user.role)) {
-        throw new AppError('You do not have permission to perform this action', StatusCode.FORBIDDEN);
+        throw new AppError(
+          "You do not have permission to perform this action",
+          StatusCode.FORBIDDEN
+        );
       }
 
       next();
@@ -25,4 +28,4 @@ export const checkRole = (roles: UserRole[]) => {
       next(error);
     }
   };
-}; 
+};

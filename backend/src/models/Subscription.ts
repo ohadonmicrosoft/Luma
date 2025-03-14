@@ -6,68 +6,68 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
-} from 'typeorm';
-import { User } from './User';
-import { SubscriptionItem } from './SubscriptionItem';
+  OneToMany,
+} from "typeorm";
+import { User } from "./User";
+import { SubscriptionItem } from "./SubscriptionItem";
 
 // Subscription frequency options
 export enum SubscriptionFrequency {
-  WEEKLY = 'weekly',
-  BIWEEKLY = 'biweekly',
-  MONTHLY = 'monthly',
-  BIMONTHLY = 'bimonthly',
-  QUARTERLY = 'quarterly'
+  WEEKLY = "weekly",
+  BIWEEKLY = "biweekly",
+  MONTHLY = "monthly",
+  BIMONTHLY = "bimonthly",
+  QUARTERLY = "quarterly",
 }
 
 // Subscription status
 export enum SubscriptionStatus {
-  ACTIVE = 'active',
-  PAUSED = 'paused',
-  CANCELLED = 'cancelled',
-  PAYMENT_FAILED = 'payment_failed',
-  COMPLETED = 'completed'
+  ACTIVE = "active",
+  PAUSED = "paused",
+  CANCELLED = "cancelled",
+  PAYMENT_FAILED = "payment_failed",
+  COMPLETED = "completed",
 }
 
-@Entity('subscriptions')
+@Entity("subscriptions")
 export class Subscription {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Column({ nullable: true })
   user_id?: string;
 
-  @ManyToOne(() => User, user => user.subscriptions, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @ManyToOne(() => User, (user) => user.subscriptions, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "user_id" })
   user?: User;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: SubscriptionFrequency,
-    default: SubscriptionFrequency.MONTHLY
+    default: SubscriptionFrequency.MONTHLY,
   })
   frequency!: SubscriptionFrequency;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     enum: SubscriptionStatus,
-    default: SubscriptionStatus.ACTIVE
+    default: SubscriptionStatus.ACTIVE,
   })
   status!: SubscriptionStatus;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: "timestamp", nullable: true })
   last_order_date?: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: "timestamp", nullable: true })
   next_order_date?: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: "timestamp", nullable: true })
   cancelled_at?: Date;
 
-  @Column({ default: 0, type: 'decimal', precision: 10, scale: 2 })
+  @Column({ default: 0, type: "decimal", precision: 10, scale: 2 })
   amount!: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   discount!: number;
 
   @Column({ nullable: true })
@@ -79,7 +79,7 @@ export class Subscription {
   @Column({ default: false })
   auto_renew!: boolean;
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   billing_address?: {
     line1: string;
     line2?: string;
@@ -89,7 +89,7 @@ export class Subscription {
     country: string;
   };
 
-  @Column({ type: 'json', nullable: true })
+  @Column({ type: "json", nullable: true })
   shipping_address?: {
     line1: string;
     line2?: string;
@@ -102,7 +102,9 @@ export class Subscription {
   @Column({ nullable: true })
   payment_method_id?: string;
 
-  @OneToMany(() => SubscriptionItem, item => item.subscription, { cascade: true })
+  @OneToMany(() => SubscriptionItem, (item) => item.subscription, {
+    cascade: true,
+  })
   items!: SubscriptionItem[];
 
   @CreateDateColumn()
@@ -117,15 +119,18 @@ export class Subscription {
   calculateTotal(): number {
     let total = 0;
     if (this.items && this.items.length > 0) {
-      total = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      total = this.items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
     }
-    
+
     // Apply discount if any
     if (this.discount > 0) {
       total = total - this.discount;
       if (total < 0) total = 0;
     }
-    
+
     this.amount = parseFloat(total.toFixed(2));
     return this.amount;
   }
@@ -135,7 +140,7 @@ export class Subscription {
    */
   calculateNextOrderDate(): Date {
     const nextDate = new Date(this.last_order_date || new Date());
-    
+
     switch (this.frequency) {
       case SubscriptionFrequency.WEEKLY:
         nextDate.setDate(nextDate.getDate() + 7);
@@ -155,8 +160,8 @@ export class Subscription {
       default:
         nextDate.setMonth(nextDate.getMonth() + 1);
     }
-    
+
     this.next_order_date = nextDate;
     return nextDate;
   }
-} 
+}

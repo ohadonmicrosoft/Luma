@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import Head from 'next/head';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { Layout } from '@/components/layout/Layout';
-import { RegisterForm, RegisterFormData } from '@/components/auth/RegisterForm';
+import React, { useState } from "react";
+import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Layout } from "@/components/layout/Layout";
+import { RegisterForm, RegisterFormData } from "@/components/auth/RegisterForm";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const handleRegister = async (userData: RegisterFormData) => {
     setIsLoading(true);
     try {
       // Here you would make an API call to register the user
-      console.log('Register attempt with:', userData);
-      
+      console.log("Register attempt with:", userData);
+
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+
       // On successful registration, redirect to the login page or dashboard
-      router.push('/auth/login?registered=true');
+      router.push("/auth/login?registered=true");
     } catch (error) {
-      console.error('Registration failed:', error);
+      console.error("Registration failed:", error);
       // Handle registration error
       setIsLoading(false);
     }
   };
-  
+
   return (
     <Layout>
       <Head>
@@ -54,4 +54,4 @@ export default function RegisterPage() {
       </div>
     </Layout>
   );
-} 
+}

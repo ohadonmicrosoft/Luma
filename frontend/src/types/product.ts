@@ -42,45 +42,45 @@ export interface Product {
   categories: Category[];
   tags: string[];
   brand: Brand;
-  
+
   // Multilingual content
   name: LocalizedString;
   description: LocalizedString;
   shortDescription?: LocalizedString;
-  
+
   // Media
   images: ProductImage[];
   videos?: ProductVideo[];
   documents?: ProductDocument[];
-  
+
   // Pricing
   price: Price;
   compareAtPrice?: Price;
   costPrice?: Price;
-  
+
   // Variants
   hasVariants: boolean;
   variantAttributes?: VariantAttribute[];
   variants?: ProductVariant[];
-  
+
   // Inventory
   inventoryManaged: boolean;
   stockQuantity?: number;
   lowStockThreshold?: number;
-  
+
   // Shipping
   weight?: Weight;
   dimensions?: Dimensions;
   shippingClass?: string;
-  
+
   // SEO
   seo?: SEO;
-  
+
   // Dates
   createdAt: string;
   updatedAt: string;
   publishedAt?: string;
-  
+
   // Type-specific fields (will be populated based on product type)
   specifications?: Record<string, string | number | boolean | string[]>;
   typeSpecificFields?: Record<string, any>;
@@ -108,33 +108,33 @@ export interface ProductVariant {
  * Product types
  */
 export enum ProductType {
-  PHYSICAL = 'physical',
-  DIGITAL = 'digital',
-  SERVICE = 'service',
-  SUBSCRIPTION = 'subscription',
-  BUNDLE = 'bundle',
-  CONFIGURABLE = 'configurable',
-  CLOTHING = 'clothing',
-  ELECTRONICS = 'electronics',
-  FURNITURE = 'furniture',
-  FOOD = 'food',
-  BOOK = 'book',
-  JEWELRY = 'jewelry',
-  COSMETICS = 'cosmetics',
-  TOY = 'toy',
-  GIFT_CARD = 'gift_card',
+  PHYSICAL = "physical",
+  DIGITAL = "digital",
+  SERVICE = "service",
+  SUBSCRIPTION = "subscription",
+  BUNDLE = "bundle",
+  CONFIGURABLE = "configurable",
+  CLOTHING = "clothing",
+  ELECTRONICS = "electronics",
+  FURNITURE = "furniture",
+  FOOD = "food",
+  BOOK = "book",
+  JEWELRY = "jewelry",
+  COSMETICS = "cosmetics",
+  TOY = "toy",
+  GIFT_CARD = "gift_card",
 }
 
 /**
  * Product status
  */
 export enum ProductStatus {
-  DRAFT = 'draft',
-  ACTIVE = 'active',
-  ARCHIVED = 'archived',
-  OUT_OF_STOCK = 'out_of_stock',
-  COMING_SOON = 'coming_soon',
-  DISCONTINUED = 'discontinued',
+  DRAFT = "draft",
+  ACTIVE = "active",
+  ARCHIVED = "archived",
+  OUT_OF_STOCK = "out_of_stock",
+  COMING_SOON = "coming_soon",
+  DISCONTINUED = "discontinued",
 }
 
 /**
@@ -219,7 +219,7 @@ export interface ProductVideo {
   thumbnail?: string;
   position: number;
   duration?: number;
-  provider?: 'youtube' | 'vimeo' | 'self-hosted';
+  provider?: "youtube" | "vimeo" | "self-hosted";
 }
 
 /**
@@ -264,7 +264,7 @@ export interface VariantAttributeValue {
  */
 export interface Weight {
   value: number;
-  unit: 'g' | 'kg' | 'oz' | 'lb';
+  unit: "g" | "kg" | "oz" | "lb";
 }
 
 /**
@@ -274,7 +274,7 @@ export interface Dimensions {
   length: number;
   width: number;
   height: number;
-  unit: 'cm' | 'in' | 'm';
+  unit: "cm" | "in" | "m";
 }
 
 /**
@@ -295,7 +295,7 @@ export interface SEO {
 export interface ProductFilter {
   id: string;
   name: LocalizedString;
-  type: 'category' | 'brand' | 'price' | 'attribute' | 'rating' | 'tag';
+  type: "category" | "brand" | "price" | "attribute" | "rating" | "tag";
   values: ProductFilterValue[];
 }
 
@@ -314,14 +314,14 @@ export interface ProductFilterValue {
  * Product sort options
  */
 export enum ProductSortOption {
-  NEWEST = 'newest',
-  PRICE_LOW_TO_HIGH = 'price_asc',
-  PRICE_HIGH_TO_LOW = 'price_desc',
-  NAME_A_TO_Z = 'name_asc',
-  NAME_Z_TO_A = 'name_desc',
-  BEST_SELLING = 'best_selling',
-  TRENDING = 'trending',
-  TOP_RATED = 'top_rated',
+  NEWEST = "newest",
+  PRICE_LOW_TO_HIGH = "price_asc",
+  PRICE_HIGH_TO_LOW = "price_desc",
+  NAME_A_TO_Z = "name_asc",
+  NAME_Z_TO_A = "name_desc",
+  BEST_SELLING = "best_selling",
+  TRENDING = "trending",
+  TOP_RATED = "top_rated",
 }
 
 /**
@@ -388,7 +388,7 @@ export interface ClothingProductFields {
   material: LocalizedString;
   careInstructions: LocalizedString;
   season?: string[];
-  gender?: 'men' | 'women' | 'unisex' | 'boys' | 'girls';
+  gender?: "men" | "women" | "unisex" | "boys" | "girls";
   style?: string[];
   fit?: string;
   collar?: string;
@@ -465,11 +465,17 @@ export interface FoodProductFields {
  * Subscription product specific fields
  */
 export interface SubscriptionProductFields {
-  billingPeriod: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'biannually' | 'annually';
+  billingPeriod:
+    | "daily"
+    | "weekly"
+    | "monthly"
+    | "quarterly"
+    | "biannually"
+    | "annually";
   trialPeriod?: number;
-  trialPeriodUnit?: 'day' | 'week' | 'month';
+  trialPeriodUnit?: "day" | "week" | "month";
   subscriptionLength?: number;
-  subscriptionLengthUnit?: 'day' | 'week' | 'month' | 'year';
+  subscriptionLengthUnit?: "day" | "week" | "month" | "year";
   features: LocalizedString[];
   cancellationPolicy: LocalizedString;
 }
@@ -483,7 +489,7 @@ export interface BundleProductFields {
     quantity: number;
     discountPercentage?: number;
   }[];
-  bundleType: 'fixed' | 'dynamic';
+  bundleType: "fixed" | "dynamic";
   minProducts?: number;
   maxProducts?: number;
-} 
+}

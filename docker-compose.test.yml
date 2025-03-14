@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend-test:
@@ -61,4 +61,4 @@ services:
 
 networks:
   luma-test-network:
-    driver: bridge 
+    driver: bridge

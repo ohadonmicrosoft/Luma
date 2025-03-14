@@ -1,5 +1,5 @@
-import { AppDataSource } from './database';
-import logger from '../utils/logger';
+import { AppDataSource } from "./database";
+import logger from "../utils/logger";
 
 /**
  * Initializes the database with performance optimizations
@@ -10,14 +10,14 @@ export const initDatabaseOptimizations = async () => {
   try {
     // Skip if database is not initialized
     if (!AppDataSource.isInitialized) {
-      logger.warn('Database not initialized, skipping optimizations');
+      logger.warn("Database not initialized, skipping optimizations");
       return;
     }
 
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.connect();
 
-    logger.info('Setting up database optimizations...');
+    logger.info("Setting up database optimizations...");
 
     // Create extension for full-text search if not exists
     await queryRunner.query(`
@@ -60,9 +60,9 @@ export const initDatabaseOptimizations = async () => {
       ON reviews(product_id, rating);
     `);
 
-    logger.info('Database optimizations completed successfully');
+    logger.info("Database optimizations completed successfully");
   } catch (error) {
-    logger.error('Error setting up database optimizations:', error);
+    logger.error("Error setting up database optimizations:", error);
   }
 };
 
@@ -76,7 +76,7 @@ export const initDatabase = async () => {
     // Initialize database connection
     if (!AppDataSource.isInitialized) {
       await AppDataSource.initialize();
-      logger.info('Database connection initialized successfully');
+      logger.info("Database connection initialized successfully");
     }
 
     // Set up optimizations
@@ -84,15 +84,18 @@ export const initDatabase = async () => {
 
     return AppDataSource;
   } catch (error) {
-    logger.error('Database initialization failed:', error);
-    
+    logger.error("Database initialization failed:", error);
+
     // In development, we may want to continue even without a database
-    const isDevelopment = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
-    if (isDevelopment && process.env.SKIP_DB_CONNECTION === 'true') {
-      logger.warn('Continuing in development mode without database connection.');
+    const isDevelopment =
+      process.env.NODE_ENV !== "production" && process.env.NODE_ENV !== "test";
+    if (isDevelopment && process.env.SKIP_DB_CONNECTION === "true") {
+      logger.warn(
+        "Continuing in development mode without database connection."
+      );
       return null;
     }
-    
+
     throw error;
   }
-}; 
+};

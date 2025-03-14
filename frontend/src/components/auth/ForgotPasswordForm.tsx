@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
+import React, { useState } from "react";
+import Link from "next/link";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 export interface ForgotPasswordFormProps {
   onSubmit: (email: string) => void;
   isLoading?: boolean;
 }
 
-export function ForgotPasswordForm({ onSubmit, isLoading = false }: ForgotPasswordFormProps) {
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState<string>('');
+export function ForgotPasswordForm({
+  onSubmit,
+  isLoading = false,
+}: ForgotPasswordFormProps) {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
 
   const validateForm = () => {
     if (!email) {
-      setError('Email is required');
+      setError("Email is required");
       return false;
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Email is invalid');
+      setError("Email is invalid");
       return false;
     }
-    
-    setError('');
+
+    setError("");
     return true;
   };
 
@@ -55,26 +58,33 @@ export function ForgotPasswordForm({ onSubmit, isLoading = false }: ForgotPasswo
           Check your email
         </h2>
         <p className="text-neutral-600 mb-6">
-          We&apos;ve sent a password reset link to <span className="font-semibold">{email}</span>.
-          Please check your inbox and follow the instructions to reset your password.
+          We&apos;ve sent a password reset link to{" "}
+          <span className="font-semibold">{email}</span>. Please check your
+          inbox and follow the instructions to reset your password.
         </p>
         <p className="text-neutral-500 text-sm">
-          Didn&apos;t receive the email?{' '}
+          Didn&apos;t receive the email?{" "}
           <button
             type="button"
             onClick={() => setSubmitted(false)}
             className="font-medium text-primary-600 hover:text-primary-500"
           >
             Try again
-          </button>{' '}
-          or contact{' '}
-          <Link href="/support" className="font-medium text-primary-600 hover:text-primary-500">
+          </button>{" "}
+          or contact{" "}
+          <Link
+            href="/support"
+            className="font-medium text-primary-600 hover:text-primary-500"
+          >
             customer support
           </Link>
         </p>
-        
+
         <div className="mt-8">
-          <Link href="/auth/login" className="text-sm font-medium text-primary-600 hover:text-primary-500">
+          <Link
+            href="/auth/login"
+            className="text-sm font-medium text-primary-600 hover:text-primary-500"
+          >
             ← Back to sign in
           </Link>
         </div>
@@ -84,9 +94,12 @@ export function ForgotPasswordForm({ onSubmit, isLoading = false }: ForgotPasswo
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <h2 className="text-3xl font-bold text-center text-neutral-800 mb-3">Forgot password?</h2>
+      <h2 className="text-3xl font-bold text-center text-neutral-800 mb-3">
+        Forgot password?
+      </h2>
       <p className="text-center text-neutral-600 mb-8">
-        Enter your email address and we&apos;ll send you a link to reset your password.
+        Enter your email address and we&apos;ll send you a link to reset your
+        password.
       </p>
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
@@ -99,14 +112,17 @@ export function ForgotPasswordForm({ onSubmit, isLoading = false }: ForgotPasswo
           disabled={isLoading}
         />
         <Button type="submit" fullWidth={true} disabled={isLoading}>
-          {isLoading ? 'Sending reset link...' : 'Send reset link'}
+          {isLoading ? "Sending reset link..." : "Send reset link"}
         </Button>
       </form>
       <div className="mt-8 text-center">
-        <Link href="/auth/login" className="text-sm font-medium text-primary-600 hover:text-primary-500">
+        <Link
+          href="/auth/login"
+          className="text-sm font-medium text-primary-600 hover:text-primary-500"
+        >
           ← Back to sign in
         </Link>
       </div>
     </div>
   );
-} 
+}

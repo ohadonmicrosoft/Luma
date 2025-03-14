@@ -2,20 +2,20 @@
  * Number formatting utilities with support for multiple locales including Hebrew
  */
 
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from "next-i18next";
 
 interface NumberFormatOptions {
-  style?: 'decimal' | 'percent' | 'unit';
+  style?: "decimal" | "percent" | "unit";
   unit?: string;
-  unitDisplay?: 'long' | 'short' | 'narrow';
+  unitDisplay?: "long" | "short" | "narrow";
   minimumFractionDigits?: number;
   maximumFractionDigits?: number;
   minimumIntegerDigits?: number;
   minimumSignificantDigits?: number;
   maximumSignificantDigits?: number;
-  notation?: 'standard' | 'scientific' | 'engineering' | 'compact';
-  compactDisplay?: 'short' | 'long';
-  signDisplay?: 'auto' | 'always' | 'never' | 'exceptZero';
+  notation?: "standard" | "scientific" | "engineering" | "compact";
+  compactDisplay?: "short" | "long";
+  signDisplay?: "auto" | "always" | "never" | "exceptZero";
 }
 
 /**
@@ -27,7 +27,7 @@ interface NumberFormatOptions {
  */
 export function formatNumber(
   value: number,
-  locale: string = 'en',
+  locale: string = "en",
   options: NumberFormatOptions = {}
 ): string {
   return new Intl.NumberFormat(locale, options).format(value);
@@ -42,11 +42,11 @@ export function formatNumber(
  */
 export function formatPercent(
   value: number,
-  locale: string = 'en',
+  locale: string = "en",
   decimals: number = 0
 ): string {
   return new Intl.NumberFormat(locale, {
-    style: 'percent',
+    style: "percent",
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   }).format(value);
@@ -63,13 +63,13 @@ export function formatPercent(
 export function formatUnit(
   value: number,
   unit: string,
-  locale: string = 'en',
-  options: Omit<NumberFormatOptions, 'style' | 'unit'> = {}
+  locale: string = "en",
+  options: Omit<NumberFormatOptions, "style" | "unit"> = {}
 ): string {
   return new Intl.NumberFormat(locale, {
-    style: 'unit',
+    style: "unit",
     unit,
-    unitDisplay: options.unitDisplay || 'short',
+    unitDisplay: options.unitDisplay || "short",
     minimumFractionDigits: options.minimumFractionDigits,
     maximumFractionDigits: options.maximumFractionDigits,
     notation: options.notation,
@@ -85,12 +85,12 @@ export function formatUnit(
  */
 export function formatCompact(
   value: number,
-  locale: string = 'en',
-  options: Omit<NumberFormatOptions, 'notation'> = {}
+  locale: string = "en",
+  options: Omit<NumberFormatOptions, "notation"> = {}
 ): string {
   return new Intl.NumberFormat(locale, {
-    notation: 'compact',
-    compactDisplay: options.compactDisplay || 'short',
+    notation: "compact",
+    compactDisplay: options.compactDisplay || "short",
     minimumFractionDigits: options.minimumFractionDigits,
     maximumFractionDigits: options.maximumFractionDigits || 1,
   }).format(value);
@@ -119,7 +119,7 @@ export function convertMeasurement(
     yd: 914.4,
     mi: 1609344,
   };
-  
+
   const weightConversions: Record<string, number> = {
     mg: 1,
     g: 1000,
@@ -127,7 +127,7 @@ export function convertMeasurement(
     oz: 28349.5,
     lb: 453592,
   };
-  
+
   const volumeConversions: Record<string, number> = {
     ml: 1,
     l: 1000,
@@ -137,7 +137,7 @@ export function convertMeasurement(
     qt: 946.353,
     gal: 3785.41,
   };
-  
+
   // Determine which conversion table to use
   let conversions: Record<string, number>;
   if (fromUnit in lengthConversions && toUnit in lengthConversions) {
@@ -149,7 +149,7 @@ export function convertMeasurement(
   } else {
     throw new Error(`Unsupported unit conversion: ${fromUnit} to ${toUnit}`);
   }
-  
+
   // Convert to base unit then to target unit
   return (value * conversions[fromUnit]) / conversions[toUnit];
 }
@@ -160,36 +160,30 @@ export function convertMeasurement(
  */
 export function useNumberFormatter() {
   const { i18n } = useTranslation();
-  
-  const format = (
-    value: number,
-    options: NumberFormatOptions = {}
-  ): string => {
+
+  const format = (value: number, options: NumberFormatOptions = {}): string => {
     return formatNumber(value, i18n.language, options);
   };
-  
-  const formatPct = (
-    value: number,
-    decimals: number = 0
-  ): string => {
+
+  const formatPct = (value: number, decimals: number = 0): string => {
     return formatPercent(value, i18n.language, decimals);
   };
-  
+
   const formatWithUnit = (
     value: number,
     unit: string,
-    options: Omit<NumberFormatOptions, 'style' | 'unit'> = {}
+    options: Omit<NumberFormatOptions, "style" | "unit"> = {}
   ): string => {
     return formatUnit(value, unit, i18n.language, options);
   };
-  
+
   const formatCompactNumber = (
     value: number,
-    options: Omit<NumberFormatOptions, 'notation'> = {}
+    options: Omit<NumberFormatOptions, "notation"> = {}
   ): string => {
     return formatCompact(value, i18n.language, options);
   };
-  
+
   return {
     format,
     formatPct,
@@ -198,4 +192,4 @@ export function useNumberFormatter() {
     convertMeasurement,
     locale: i18n.language,
   };
-} 
+}

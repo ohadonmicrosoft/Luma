@@ -1,7 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Button } from '@/components/ui/Button';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/Button";
 
 export interface WishlistItemProps {
   id: string;
@@ -37,7 +37,12 @@ export function WishlistItem({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-neutral-400">
-            <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="h-12 w-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -48,11 +53,14 @@ export function WishlistItem({
           </div>
         )}
       </div>
-      
+
       <div className="flex-grow">
         <div className="flex justify-between items-start">
           <div>
-            <Link href={`/products/${slug}`} className="text-lg font-medium text-neutral-900 hover:text-primary-600">
+            <Link
+              href={`/products/${slug}`}
+              className="text-lg font-medium text-neutral-900 hover:text-primary-600"
+            >
               {name}
             </Link>
             <div className="mt-1 text-neutral-600">${price.toFixed(2)}</div>
@@ -68,13 +76,18 @@ export function WishlistItem({
               )}
             </div>
           </div>
-          
+
           <button
             onClick={() => onRemove(id)}
             className="text-neutral-400 hover:text-neutral-600"
             aria-label="Remove from wishlist"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -84,26 +97,33 @@ export function WishlistItem({
             </svg>
           </button>
         </div>
-        
+
         <div className="mt-4 flex flex-col sm:flex-row gap-2">
           <Button
             onClick={() => onAddToCart(id)}
             disabled={!inStock}
             className="flex-1"
           >
-            {inStock ? 'Add to Cart' : 'Sold Out'}
+            {inStock ? "Add to Cart" : "Sold Out"}
           </Button>
-          
+
           <div className="flex gap-2">
             <Button
               variant="outline"
               className="flex-1"
               onClick={() => {
                 // Copy the wishlist item URL to clipboard
-                navigator.clipboard.writeText(window.location.origin + `/products/${slug}`);
+                navigator.clipboard.writeText(
+                  window.location.origin + `/products/${slug}`
+                );
               }}
             >
-              <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -113,17 +133,22 @@ export function WishlistItem({
               </svg>
               Share
             </Button>
-            
+
             <Button
               variant="outline"
               className="flex-1"
               onClick={() => {
                 // This would typically show a notification UI when back in stock
-                alert('You will be notified when this item is back in stock.');
+                alert("You will be notified when this item is back in stock.");
               }}
               disabled={inStock}
             >
-              <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -138,4 +163,4 @@ export function WishlistItem({
       </div>
     </div>
   );
-} 
+}

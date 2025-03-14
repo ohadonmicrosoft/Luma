@@ -1,7 +1,7 @@
-import { UserRole } from '../utils/constants';
+import { UserRole } from "../utils/constants";
 
 // Extend the Express Request interface to include a user property
-declare module 'express' {
+declare module "express" {
   interface Request {
     user?: {
       id: string;
@@ -13,4 +13,4 @@ declare module 'express' {
     };
     refreshToken?: string;
   }
-} 
+}
