@@ -61,10 +61,15 @@ jobs:
           cache: "npm"
       - name: Install root dependencies
         run: npm ci
-      - name: Install frontend dependencies
+      - name: Install frontend dependencies and verify i18next modules
         run: |
           cd frontend
           npm ci
+          # Ensure i18next dependencies are installed
+          if [ ! -d "node_modules/i18next" ] || [ ! -d "node_modules/i18next-http-backend" ] || [ ! -d "node_modules/i18next-browser-languagedetector" ]; then
+            echo "Installing missing i18next dependencies..."
+            npm install i18next i18next-http-backend i18next-browser-languagedetector next-i18next react-i18next
+          fi
       - name: Build application
         run: |
           cd frontend
@@ -87,10 +92,15 @@ jobs:
           cache: "npm"
       - name: Install root dependencies
         run: npm ci
-      - name: Install frontend dependencies
+      - name: Install frontend dependencies and verify i18next modules
         run: |
           cd frontend
           npm ci
+          # Ensure i18next dependencies are installed
+          if [ ! -d "node_modules/i18next" ] || [ ! -d "node_modules/i18next-http-backend" ] || [ ! -d "node_modules/i18next-browser-languagedetector" ]; then
+            echo "Installing missing i18next dependencies..."
+            npm install i18next i18next-http-backend i18next-browser-languagedetector next-i18next react-i18next
+          fi
       - name: Build application
         run: |
           cd frontend
