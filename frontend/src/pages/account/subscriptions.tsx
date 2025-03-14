@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { Layout } from '@/components/layout/Layout';
 import { AccountLayout } from '@/components/account/AccountLayout';
 import { Button } from '@/components/ui/Button';
+import Image from 'next/image';
 
 interface SubscriptionItem {
   id: string;
@@ -327,11 +329,14 @@ export default function SubscriptionsPage() {
                       <div key={item.id} className="flex items-center gap-4">
                         <div className="w-16 h-16 bg-neutral-100 rounded-md flex-shrink-0">
                           {item.imageUrl ? (
-                            <img
-                              src={item.imageUrl}
-                              alt={item.name}
-                              className="w-full h-full object-cover rounded-md"
-                            />
+                            <div className="relative w-full h-full">
+                              <Image
+                                src={item.imageUrl}
+                                alt={item.name}
+                                fill
+                                className="object-cover rounded-md"
+                              />
+                            </div>
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-neutral-400">
                               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

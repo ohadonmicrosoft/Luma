@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { Layout } from '@/components/layout/Layout';
 import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
@@ -37,11 +38,15 @@ export default function ResetPasswordPage() {
         </Head>
         <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            <img
-              className="mx-auto h-12 w-auto"
-              src="/logo.svg"
-              alt="Luma"
-            />
+            <div className="relative h-12 w-32 mx-auto">
+              <Image
+                src="/logo.svg"
+                alt="Luma"
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
           </div>
 
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -71,11 +76,15 @@ export default function ResetPasswordPage() {
       </Head>
       <div className="min-h-screen bg-neutral-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img
-            className="mx-auto h-12 w-auto"
-            src="/logo.svg"
-            alt="Luma"
-          />
+          <div className="relative h-12 w-32 mx-auto">
+            <Image
+              src="/logo.svg"
+              alt="Luma"
+              fill
+              priority
+              className="object-contain"
+            />
+          </div>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

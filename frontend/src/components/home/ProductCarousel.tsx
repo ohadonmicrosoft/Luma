@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
+import { cn } from '@/utils/cn';
 
 export interface Product {
   id: string;
@@ -102,25 +104,23 @@ export function ProductCarousel({
                       >
                         <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                           <div className="relative h-64 overflow-hidden">
-                            <img
+                            <Image
                               src={product.image}
                               alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              fill
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
-                            
-                            {/* Badges */}
-                            <div className="absolute top-2 left-2 flex flex-col gap-1">
-                              {product.isNew && (
-                                <span className="bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded">
-                                  New
-                                </span>
-                              )}
-                              {product.isOnSale && (
-                                <span className="bg-red-600 text-white text-xs font-medium px-2 py-1 rounded">
-                                  Sale
-                                </span>
-                              )}
-                            </div>
+                            {product.isNew && (
+                              <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                NEW
+                              </div>
+                            )}
+                            {product.isOnSale && (
+                              <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                SALE
+                              </div>
+                            )}
                           </div>
                           
                           <div className="p-4">

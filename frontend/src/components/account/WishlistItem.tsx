@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 
 export interface WishlistItemProps {
@@ -25,12 +26,14 @@ export function WishlistItem({
 }: WishlistItemProps) {
   return (
     <div className="flex flex-col md:flex-row gap-4 p-4 border border-neutral-200 rounded-lg">
-      <div className="w-full md:w-32 h-32 bg-neutral-100 rounded-md flex-shrink-0">
+      <div className="w-full md:w-32 h-32 bg-neutral-100 rounded-md flex-shrink-0 relative">
         {imageUrl ? (
-          <img
+          <Image
             src={imageUrl}
             alt={name}
-            className="w-full h-full object-cover rounded-md"
+            fill
+            sizes="(max-width: 768px) 100vw, 128px"
+            className="object-cover rounded-md"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-neutral-400">

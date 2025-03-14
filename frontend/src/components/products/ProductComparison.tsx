@@ -42,57 +42,83 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
   const { isRTL, direction, flip } = useDirectionalStyles();
   const formatPrice = usePriceFormatter();
   
-  // Group specifications by category or create a default category
-  const specificationsByCategory = useMemo(() => {
-    // If no products, return empty array
-    if (products.length === 0) return [];
-    
-    // Get all unique specification IDs across all products
-    const allSpecIds = new Set<string>();
-    products.forEach(product => {
-      product.specifications.forEach(spec => {
-        allSpecIds.add(spec.id);
-      });
-    });
-    
-    // Create a map of spec ID to category (or default)
-    const specCategories: Record<string, string> = {};
-    products.forEach(product => {
-      product.specifications.forEach(spec => {
-        if (spec.category) {
-          specCategories[spec.id] = spec.category;
+  // Group specifications by category
+  const groupedSpecifications = useMemo(() => {
+    // Get category name (moved inside useMemo)
+    function getCategoryName(categoryId: string): string {
+      if (categoryId === 'default') return 'General Specifications';
+      
+      // Try to find the category name from any product's specs
+      for (const product of products) {
+        for (const spec of product.specifications) {
+          if (spec.category === categoryId && spec.name.en) {
+            return spec.name.en;
+          }
         }
-      });
-    });
-    
-    // Group specs by category
-    const groupedSpecs: Record<string, Specification[]> = {};
-    allSpecIds.forEach(specId => {
-      const category = specCategories[specId] || 'default';
-      if (!groupedSpecs[category]) {
-        groupedSpecs[category] = [];
       }
       
-      // Get the spec from any product that has it
+      return categoryId;
+    }
+    
+    // Get Hebrew category name (moved inside useMemo)
+    function getCategoryNameHebrew(categoryId: string): string {
+      if (categoryId === 'default') return 'מפרט כללי';
+      
+      // Try to find the category name from any product's specs
       for (const product of products) {
-        const spec = product.specifications.find(s => s.id === specId);
-        if (spec) {
-          // Check if we should only show differences
-          if (!showDifferences || hasDifferentValues(products, specId)) {
-            groupedSpecs[category].push(spec);
+        for (const spec of product.specifications) {
+          if (spec.category === categoryId && spec.name.he) {
+            return spec.name.he;
           }
-          break;
         }
       }
+      
+      return categoryId;
+    }
+
+    // Get all unique spec IDs across products
+    const allSpecIds = new Set<string>();
+    products.forEach(product => 
+      product.specifications.forEach(spec => allSpecIds.add(spec.id))
+    );
+    
+    // If showing only differences, filter out specs with same values
+    const relevantSpecIds = showDifferences 
+      ? Array.from(allSpecIds).filter(specId => hasDifferentValues(products, specId))
+      : Array.from(allSpecIds);
+    
+    // Collect all specifications
+    const allSpecs: Specification[] = [];
+    relevantSpecIds.forEach(specId => {
+      products.forEach(product => {
+        const spec = getProductSpec(product, specId);
+        if (spec && !allSpecs.some(s => s.id === spec.id)) {
+          allSpecs.push(spec);
+        }
+      });
     });
     
-    // Convert to array of categories
+    // Group by category
+    const groupedSpecs: Record<string, Specification[]> = {};
+    allSpecs.forEach(spec => {
+      const categoryId = spec.category || 'default';
+      if (!groupedSpecs[categoryId]) {
+        groupedSpecs[categoryId] = [];
+      }
+      groupedSpecs[categoryId].push(spec);
+    });
+    
+    // Format for rendering
     return Object.entries(groupedSpecs).map(([categoryId, specs]) => ({
       id: categoryId,
       name: { en: getCategoryName(categoryId), he: getCategoryNameHebrew(categoryId) },
       specs: specs.sort((a, b) => a.id.localeCompare(b.id)),
     }));
   }, [products, showDifferences]);
+  
+  function getProductSpec(product: Product, specId: string): Specification | undefined {
+    return product.specifications.find(spec => spec.id === specId);
+  }
   
   // Check if a specification has different values across products
   function hasDifferentValues(products: Product[], specId: string): boolean {
@@ -104,43 +130,6 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
     
     const firstValue = values[0];
     return values.some(v => v !== firstValue);
-  }
-  
-  // Get product specification by ID
-  function getProductSpec(product: Product, specId: string): Specification | undefined {
-    return product.specifications.find(spec => spec.id === specId);
-  }
-  
-  // Get category name
-  function getCategoryName(categoryId: string): string {
-    if (categoryId === 'default') return 'General Specifications';
-    
-    // Try to find the category name from any product's specs
-    for (const product of products) {
-      for (const spec of product.specifications) {
-        if (spec.category === categoryId && spec.name.en) {
-          return spec.name.en;
-        }
-      }
-    }
-    
-    return categoryId;
-  }
-  
-  // Get Hebrew category name
-  function getCategoryNameHebrew(categoryId: string): string {
-    if (categoryId === 'default') return 'מפרט כללי';
-    
-    // Try to find the category name from any product's specs
-    for (const product of products) {
-      for (const spec of product.specifications) {
-        if (spec.category === categoryId && spec.name.he) {
-          return spec.name.he;
-        }
-      }
-    }
-    
-    return categoryId;
   }
   
   if (products.length === 0) {
@@ -213,7 +202,7 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
           </div>
           
           {/* Specifications by category */}
-          {specificationsByCategory.map(category => (
+          {groupedSpecifications.map(category => (
             <div key={category.id}>
               {/* Category header */}
               <div className="grid grid-cols-[200px_repeat(auto-fill,minmax(180px,1fr))] bg-neutral-100">
