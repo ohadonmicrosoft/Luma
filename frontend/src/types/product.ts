@@ -4,6 +4,32 @@
  */
 
 /**
+ * Product filter options interface
+ */
+export interface ProductFilterOptions {
+  categoryId?: string;
+  categories?: string[];
+  searchQuery?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  brands?: string[];
+  inStock?: boolean;
+  onSale?: boolean;
+  featured?: boolean;
+  attributes?: Record<string, string[]>;
+  productType?: string;
+  durabilityRating?: string;
+  weatherResistance?: string;
+  material?: string;
+  minWeight?: number;
+  maxWeight?: number;
+  hasTechnicalSpecs?: boolean;
+  compatibleWith?: string[];
+  keywords?: string[];
+  brandName?: string;
+}
+
+/**
  * Base product interface
  */
 export interface Product {

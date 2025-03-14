@@ -1,4 +1,4 @@
-import { Product, TacticalProduct, HomeProduct, ProductVariant, ProductFilterOptions } from '@/types/product';
+import { Product, ProductVariant, ProductFilterOptions } from '@/types/product';
 import { Category } from '@/types/categories';
 
 /**
@@ -19,10 +19,13 @@ export async function getProducts(
     locale?: string;
   } = {}
 ): Promise<{ products: Product[]; total: number; page: number; totalPages: number }> {
-  const { filters, sort = 'featured', page = 1, limit = 12, locale = 'en' } = options;
+  const { filters, sort = 'createdAt_desc', page = 1, limit = 12, locale = 'en' } = options;
   
-  // Build query parameters
+  // Create URL and params
+  const url = new URL(`${API_BASE_URL}/products`);
   const params = new URLSearchParams();
+  
+  // Base params
   params.append('_page', page.toString());
   params.append('_limit', limit.toString());
   params.append('_sort', sort);
@@ -30,60 +33,128 @@ export async function getProducts(
   
   // Add filter parameters if provided
   if (filters) {
+    // Categories filter
     if (filters.categories && filters.categories.length > 0) {
       filters.categories.forEach(category => {
         params.append('categories', category);
       });
     }
     
+    // Category ID filter
+    if (filters.categoryId) {
+      params.append('categoryId', filters.categoryId);
+    }
+    
+    // Price range filters
+    if (filters.minPrice !== undefined) {
+      params.append('price_gte', filters.minPrice.toString());
+    }
+    
+    if (filters.maxPrice !== undefined) {
+      params.append('price_lte', filters.maxPrice.toString());
+    }
+    
+    // Brand filter
     if (filters.brands && filters.brands.length > 0) {
       filters.brands.forEach(brand => {
         params.append('brand', brand);
       });
     }
     
-    if (filters.priceRange) {
-      params.append('price_gte', filters.priceRange.min.toString());
-      params.append('price_lte', filters.priceRange.max.toString());
-    }
-    
+    // Stock filter
     if (filters.inStock !== undefined) {
-      params.append('isInStock', filters.inStock.toString());
+      params.append('inStock', filters.inStock.toString());
     }
     
+    // Sale filter
     if (filters.onSale !== undefined) {
-      params.append('isOnSale', filters.onSale.toString());
+      params.append('onSale', filters.onSale.toString());
     }
     
-    // Handle attribute filters
+    // Featured filter
+    if (filters.featured !== undefined) {
+      params.append('featured', filters.featured.toString());
+    }
+    
+    // Search query
+    if (filters.searchQuery) {
+      params.append('q', filters.searchQuery);
+    }
+    
+    // Attributes filter
     if (filters.attributes) {
       Object.entries(filters.attributes).forEach(([key, values]) => {
         values.forEach(value => {
-          params.append(`specifications.${key}`, value);
+          params.append(`attributes.${key}`, value);
         });
       });
     }
-  }
-  
-  try {
-    const response = await fetch(`${API_BASE_URL}/products?${params.toString()}`);
     
-    if (!response.ok) {
-      throw new Error(`Error fetching products: ${response.statusText}`);
+    // Product type filter
+    if (filters.productType) {
+      params.append('productType', filters.productType);
     }
     
-    const total = parseInt(response.headers.get('X-Total-Count') || '0', 10);
-    const products = await response.json();
+    // Technical specs filters
+    if (filters.durabilityRating) {
+      params.append('durabilityRating', filters.durabilityRating);
+    }
     
-    return {
-      products,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit),
-    };
+    if (filters.weatherResistance) {
+      params.append('weatherResistance', filters.weatherResistance);
+    }
+    
+    if (filters.material) {
+      params.append('material', filters.material);
+    }
+    
+    if (filters.minWeight !== undefined) {
+      params.append('minWeight', filters.minWeight.toString());
+    }
+    
+    if (filters.maxWeight !== undefined) {
+      params.append('maxWeight', filters.maxWeight.toString());
+    }
+    
+    if (filters.hasTechnicalSpecs !== undefined) {
+      params.append('hasTechnicalSpecs', filters.hasTechnicalSpecs.toString());
+    }
+    
+    if (filters.compatibleWith && filters.compatibleWith.length > 0) {
+      filters.compatibleWith.forEach(item => {
+        params.append('compatibleWith', item);
+      });
+    }
+    
+    if (filters.keywords && filters.keywords.length > 0) {
+      filters.keywords.forEach(keyword => {
+        params.append('keywords', keyword);
+      });
+    }
+    
+    if (filters.brandName) {
+      params.append('brandName', filters.brandName);
+    }
+  }
+  
+  // Add params to URL
+  url.search = params.toString();
+  
+  try {
+    const response = await fetch(url.toString());
+    
+    if (!response.ok) {
+      throw new Error('Error fetching products');
+    }
+    
+    const products = await response.json();
+    const total = parseInt(response.headers.get('X-Total-Count') || '0', 10);
+    const totalPages = Math.ceil(total / limit);
+    
+    return { products, total, page, totalPages };
   } catch (error) {
-    console.error('Failed to fetch products:', error);
-    throw error;
+    console.error('Error fetching products:', error);
+    return { products: [], total: 0, page: 1, totalPages: 0 };
   }
 }
 
@@ -127,14 +198,14 @@ export async function getRelatedProducts(
     const product = await getProductById(productId, locale);
     
     // Then fetch products in the same categories
-    const categoryIds = product.categories;
+    const categoryIds = product.categories.map(category => category.id);
     const params = new URLSearchParams();
     params.append('_limit', limit.toString());
     params.append('locale', locale);
     params.append('id_ne', productId); // Exclude the current product
     
-    categoryIds.forEach(category => {
-      params.append('categories', category);
+    categoryIds.forEach(categoryId => {
+      params.append('categories', categoryId);
     });
     
     const response = await fetch(`${API_BASE_URL}/products?${params.toString()}`);
@@ -396,4 +467,32 @@ export async function getProductsOnSale(
     console.error('Failed to fetch products on sale:', error);
     throw error;
   }
+}
+
+/**
+ * Fetch products by category
+ */
+export async function getProductsByCategory(
+  categorySlug: string,
+  options: {
+    includeSubcategories?: boolean;
+    page?: number;
+    limit?: number;
+    sort?: string;
+    locale?: string;
+  } = {}
+): Promise<{ products: Product[]; total: number; page: number; totalPages: number }> {
+  const { includeSubcategories = true, page = 1, limit = 12, sort = 'createdAt_desc', locale = 'en' } = options;
+  
+  const filters: ProductFilterOptions = {
+    categoryId: categorySlug
+  };
+  
+  return getProducts({
+    filters,
+    page,
+    limit,
+    sort,
+    locale
+  });
 } 
