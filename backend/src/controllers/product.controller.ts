@@ -1,22 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
-import { ProductService } from '../services/product.service';
-import { CategoryService } from '../services/category.service';
-import { StatusCode } from '../utils/constants';
+import { ProductService, ProductFilterOptions, TechnicalSpecsFilterOptions, ProductOptions, SearchOptions, FeaturedProductOptions, CategoryProductOptions, RelatedProductOptions, UsageScenarioData } from '../services/product.service';
 import { AppError } from '../utils/AppError';
+import { StatusCode } from '../utils/constants';
+import { ProductType, DurabilityRating, WeatherResistance } from '../models/Product';
 
 export class ProductController {
   private productService: ProductService;
-  private categoryService: CategoryService;
 
   constructor() {
     this.productService = new ProductService();
-    this.categoryService = new CategoryService();
   }
 
   /**
    * Get all products with filtering and pagination
    */
-  getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+  getAllProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const {
         search,
@@ -24,37 +22,50 @@ export class ProductController {
         min_price,
         max_price,
         in_stock,
-        sort_by = 'createdAt',
-        sort_order = 'DESC',
-        page = 1,
-        limit = 10
+        product_type,
+        durability_rating,
+        weather_resistance,
+        material,
+        min_weight,
+        max_weight,
+        has_technical_specs,
+        compatible_with,
+        keywords,
+        brand_name,
+        sort_by,
+        sort_order,
+        page,
+        limit
       } = req.query;
 
-      // Convert query parameters to appropriate types
-      const filterOptions = {
-        search: search as string,
-        category_id: category_id as string,
-        min_price: min_price ? parseFloat(min_price as string) : undefined,
-        max_price: max_price ? parseFloat(max_price as string) : undefined,
+      // Parse query parameters
+      const options: ProductFilterOptions = {
+        search: search?.toString(),
+        category_id: category_id?.toString(),
+        min_price: min_price ? parseFloat(min_price.toString()) : undefined,
+        max_price: max_price ? parseFloat(max_price.toString()) : undefined,
         in_stock: in_stock === 'true',
-        sortBy: sort_by as 'price' | 'createdAt' | 'name' | 'averageRating',
-        sortOrder: sort_order as 'ASC' | 'DESC',
-        page: parseInt(page as string, 10),
-        limit: parseInt(limit as string, 10)
+        productType: product_type ? product_type.toString() as ProductType : undefined,
+        durabilityRating: durability_rating ? durability_rating.toString() as DurabilityRating : undefined,
+        weatherResistance: weather_resistance ? weather_resistance.toString() as WeatherResistance : undefined,
+        material: material?.toString(),
+        minWeight: min_weight ? parseFloat(min_weight.toString()) : undefined,
+        maxWeight: max_weight ? parseFloat(max_weight.toString()) : undefined,
+        hasTechnicalSpecs: has_technical_specs === 'true',
+        compatibleWith: compatible_with?.toString(),
+        keywords: keywords?.toString(),
+        brandName: brand_name?.toString(),
+        sortBy: sort_by?.toString() || 'createdAt',
+        sortOrder: sort_order?.toString() === 'asc' ? 'ASC' : 'DESC',
+        page: page ? parseInt(page.toString(), 10) : 1,
+        limit: limit ? parseInt(limit.toString(), 10) : 10
       };
 
-      const { products, total, totalPages } = await this.productService.getAllProducts(filterOptions);
+      const result = await this.productService.getAllProducts(options);
 
-      // Return response
       res.status(StatusCode.OK).json({
-        success: true,
-        data: products,
-        pagination: {
-          total,
-          page: filterOptions.page,
-          limit: filterOptions.limit,
-          totalPages
-        }
+        status: 'success',
+        data: result
       });
     } catch (error) {
       next(error);
@@ -64,13 +75,20 @@ export class ProductController {
   /**
    * Get product by ID
    */
-  getProductById = async (req: Request, res: Response, next: NextFunction) => {
+  getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
-      const product = await this.productService.getProductById(id);
+      const { include_compatible, locale } = req.query;
+      
+      const options: ProductOptions = {
+        includeCompatible: include_compatible === 'true',
+        locale: locale?.toString()
+      };
+
+      const product = await this.productService.getProductById(id, options);
 
       res.status(StatusCode.OK).json({
-        success: true,
+        status: 'success',
         data: product
       });
     } catch (error) {
@@ -81,21 +99,13 @@ export class ProductController {
   /**
    * Create new product
    */
-  createProduct = async (req: Request, res: Response, next: NextFunction) => {
+  createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const productData = req.body;
-
-      // Check if category exists
-      if (productData.category_id) {
-        await this.categoryService.getCategoryById(productData.category_id);
-      }
-
-      const product = await this.productService.createProduct(productData);
+      const product = await this.productService.createProduct(req.body);
 
       res.status(StatusCode.CREATED).json({
-        success: true,
-        data: product,
-        message: 'Product created successfully'
+        status: 'success',
+        data: product
       });
     } catch (error) {
       next(error);
@@ -105,22 +115,14 @@ export class ProductController {
   /**
    * Update product
    */
-  updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+  updateProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
-      const productData = req.body;
-
-      // Check if category exists
-      if (productData.category_id) {
-        await this.categoryService.getCategoryById(productData.category_id);
-      }
-
-      const product = await this.productService.updateProduct(id, productData);
+      const product = await this.productService.updateProduct(id, req.body);
 
       res.status(StatusCode.OK).json({
-        success: true,
-        data: product,
-        message: 'Product updated successfully'
+        status: 'success',
+        data: product
       });
     } catch (error) {
       next(error);
@@ -130,15 +132,12 @@ export class ProductController {
   /**
    * Delete product
    */
-  deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
+  deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
       await this.productService.deleteProduct(id);
 
-      res.status(StatusCode.OK).json({
-        success: true,
-        message: 'Product deleted successfully'
-      });
+      res.status(StatusCode.NO_CONTENT).send();
     } catch (error) {
       next(error);
     }
@@ -147,7 +146,7 @@ export class ProductController {
   /**
    * Update product stock
    */
-  updateProductStock = async (req: Request, res: Response, next: NextFunction) => {
+  updateProductStock = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
       const { quantity } = req.body;
@@ -159,9 +158,8 @@ export class ProductController {
       const product = await this.productService.updateProductStock(id, quantity);
 
       res.status(StatusCode.OK).json({
-        success: true,
-        data: product,
-        message: 'Product stock updated successfully'
+        status: 'success',
+        data: product
       });
     } catch (error) {
       next(error);
@@ -171,18 +169,23 @@ export class ProductController {
   /**
    * Search products
    */
-  searchProducts = async (req: Request, res: Response, next: NextFunction) => {
+  searchProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { query } = req.query;
+      const { q, product_type, locale } = req.query;
 
-      if (!query) {
+      if (!q) {
         throw new AppError('Search query is required', StatusCode.BAD_REQUEST);
       }
 
-      const products = await this.productService.searchProducts(query as string);
+      const options: SearchOptions = {
+        productType: product_type ? product_type.toString() as ProductType : undefined,
+        locale: locale?.toString()
+      };
+
+      const products = await this.productService.searchProducts(q.toString(), options);
 
       res.status(StatusCode.OK).json({
-        success: true,
+        status: 'success',
         data: products
       });
     } catch (error) {
@@ -193,13 +196,20 @@ export class ProductController {
   /**
    * Get featured products
    */
-  getFeaturedProducts = async (req: Request, res: Response, next: NextFunction) => {
+  getFeaturedProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 8;
-      const products = await this.productService.getFeaturedProducts(limit);
+      const { limit, product_type, locale } = req.query;
+
+      const options: FeaturedProductOptions = {
+        limit: limit ? parseInt(limit.toString(), 10) : 8,
+        productType: product_type ? product_type.toString() as ProductType : undefined,
+        locale: locale?.toString()
+      };
+
+      const products = await this.productService.getFeaturedProducts(options);
 
       res.status(StatusCode.OK).json({
-        success: true,
+        status: 'success',
         data: products
       });
     } catch (error) {
@@ -210,34 +220,38 @@ export class ProductController {
   /**
    * Get products by category
    */
-  getProductsByCategory = async (req: Request, res: Response, next: NextFunction) => {
+  getProductsByCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { categoryId } = req.params;
-      const { include_subcategories, page, limit } = req.query;
+      const { 
+        include_subcategories, 
+        product_type, 
+        durability_rating, 
+        weather_resistance,
+        min_price,
+        max_price,
+        locale,
+        page, 
+        limit 
+      } = req.query;
 
-      // Check if category exists
-      await this.categoryService.getCategoryById(categoryId);
-
-      const options = {
+      const options: CategoryProductOptions = {
         includeSubcategories: include_subcategories === 'true',
-        page: page ? parseInt(page as string, 10) : 1,
-        limit: limit ? parseInt(limit as string, 10) : 10
+        productType: product_type ? product_type.toString() as ProductType : undefined,
+        durabilityRating: durability_rating ? durability_rating.toString() as DurabilityRating : undefined,
+        weatherResistance: weather_resistance ? weather_resistance.toString() as WeatherResistance : undefined,
+        minPrice: min_price ? parseFloat(min_price.toString()) : undefined,
+        maxPrice: max_price ? parseFloat(max_price.toString()) : undefined,
+        locale: locale?.toString(),
+        page: page ? parseInt(page.toString(), 10) : 1,
+        limit: limit ? parseInt(limit.toString(), 10) : 10
       };
 
-      const { products, total, totalPages } = await this.productService.getProductsByCategory(
-        categoryId,
-        options
-      );
+      const result = await this.productService.getProductsByCategory(categoryId, options);
 
       res.status(StatusCode.OK).json({
-        success: true,
-        data: products,
-        pagination: {
-          total,
-          page: options.page,
-          limit: options.limit,
-          totalPages
-        }
+        status: 'success',
+        data: result
       });
     } catch (error) {
       next(error);
@@ -247,16 +261,133 @@ export class ProductController {
   /**
    * Get related products
    */
-  getRelatedProducts = async (req: Request, res: Response, next: NextFunction) => {
+  getRelatedProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { id } = req.params;
-      const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 4;
+      const { productId } = req.params;
+      const { limit, locale } = req.query;
 
-      const products = await this.productService.getRelatedProducts(id, limit);
+      const options: RelatedProductOptions = {
+        limit: limit ? parseInt(limit.toString(), 10) : 4,
+        locale: locale?.toString()
+      };
+
+      const products = await this.productService.getRelatedProducts(productId, options);
 
       res.status(StatusCode.OK).json({
-        success: true,
+        status: 'success',
         data: products
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Get compatible products
+   */
+  getCompatibleProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { productId } = req.params;
+      const { locale } = req.query;
+
+      const products = await this.productService.getCompatibleProducts(
+        productId, 
+        locale?.toString()
+      );
+
+      res.status(StatusCode.OK).json({
+        status: 'success',
+        data: products
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Update technical specifications
+   */
+  updateTechnicalSpecs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const { technicalSpecs } = req.body;
+
+      if (!technicalSpecs) {
+        throw new AppError('Technical specifications are required', StatusCode.BAD_REQUEST);
+      }
+
+      const product = await this.productService.updateTechnicalSpecs(id, technicalSpecs);
+
+      res.status(StatusCode.OK).json({
+        status: 'success',
+        data: product
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Add usage scenario
+   */
+  addUsageScenario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { id } = req.params;
+      const { scenarioData } = req.body;
+
+      if (!scenarioData || !scenarioData.name || !scenarioData.description || typeof scenarioData.suitabilityRating !== 'number') {
+        throw new AppError('Valid scenario data is required with name, description, and suitabilityRating', StatusCode.BAD_REQUEST);
+      }
+
+      const product = await this.productService.addUsageScenario(id, scenarioData as UsageScenarioData);
+
+      res.status(StatusCode.OK).json({
+        status: 'success',
+        data: product
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * Filter products by technical specifications
+   */
+  filterByTechnicalSpecs = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const {
+        material,
+        min_weight,
+        max_weight,
+        durability_rating,
+        weather_resistance,
+        product_type,
+        min_price,
+        max_price,
+        locale,
+        page,
+        limit
+      } = req.query;
+
+      const options: TechnicalSpecsFilterOptions = {
+        material: material?.toString(),
+        minWeight: min_weight ? parseFloat(min_weight.toString()) : undefined,
+        maxWeight: max_weight ? parseFloat(max_weight.toString()) : undefined,
+        durabilityRating: durability_rating ? durability_rating.toString() as DurabilityRating : undefined,
+        weatherResistance: weather_resistance ? weather_resistance.toString() as WeatherResistance : undefined,
+        productType: product_type ? product_type.toString() as ProductType : undefined,
+        minPrice: min_price ? parseFloat(min_price.toString()) : undefined,
+        maxPrice: max_price ? parseFloat(max_price.toString()) : undefined,
+        locale: locale?.toString(),
+        page: page ? parseInt(page.toString(), 10) : 1,
+        limit: limit ? parseInt(limit.toString(), 10) : 10
+      };
+
+      const result = await this.productService.filterByTechnicalSpecs(options);
+
+      res.status(StatusCode.OK).json({
+        status: 'success',
+        data: result
       });
     } catch (error) {
       next(error);
