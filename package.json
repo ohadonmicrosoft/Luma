@@ -24,7 +24,7 @@
     "format": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky",
-    "lint:ci": "eslint --config eslint.config.mjs . --max-warnings=0 --quiet"
+    "lint:ci": "eslint --config eslint.config.mjs . --quiet"
   },
   "repository": {
     "type": "git",

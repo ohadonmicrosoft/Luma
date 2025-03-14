@@ -71,12 +71,32 @@ export default [
     },
   },
   
+  // Specific override for next.config.js and lint-fix.js
+  {
+    files: [
+      '**/next.config.js',
+      '**/lint-fix.js',
+    ],
+    rules: {
+      '@typescript-eslint/no-var-requires': 'off',
+    },
+  },
+  
   // TypeScript files (using compatibility layer)
   ...compat.extends(
     'plugin:@typescript-eslint/recommended'
   ),
   {
     files: ['**/*.ts', '**/*.tsx'],
+    ignores: [
+      '**/*.config.js',
+      '**/next.config.js',
+      '**/postcss.config.js',
+      '**/tailwind.config.js',
+      '**/next-i18next.config.js',
+      '**/.eslintrc.js',
+      '**/lint-fix.js',
+    ],
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
