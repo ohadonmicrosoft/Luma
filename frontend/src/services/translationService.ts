@@ -30,22 +30,25 @@ export function getLocalizedContent(
   locale: string,
   fallbackLocale: string = 'en'
 ): string | undefined {
-  if (!content) return undefined;
+  // Handle undefined or null content
+  if (!content) return '';
   
   // If exact locale match exists, return it
   if (content[locale]) return content[locale];
   
   // Try language-only match (e.g., 'en' for 'en-US')
-  const langCode = locale.split('-')[0];
-  const langMatch = Object.keys(content).find(key => key.startsWith(langCode));
-  if (langMatch && content[langMatch]) return content[langMatch];
+  const langCode = locale?.split('-')?.[0] || '';
+  if (langCode) {
+    const langMatch = Object.keys(content).find(key => key.startsWith(langCode));
+    if (langMatch && content[langMatch]) return content[langMatch];
+  }
   
   // Fall back to default locale
   if (content[fallbackLocale]) return content[fallbackLocale];
   
   // Last resort: return any available translation
   const firstAvailable = Object.values(content)[0];
-  return firstAvailable;
+  return firstAvailable || '';
 }
 
 /**

@@ -56,10 +56,16 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
       - name: Build application
-        run: npm run build
+        run: |
+          cd frontend
+          npm run build
       - name: Deploy to development
         run: echo "Deploy to development environment"
         # Add actual deployment steps here
@@ -76,10 +82,16 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm ci
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
       - name: Build application
-        run: npm run build
+        run: |
+          cd frontend
+          npm run build
       - name: Deploy to production
         run: echo "Deploy to production environment"
         # Add actual deployment steps here 

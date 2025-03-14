@@ -11,7 +11,6 @@ import { Currency } from '@/utils/currency';
 import { Specification } from './TechnicalSpecs';
 import { useTranslation } from 'next-i18next';
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
-import { Tag } from '@/components/ui/Tag';
 
 export interface Product {
   id: string;

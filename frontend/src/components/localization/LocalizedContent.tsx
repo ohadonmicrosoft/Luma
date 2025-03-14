@@ -7,7 +7,7 @@ import { LocalizedString } from '@/types/product';
 import { cn } from '@/utils/cn';
 
 interface LocalizedContentProps {
-  content: LocalizedString;
+  content?: LocalizedString;
   fallback?: string;
   as?: keyof JSX.IntrinsicElements;
   className?: string;
@@ -29,7 +29,8 @@ export const LocalizedContent: React.FC<LocalizedContentProps> = ({
   const { isRTL } = useLayout();
   
   // Get content in current locale with fallback
-  const localizedContent = getContent(content) || fallback;
+  // Handle case where content might be undefined
+  const localizedContent = content ? getContent(content) || fallback : fallback;
   
   // Direction-specific class
   const dirClass = isRTL ? 'rtl' : 'ltr';

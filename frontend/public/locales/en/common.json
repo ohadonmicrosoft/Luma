@@ -11,7 +11,7 @@
     "home": "Home",
     "products": "Products",
     "categories": "Categories",
-    "about": "About Us",
+    "about": "About",
     "contact": "Contact",
     "blog": "Blog",
     "account": "Account",
@@ -60,9 +60,9 @@
     "shipping": "Shipping"
   },
   "account": {
-    "login": "Log In",
+    "login": "Login",
     "register": "Register",
-    "logout": "Log Out",
+    "logout": "Logout",
     "profile": "Profile",
     "orders": "Orders",
     "wishlist": "Wishlist",
@@ -136,5 +136,22 @@
     "passwordMismatch": "Passwords do not match",
     "passwordLength": "Password must be at least 8 characters",
     "serverError": "An error occurred. Please try again later."
-  }
+  },
+  "technicalSpecifications": "Technical Specifications",
+  "buyNow": "Buy Now",
+  "share": "Share",
+  "quantity": "Quantity",
+  "sale": "Sale",
+  "bestSeller": "Best Seller",
+  "limitedEdition": "Limited Edition",
+  "moreInfo": "More Information",
+  "viewDetails": "View Details",
+  "viewAll": "View All",
+  "filter": "Filter",
+  "clearFilters": "Clear Filters",
+  "update": "Update",
+  "add": "Add",
+  "next": "Next",
+  "previous": "Previous",
+  "finish": "Finish"
 } 
