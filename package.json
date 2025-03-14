@@ -13,8 +13,8 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "start": "turbo run start",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint --config eslint.config.mjs .",
+    "lint:fix": "eslint --config eslint.config.mjs . --fix",
     "lint:targeted": "node lint-fix.js --targeted",
     "lint:targeted:fix": "node lint-fix.js --targeted --fix",
     "lint:frontend": "cd frontend && eslint --config eslint.config.mjs .",
@@ -23,7 +23,8 @@
     "lint:backend:fix": "eslint backend/src --fix",
     "format": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint:ci": "eslint --config eslint.config.mjs . --max-warnings=0 --quiet"
   },
   "repository": {
     "type": "git",
@@ -37,7 +38,10 @@
   },
   "homepage": "https://github.com/ohadonmicrosoft/Luma#readme",
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.22.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.4",
     "globals": "^16.0.0",

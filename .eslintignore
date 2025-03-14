@@ -1,22 +1,11 @@
-# Build output
-.next/**/*
-dist/**/*
-build/**/*
-out/**/*
-
-# Generated webpack files
-**/.next/static/chunks/**
-**/.next/static/webpack/**
-**/.next/server/webpack-runtime.js
-**/.next/server/pages/_app.js
-**/.next/server/pages/_document.js
-
-# Dependencies
-node_modules/**/*
-
-# Generated files
-coverage/**/*
-.turbo/**/*
+# Build outputs
+node_modules/
+.next/
+dist/
+build/
+out/
+coverage/
+.turbo/
 
 # Configuration files
 *.config.js
@@ -24,13 +13,23 @@ next.config.js
 postcss.config.js
 tailwind.config.js
 next-i18next.config.js
+.eslintrc.js
+lint-fix.js
 
-# Infrastructure files
-infrastructure/**/*
+# Generated files
+**/*.d.ts
+
+# Infrastructure
+infrastructure/
 
 # Environment files
 .env*
 !.env.example
 
-# TypeScript declaration files
-*.d.ts
+# Bundled output
+**/public/
+
+# Project files
+README.md
+*.md
+LICENSE

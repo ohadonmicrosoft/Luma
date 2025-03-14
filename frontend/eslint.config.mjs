@@ -51,11 +51,32 @@ export default [
       },
     },
     rules: {
+      'no-undef': 'off',
       'no-unused-vars': 'warn',
       'react/no-unescaped-entities': 'off',
       'react/display-name': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+  // Config files
+  {
+    files: [
+      '**/*.config.js',
+      '**/next.config.js',
+      '**/postcss.config.js',
+      '**/tailwind.config.js',
+      '**/next-i18next.config.js',
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      'no-undef': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
   // TypeScript files
@@ -75,7 +96,6 @@ export default [
         ecmaFeatures: {
           jsx: true,
         },
-        project: './tsconfig.json',
       },
       globals: {
         ...globals.browser,

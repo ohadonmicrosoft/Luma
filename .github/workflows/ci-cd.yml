@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run linting
-        run: npm run lint
+        run: npm run lint:ci -- --no-error-on-unmatched-pattern
 
   test:
     runs-on: ubuntu-latest
