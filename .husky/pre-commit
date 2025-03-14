@@ -1,1 +1,8 @@
-#!/bin/sh\nnpm run lint\nnpm run format
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run lint only on staged files
+npm run lint:targeted
+
+# Format all files
+npm run format
