@@ -22,7 +22,7 @@
     "lint:backend": "eslint backend/src",
     "lint:backend:fix": "eslint backend/src --fix",
     "format": "prettier --write .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests specified yet\" && exit 0",
     "prepare": "husky",
     "lint:ci": "eslint --config eslint.config.mjs . --quiet"
   },
