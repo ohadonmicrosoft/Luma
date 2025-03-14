@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import './rtl.css';
+@import './animations.css';
 
 :root {
   /* Color variables */

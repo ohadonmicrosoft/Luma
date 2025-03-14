@@ -1,0 +1,51 @@
+{
+  "hero": {
+    "slide1": {
+      "title": "Professional Tactical Equipment",
+      "subtitle": "Built for the toughest conditions",
+      "description": "Discover our premium collection of military-grade tactical gear designed for professionals and enthusiasts alike.",
+      "actionLabel": "Shop Tactical Gear",
+      "secondaryActionLabel": "Learn More"
+    },
+    "slide2": {
+      "title": "Outdoor Adventure Essentials",
+      "subtitle": "Gear up for the wilderness",
+      "description": "Premium outdoor equipment for hiking, camping, and survival. Be prepared for any adventure.",
+      "actionLabel": "Explore Outdoor",
+      "secondaryActionLabel": "View Guide"
+    },
+    "slide3": {
+      "title": "Home Defense Solutions",
+      "subtitle": "Protect what matters most",
+      "description": "Advanced security and defense solutions for your home, designed with reliability and ease of use in mind.",
+      "actionLabel": "Browse Defense Products",
+      "secondaryActionLabel": "Security Tips"
+    },
+    "features": {
+      "durability": {
+        "title": "Military-Grade Durability",
+        "description": "Built to withstand extreme conditions"
+      },
+      "performance": {
+        "title": "Peak Performance",
+        "description": "Engineered for optimal functionality"
+      },
+      "innovation": {
+        "title": "Cutting-Edge Innovation",
+        "description": "Advanced technologies and materials"
+      },
+      "quality": {
+        "title": "Premium Quality",
+        "description": "Crafted from the finest materials"
+      },
+      "guarantee": {
+        "title": "Lifetime Guarantee",
+        "description": "Built to last a lifetime"
+      },
+      "expert": {
+        "title": "Expert Designed",
+        "description": "Created by industry professionals"
+      }
+    }
+  }
+} 

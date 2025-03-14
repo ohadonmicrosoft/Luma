@@ -82,7 +82,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       // Clear interval on cleanup
       return () => clearInterval(interval);
     }
-  }, [activeSlide, autoplay, autoplaySpeed, slides.length]);
+  }, [activeSlide, autoplay, autoplaySpeed, slides.length, nextSlide]);
   
   // Set up keyboard navigation
   useEffect(() => {
@@ -96,7 +96,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isRTL, activeSlide]);
+  }, [isRTL, activeSlide, nextSlide, prevSlide]);
   
   if (slides.length === 0) return null;
   
