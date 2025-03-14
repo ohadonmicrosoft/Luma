@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/utils/cn';
@@ -46,6 +46,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const { isRTL, direction, flip } = useDirectionalStyles();
   const [activeSlide, setActiveSlide] = React.useState(0);
   const [isAnimating, setIsAnimating] = React.useState(false);
+  const [imageError, setImageError] = useState<Record<string, boolean>>({});
   
   // Handle slide change
   const changeSlide = useCallback((index: number) => {
@@ -121,15 +122,36 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       >
         {/* Background image */}
         <div className="absolute inset-0 w-full h-full transition-opacity duration-500">
-          <Image
-            src={currentSlide.image}
-            alt={currentSlide.title.en || Object.values(currentSlide.title)[0]}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-            style={{ objectPosition: contentAlign === 'left' ? 'right center' : contentAlign === 'right' ? 'left center' : 'center center' }}
-          />
+          {!imageError[currentSlide.id] ? (
+            <Image
+              src={currentSlide.image}
+              alt={currentSlide.title.en || Object.values(currentSlide.title)[0]}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: contentAlign === 'left' ? 'right center' : contentAlign === 'right' ? 'left center' : 'center center' }}
+              onError={() => {
+                console.error(`Failed to load image: ${currentSlide.image}`);
+                setImageError(prev => ({ ...prev, [currentSlide.id]: true }));
+              }}
+            />
+          ) : (
+            <div className={cn(
+              "w-full h-full flex items-center justify-center",
+              slideTheme === 'dark' ? 'bg-neutral-900' : 'bg-neutral-100'
+            )}>
+              <div className="text-center p-8">
+                <div className="text-4xl mb-4">
+                  {currentSlide.id === 'tactical' ? '🛡️' : 
+                   currentSlide.id === 'outdoor' ? '🏕️' : '🏠'}
+                </div>
+                <h3 className={cn("text-xl font-medium", slideTheme === 'dark' ? 'text-white' : 'text-neutral-800')}>
+                  {currentSlide.title.en || Object.values(currentSlide.title)[0]}
+                </h3>
+              </div>
+            </div>
+          )}
           
           {/* Overlay gradient */}
           <div 

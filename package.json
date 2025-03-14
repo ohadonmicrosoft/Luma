@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A high-end e-commerce platform specialized for premium soap and shampoo products.",
   "private": true,
+  "packageManager": "npm@9.5.0",
   "workspaces": [
     "frontend",
     "backend",
