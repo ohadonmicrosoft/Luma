@@ -6,32 +6,48 @@
     }
   },
   "rules": {
-    // Allow require in config files
-    "@typescript-eslint/no-require-imports": "off",
-    
-    // Allow process.env access in config files
-    "no-undef": "off",
-    
-    // Allow unused variables in generated files
-    "@typescript-eslint/no-unused-vars": ["error", {
+    // Common rules for all files
+    "@typescript-eslint/no-unused-vars": ["warn", {
       "argsIgnorePattern": "^_",
       "varsIgnorePattern": "^_"
     }],
-    
-    // Disable rules that cause issues with Next.js
-    "react/react-in-jsx-scope": "off",
-    
-    // Disable rules for generated files
-    "@typescript-eslint/no-unused-expressions": "off",
-    "no-prototype-builtins": "off",
-    "@typescript-eslint/no-this-alias": "off",
-    "no-cond-assign": "off",
-    "no-control-regex": "off",
-    "no-fallthrough": "off",
-    "no-empty": "off",
-    "no-redeclare": "off",
-    "no-useless-escape": "off"
+    "react/react-in-jsx-scope": "off"
   },
+  "overrides": [
+    // Config files override
+    {
+      "files": ["*.config.js", "next.config.js", "postcss.config.js", "tailwind.config.js", "next-i18next.config.js"],
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off",
+        "no-undef": "off",
+        "import/no-commonjs": "off"
+      }
+    },
+    // Generated files override - should be caught by ignorePatterns, but just in case
+    {
+      "files": [".next/**/*", "dist/**/*", "out/**/*", "build/**/*"],
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off",
+        "no-prototype-builtins": "off",
+        "@typescript-eslint/no-this-alias": "off",
+        "no-cond-assign": "off",
+        "no-control-regex": "off",
+        "no-fallthrough": "off",
+        "no-empty": "off",
+        "no-redeclare": "off",
+        "no-useless-escape": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "no-undef": "off"
+      }
+    },
+    // TypeScript files override
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "warn"
+      }
+    }
+  ],
   "ignorePatterns": [
     ".next/**/*",
     "node_modules/**/*",

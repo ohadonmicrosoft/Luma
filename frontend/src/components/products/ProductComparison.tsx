@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/utils/cn';
@@ -8,7 +8,10 @@ import { Button } from '@/components/ui/Button';
 import { LocalizedContent } from '@/components/localization/LocalizedContent';
 import { usePriceFormatter } from '@/utils/currency';
 import { Currency } from '@/utils/currency';
-import { Specification, SpecificationCategory } from './TechnicalSpecs';
+import { Specification } from './TechnicalSpecs';
+import { useTranslation } from 'next-i18next';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
+import { Tag } from '@/components/ui/Tag';
 
 export interface Product {
   id: string;
@@ -39,7 +42,7 @@ export const ProductComparison: React.FC<ProductComparisonProps> = ({
   showDifferences = false,
   className,
 }) => {
-  const { isRTL, direction, flip } = useDirectionalStyles();
+  const { isRTL } = useDirectionalStyles();
   const formatPrice = usePriceFormatter();
   
   // Group specifications by category

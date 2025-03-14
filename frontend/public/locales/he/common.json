@@ -1,8 +1,8 @@
 {
   "site": {
     "name": "לומה",
-    "tagline": "ציוד טקטי ואאוטדור מקצועי",
-    "description": "ציוד טקטי, ציוד לשטח ואביזרים לבית באיכות גבוהה",
+    "tagline": "ציוד טקטי וציוד חוץ פרמיום",
+    "description": "ציוד איכותי למקצוענים וחובבים",
     "switch_language": "החלף שפה",
     "english": "אנגלית",
     "hebrew": "עברית"
@@ -76,31 +76,32 @@
     "lastName": "שם משפחה"
   },
   "categories": {
-    "tactical_outdoor": "טקטי וחוץ",
-    "tactical_gear": "ציוד טקטי",
-    "outdoor_equipment": "ציוד לשטח",
-    "survival_tools": "כלי הישרדות",
-    "home_accessories": "אביזרים לבית",
-    "living_room": "סלון",
-    "kitchen": "מטבח",
-    "decor": "עיצוב"
+    "title": "גלה את הקטגוריות שלנו",
+    "description": "גלה את המגוון הרחב של ציוד טקטי וציוד חוץ",
+    "tactical": {
+      "title": "ציוד טקטי",
+      "description": "ציוד ברמה מקצועית לאכיפת חוק, צבא ואנשי אבטחה"
+    },
+    "outdoor": {
+      "title": "הרפתקאות חוץ",
+      "description": "ציוד חיוני לקמפינג, טיולים וחקר הטבע"
+    },
+    "homeDefense": {
+      "title": "הגנת הבית",
+      "description": "פתרונות אמינים להגן על מה שחשוב ביותר"
+    }
   },
   "filters": {
-    "title": "סינון",
-    "price": "מחיר",
-    "brand": "מותג",
-    "color": "צבע",
-    "size": "גודל",
-    "material": "חומר",
-    "clearAll": "נקה הכל",
-    "apply": "החל",
-    "sortBy": "מיין לפי",
-    "featured": "מומלצים",
-    "priceLowToHigh": "מחיר: מהנמוך לגבוה",
-    "priceHighToLow": "מחיר: מהגבוה לנמוך",
+    "sort_by": "מיין לפי",
+    "price_low_high": "מחיר: מהנמוך לגבוה",
+    "price_high_low": "מחיר: מהגבוה לנמוך",
     "newest": "החדשים ביותר",
-    "bestSellers": "הנמכרים ביותר",
-    "rating": "דירוג"
+    "popular": "הפופולריים ביותר",
+    "price_range": "טווח מחירים",
+    "min_price": "מחיר מינימלי",
+    "max_price": "מחיר מקסימלי",
+    "apply": "החל",
+    "clear": "נקה"
   },
   "footer": {
     "about": "אודות",

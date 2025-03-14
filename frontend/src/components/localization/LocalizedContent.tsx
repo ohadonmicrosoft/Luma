@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { useLocalizedContent } from '@/hooks/useLocalizedContent';
-import { useLayout } from '@/hooks/useLayout';
+import { useLocalizedContent } from '@/services/translationService';
+import { useLayout } from '@/contexts/LayoutContext';
 import { LocalizedString } from '@/types/product';
 import { cn } from '@/utils/cn';
 

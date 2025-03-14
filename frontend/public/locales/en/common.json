@@ -1,8 +1,8 @@
 {
   "site": {
     "name": "Luma",
-    "tagline": "Professional Tactical & Outdoor Equipment",
-    "description": "High-quality tactical gear, outdoor equipment, and home accessories",
+    "tagline": "Premium Tactical & Outdoor Equipment",
+    "description": "High-quality gear for professionals and enthusiasts",
     "switch_language": "Switch language",
     "english": "English",
     "hebrew": "Hebrew"
@@ -76,14 +76,20 @@
     "lastName": "Last Name"
   },
   "categories": {
-    "tactical_outdoor": "Tactical & Outdoor",
-    "tactical_gear": "Tactical Gear",
-    "outdoor_equipment": "Outdoor Equipment",
-    "survival_tools": "Survival Tools",
-    "home_accessories": "Home Accessories",
-    "living_room": "Living Room",
-    "kitchen": "Kitchen",
-    "decor": "Decor"
+    "title": "Explore Our Categories",
+    "description": "Discover our wide range of tactical and outdoor equipment",
+    "tactical": {
+      "title": "Tactical Equipment",
+      "description": "Professional-grade gear for law enforcement, military, and security professionals"
+    },
+    "outdoor": {
+      "title": "Outdoor Adventure",
+      "description": "Essential gear for camping, hiking, and outdoor exploration"
+    },
+    "homeDefense": {
+      "title": "Home Defense",
+      "description": "Reliable solutions to protect what matters most"
+    }
   },
   "filters": {
     "title": "Filters",

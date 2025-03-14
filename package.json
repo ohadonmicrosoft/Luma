@@ -15,6 +15,12 @@
     "start": "turbo run start",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "lint:targeted": "node lint-fix.js --targeted",
+    "lint:targeted:fix": "node lint-fix.js --targeted --fix",
+    "lint:frontend": "cd frontend && eslint --config eslint.config.mjs .",
+    "lint:frontend:fix": "cd frontend && eslint --config eslint.config.mjs . --fix",
+    "lint:backend": "eslint backend/src",
+    "lint:backend:fix": "eslint backend/src --fix",
     "format": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
@@ -39,5 +45,9 @@
     "prettier": "^2.8.8",
     "turbo": "^1.13.4",
     "typescript-eslint": "^8.26.1"
+  },
+  "dependencies": {
+    "i18next-browser-languagedetector": "^8.0.4",
+    "i18next-http-backend": "^3.0.2"
   }
 }
