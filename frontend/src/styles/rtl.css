@@ -1,0 +1,176 @@
+/* RTL Support Classes */
+
+/* Text Alignment */
+.rtl\:text-right {
+  text-align: right;
+}
+
+.rtl\:text-left {
+  text-align: left;
+}
+
+.rtl\:text-center {
+  text-align: center;
+}
+
+/* Margins */
+.rtl\:ml-0 {
+  margin-left: 0;
+}
+
+.rtl\:mr-0 {
+  margin-right: 0;
+}
+
+.rtl\:ml-auto {
+  margin-left: auto;
+}
+
+.rtl\:mr-auto {
+  margin-right: auto;
+}
+
+/* Paddings */
+.rtl\:pl-0 {
+  padding-left: 0;
+}
+
+.rtl\:pr-0 {
+  padding-right: 0;
+}
+
+/* Flexbox */
+.rtl\:flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+.rtl\:justify-start {
+  justify-content: flex-start;
+}
+
+.rtl\:justify-end {
+  justify-content: flex-end;
+}
+
+/* Borders */
+.rtl\:border-l-0 {
+  border-left: 0;
+}
+
+.rtl\:border-r-0 {
+  border-right: 0;
+}
+
+/* Positions */
+.rtl\:left-0 {
+  left: 0;
+}
+
+.rtl\:right-0 {
+  right: 0;
+}
+
+/* Transforms */
+.rtl\:rotate-180 {
+  transform: rotate(180deg);
+}
+
+.rtl\:scale-x-n1 {
+  transform: scaleX(-1);
+}
+
+/* Apply RTL styles when html[dir="rtl"] */
+html[dir="rtl"] .rtl\:text-right {
+  text-align: left;
+}
+
+html[dir="rtl"] .rtl\:text-left {
+  text-align: right;
+}
+
+html[dir="rtl"] .rtl\:ml-0 {
+  margin-right: 0;
+  margin-left: initial;
+}
+
+html[dir="rtl"] .rtl\:mr-0 {
+  margin-left: 0;
+  margin-right: initial;
+}
+
+html[dir="rtl"] .rtl\:ml-auto {
+  margin-right: auto;
+  margin-left: initial;
+}
+
+html[dir="rtl"] .rtl\:mr-auto {
+  margin-left: auto;
+  margin-right: initial;
+}
+
+html[dir="rtl"] .rtl\:pl-0 {
+  padding-right: 0;
+  padding-left: initial;
+}
+
+html[dir="rtl"] .rtl\:pr-0 {
+  padding-left: 0;
+  padding-right: initial;
+}
+
+html[dir="rtl"] .rtl\:border-l-0 {
+  border-right: 0;
+  border-left: initial;
+}
+
+html[dir="rtl"] .rtl\:border-r-0 {
+  border-left: 0;
+  border-right: initial;
+}
+
+html[dir="rtl"] .rtl\:left-0 {
+  right: 0;
+  left: initial;
+}
+
+html[dir="rtl"] .rtl\:right-0 {
+  left: 0;
+  right: initial;
+}
+
+/* For classes with directional names */
+html[dir="rtl"] .ltr\:only {
+  display: none;
+}
+
+html[dir="ltr"] .rtl\:only {
+  display: none;
+}
+
+/* CSS Logical Properties Support */
+.logical-margin {
+  margin-inline-start: 1rem;
+  margin-inline-end: 1rem;
+}
+
+.logical-padding {
+  padding-inline-start: 1rem;
+  padding-inline-end: 1rem;
+}
+
+.logical-border {
+  border-inline-start: 1px solid;
+  border-inline-end: 1px solid;
+}
+
+.logical-position {
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+}
+
+/* RTL Variants for Tailwind Classes */
+@media (prefers-reduced-motion: no-preference) {
+  html[dir="rtl"] .animate-slide-ltr {
+    animation-direction: reverse;
+  }
+} 

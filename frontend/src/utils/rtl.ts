@@ -3,6 +3,7 @@
  */
 
 import { useLayout } from '@/contexts/LayoutContext';
+import { useCallback } from 'react';
 
 /**
  * CSS logical properties mapping (physical to logical)
@@ -172,4 +173,93 @@ export function useDirectionalStyles() {
     swap,
     transform,
   };
-} 
+}
+
+/**
+ * Custom hook to help with RTL-aware styles
+ * @returns Utility functions for RTL-aware styling
+ */
+export const useRtlUtils = () => {
+  const { isRTL } = useLayout();
+  
+  /**
+   * Returns the appropriate class based on the direction
+   * @param ltrClass - Class to use in LTR mode
+   * @param rtlClass - Class to use in RTL mode
+   * @returns The appropriate class
+   */
+  const getDirectionalClass = useCallback(
+    (ltrClass: string, rtlClass: string): string => {
+      return isRTL ? rtlClass : ltrClass;
+    },
+    [isRTL]
+  );
+  
+  /**
+   * Creates a conditional class string for RTL/LTR scenarios
+   * @param baseClasses - Classes to always apply
+   * @param ltrClasses - Classes to apply only in LTR mode
+   * @param rtlClasses - Classes to apply only in RTL mode
+   * @returns Combined class string
+   */
+  const cx = useCallback(
+    (baseClasses: string = '', ltrClasses: string = '', rtlClasses: string = ''): string => {
+      const directionClasses = isRTL ? rtlClasses : ltrClasses;
+      return `${baseClasses} ${directionClasses}`.trim();
+    },
+    [isRTL]
+  );
+  
+  /**
+   * Maps logical CSS properties to physical ones
+   * @param property - The logical CSS property
+   * @returns The physical CSS property
+   */
+  const mapLogicalToPhysical = useCallback(
+    (property: string): string => {
+      const mappings: Record<string, Record<string, string>> = {
+        'ltr': {
+          'margin-inline-start': 'margin-left',
+          'margin-inline-end': 'margin-right',
+          'padding-inline-start': 'padding-left',
+          'padding-inline-end': 'padding-right',
+          'border-inline-start': 'border-left',
+          'border-inline-end': 'border-right',
+          'inset-inline-start': 'left',
+          'inset-inline-end': 'right',
+        },
+        'rtl': {
+          'margin-inline-start': 'margin-right',
+          'margin-inline-end': 'margin-left',
+          'padding-inline-start': 'padding-right',
+          'padding-inline-end': 'padding-left',
+          'border-inline-start': 'border-right',
+          'border-inline-end': 'border-left',
+          'inset-inline-start': 'right',
+          'inset-inline-end': 'left',
+        }
+      };
+      
+      const direction = isRTL ? 'rtl' : 'ltr';
+      return mappings[direction][property] || property;
+    },
+    [isRTL]
+  );
+  
+  return {
+    isRTL,
+    getDirectionalClass,
+    cx,
+    mapLogicalToPhysical
+  };
+};
+
+/**
+ * Helper function for creating RTL-aware styles without using the hook
+ * @param locale - Current locale string
+ * @returns Whether the current locale is RTL
+ */
+export const isRtlLocale = (locale: string | undefined): boolean => {
+  const rtlLocales = ['he', 'ar', 'fa', 'ur'];
+  return rtlLocales.some(rtlLocale => locale?.startsWith(rtlLocale));
+}; 

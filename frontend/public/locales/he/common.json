@@ -2,7 +2,10 @@
   "site": {
     "name": "לומה",
     "tagline": "ציוד טקטי ואאוטדור מקצועי",
-    "description": "ציוד טקטי, ציוד לשטח ואביזרים לבית באיכות גבוהה"
+    "description": "ציוד טקטי, ציוד לשטח ואביזרים לבית באיכות גבוהה",
+    "switch_language": "החלף שפה",
+    "english": "אנגלית",
+    "hebrew": "עברית"
   },
   "navigation": {
     "home": "דף הבית",
@@ -12,7 +15,18 @@
     "contact": "צור קשר",
     "blog": "בלוג",
     "account": "חשבון",
-    "search": "חיפוש"
+    "search": "חיפוש",
+    "menu": "תפריט"
+  },
+  "products": {
+    "page_title": "מוצרים - לומה",
+    "meta_description": "עיין באוסף ציוד טקטי וציוד לשטח שלנו",
+    "filter_title": "סנן מוצרים",
+    "sort_title": "מיין מוצרים",
+    "compare": "השווה",
+    "remove": "הסר",
+    "selected_products": "מוצרים שנבחרו",
+    "no_products": "לא נמצאו מוצרים"
   },
   "product": {
     "price": "מחיר",

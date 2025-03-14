@@ -2,7 +2,10 @@
   "site": {
     "name": "Luma",
     "tagline": "Professional Tactical & Outdoor Equipment",
-    "description": "High-quality tactical gear, outdoor equipment, and home accessories"
+    "description": "High-quality tactical gear, outdoor equipment, and home accessories",
+    "switch_language": "Switch language",
+    "english": "English",
+    "hebrew": "Hebrew"
   },
   "navigation": {
     "home": "Home",
@@ -12,7 +15,18 @@
     "contact": "Contact",
     "blog": "Blog",
     "account": "Account",
-    "search": "Search"
+    "search": "Search",
+    "menu": "Menu"
+  },
+  "products": {
+    "page_title": "Products - Luma",
+    "meta_description": "Browse our collection of tactical and outdoor equipment",
+    "filter_title": "Filter Products",
+    "sort_title": "Sort Products",
+    "compare": "Compare",
+    "remove": "Remove",
+    "selected_products": "Selected Products",
+    "no_products": "No products found"
   },
   "product": {
     "price": "Price",

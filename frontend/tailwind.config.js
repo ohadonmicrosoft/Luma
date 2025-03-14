@@ -139,6 +139,7 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
-    require('tailwindcss-rtl'),
+    // Temporarily removed due to compatibility issues
+    // require('tailwindcss-rtl'),
   ],
 } 

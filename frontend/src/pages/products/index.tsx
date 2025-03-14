@@ -8,6 +8,8 @@ import { ProductResultsGrid, SortOption } from '@/components/products/ProductRes
 import { useDirectionalStyles } from '@/utils/rtl';
 import { usePriceFormatter } from '@/hooks/usePriceFormatter';
 import { Layout } from '@/components/layout/Layout';
+import { useTranslation } from 'next-i18next';
+import { getI18nServerSideProps } from '@/utils/i18n';
 
 // Helper function to create a properly typed rangeValues tuple
 const createRangeValues = (min: number, max: number): [number, number] => {
@@ -337,6 +339,7 @@ export default function ProductsPage({ initialProducts, initialFilters }: Produc
   const router = useRouter();
   const { isRTL } = useDirectionalStyles();
   const { formatPrice } = usePriceFormatter();
+  const { t, i18n } = useTranslation('common');
   
   // State for products list and loading state
   const [products, setProducts] = useState(initialProducts);
@@ -376,7 +379,7 @@ export default function ProductsPage({ initialProducts, initialFilters }: Produc
   };
   
   // Handle filter changes
-  const handleFilterChange = (categoryId: string, filterId: string, value: any) => {
+  const handleFilterChange = (categoryId: string, filterId: string, value: unknown) => {
     setFilterCategories(prevCategories => {
       const newCategories = [...prevCategories];
       const categoryIndex = newCategories.findIndex(c => c.id === categoryId);
@@ -384,8 +387,13 @@ export default function ProductsPage({ initialProducts, initialFilters }: Produc
       if (categoryIndex === -1) return prevCategories;
       
       // Handle selection filters (checkboxes)
-      if (value.optionId !== undefined) {
-        const { optionId, checked, multiSelect } = value;
+      if (typeof value === 'object' && value !== null && 'optionId' in value) {
+        const { optionId, checked, multiSelect } = value as { 
+          optionId: string; 
+          checked: boolean; 
+          multiSelect?: boolean 
+        };
+        
         const selectionFilterIndex = newCategories[categoryIndex].selectionFilters?.findIndex(
           f => f.id === filterId
         );
@@ -471,7 +479,7 @@ export default function ProductsPage({ initialProducts, initialFilters }: Produc
     // Simulate loading new sorted products
     setLoading(true);
     setTimeout(() => {
-      let sortedProducts = [...products];
+      const sortedProducts = [...products];
       
       switch (sortId) {
         case 'price-asc':
@@ -537,8 +545,8 @@ export default function ProductsPage({ initialProducts, initialFilters }: Produc
   return (
     <Layout>
       <Head>
-        <title>{isRTL ? 'מוצרים - לומה' : 'Products - Luma'}</title>
-        <meta name="description" content="Browse our collection of products" />
+        <title>{isRTL ? t('products.page_title') : 'Products - Luma'}</title>
+        <meta name="description" content={t('products.meta_description')} />
       </Head>
       
       <div className="container mx-auto py-8 px-4">
@@ -616,6 +624,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       initialProducts: mockProducts,
       initialFilters: query,
+      ...(await getI18nServerSideProps(context))
     },
   };
 }; 

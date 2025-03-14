@@ -1,10 +1,18 @@
+import React, { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { appWithTranslation } from 'next-i18next';
+import { appWithTranslation, useTranslation } from 'next-i18next';
 import { LayoutProvider } from '@/contexts/LayoutContext';
 import '../styles/globals.css';
 
 function App({ Component, pageProps }: AppProps) {
+  const { i18n } = useTranslation();
+  
+  // Ensure HTML lang attribute is synchronized with i18n
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+  
   return (
     <LayoutProvider>
       <Head>
@@ -18,4 +26,5 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
+// Make sure we're passing serverSideTranslations result to pages
 export default appWithTranslation(App); 
