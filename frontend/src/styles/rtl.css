@@ -1,3 +1,150 @@
+/**
+ * RTL Global Styles
+ * 
+ * Global CSS for RTL support and bidirectional layouts.
+ * These styles provide the foundation for RTL/LTR switching.
+ */
+
+:root {
+  /* Logical direction variables */
+  --start: left;
+  --end: right;
+  --text-align: left;
+  --float: left;
+}
+
+/* RTL specific overrides */
+[dir="rtl"] {
+  --start: right;
+  --end: left;
+  --text-align: right;
+  --float: right;
+}
+
+/* Logical property classes */
+.float-logical {
+  float: var(--float);
+}
+
+.text-align-logical {
+  text-align: var(--text-align);
+}
+
+.margin-start {
+  margin-inline-start: var(--spacing);
+}
+
+.margin-end {
+  margin-inline-end: var(--spacing);
+}
+
+.padding-start {
+  padding-inline-start: var(--spacing);
+}
+
+.padding-end {
+  padding-inline-end: var(--spacing);
+}
+
+/* RTL Typography adjustments */
+[dir="rtl"] {
+  /* Adjust letter-spacing for RTL languages */
+  .font-hebrew,
+  .font-arabic {
+    letter-spacing: -0.01em;
+  }
+
+  /* Adjust numerals for RTL languages */
+  .rtl-numerals {
+    font-feature-settings: "tnum" on;
+  }
+}
+
+/* Bidirectional text handling */
+.bidi-override {
+  unicode-bidi: bidi-override;
+}
+
+.embed-rtl {
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
+.embed-ltr {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* RTL-specific spacing adjustments */
+[dir="rtl"] .rtl-mirror {
+  transform: scaleX(-1);
+}
+
+/* RTL-aware flexbox */
+.flex-row-logical {
+  flex-direction: row;
+}
+
+[dir="rtl"] .flex-row-logical {
+  flex-direction: row-reverse;
+}
+
+/* RTL-aware grid */
+.grid-logical {
+  grid-auto-flow: row;
+}
+
+[dir="rtl"] .grid-logical {
+  grid-auto-flow: dense;
+}
+
+/* RTL-aware transforms */
+[dir="rtl"] .rotate-logical {
+  transform: scaleX(-1) var(--transform);
+}
+
+/* RTL-aware animations */
+[dir="rtl"] .slide-logical {
+  animation-direction: reverse;
+}
+
+/* RTL-aware shadows */
+[dir="rtl"] .shadow-logical {
+  box-shadow: var(--shadow-rtl);
+}
+
+/* RTL-aware borders */
+.border-start {
+  border-inline-start: var(--border-width) solid var(--border-color);
+}
+
+.border-end {
+  border-inline-end: var(--border-width) solid var(--border-color);
+}
+
+/* RTL-aware positioning */
+.position-start {
+  inset-inline-start: var(--position);
+}
+
+.position-end {
+  inset-inline-end: var(--position);
+}
+
+/* Ensure SVG icons flip correctly in RTL */
+[dir="rtl"] .flip-in-rtl {
+  transform: scaleX(-1);
+}
+
+/* Ensure background positions are flipped in RTL */
+[dir="rtl"] .bg-logical-start {
+  background-position-x: right;
+}
+
+[dir="rtl"] .bg-logical-end {
+  background-position-x: left;
+}
+
 /* RTL Support Classes */
 
 /* Text Alignment */

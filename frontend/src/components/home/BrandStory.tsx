@@ -321,11 +321,11 @@ export const BrandStory: React.FC<BrandStoryProps> = ({
             {/* CTA */}
             {ctaText && ctaLink && (
               <div className="mt-2">
-                <Button size="lg" asChild>
-                  <Link href={ctaLink}>
+                <Link href={ctaLink}>
+                  <Button size="lg">
                     <LocalizedContent content={ctaText} />
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </div>
             )}
           </div>

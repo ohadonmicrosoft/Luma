@@ -96,7 +96,7 @@ export const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({
                 <Card
                   key={category.id}
                   className="overflow-hidden transition-all duration-300 hover:shadow-lg"
-                  hoverable
+                  clickable
                 >
                   <Link href={`/categories/${category.slug}`} className="block">
                     <div className="relative h-48 w-full">
@@ -166,16 +166,18 @@ export const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({
                     <div
                       className={cn("mt-4", isRTL ? "text-right" : "text-left")}
                     >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
-                        asChild
+                      <Link
+                        href={`/categories/${category.slug}`}
+                        className="inline-block"
                       >
-                        <Link href={`/categories/${category.slug}`}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="font-medium"
+                        >
                           {isRTL ? "استعرض الفئة" : "Explore Category"}
-                        </Link>
-                      </Button>
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
@@ -275,11 +277,14 @@ export const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({
                       )}
 
                     <div>
-                      <Button asChild>
-                        <Link href={`/categories/${category.slug}`}>
+                      <Link
+                        href={`/categories/${category.slug}`}
+                        className="inline-block"
+                      >
+                        <Button>
                           {isRTL ? "استعرض المنتجات" : "Browse Products"}
-                        </Link>
-                      </Button>
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </div>

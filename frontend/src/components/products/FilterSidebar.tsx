@@ -139,7 +139,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
           {isRTL ? "סנן לפי" : "Filter By"}
         </h2>
         <Button
-          variant="link"
+          variant="ghost"
           size="sm"
           onClick={onResetFilters}
           className="text-sm"

@@ -6,6 +6,8 @@ import { useDirectionalStyles } from "@/utils/rtl";
 import { Button } from "@/components/ui/Button";
 import { LocalizedContent } from "@/components/localization/LocalizedContent";
 import { LocalizedString } from "@/types/product";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
 
 export interface HeroFeature {
   id: string;
@@ -254,21 +256,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     (contentAlign === "left" ? "justify-end" : "justify-start")
                 )}
               >
-                <Button size="lg" asChild>
-                  <Link href={currentSlide.actionUrl}>
-                    <LocalizedContent content={currentSlide.actionLabel} />
+                <div>
+                  <Link href={currentSlide.actionUrl} className="inline-block">
+                    <Button size="lg">
+                      <LocalizedContent content={currentSlide.actionLabel} />
+                    </Button>
                   </Link>
-                </Button>
+                </div>
 
                 {currentSlide.secondaryActionLabel &&
                   currentSlide.secondaryActionUrl && (
-                    <Button size="lg" variant="outline" asChild>
-                      <Link href={currentSlide.secondaryActionUrl}>
-                        <LocalizedContent
-                          content={currentSlide.secondaryActionLabel}
-                        />
+                    <div className="mt-2">
+                      <Link
+                        href={currentSlide.secondaryActionUrl}
+                        className="inline-block"
+                      >
+                        <Button size="lg" variant="outline">
+                          <LocalizedContent
+                            content={currentSlide.secondaryActionLabel}
+                          />
+                        </Button>
                       </Link>
-                    </Button>
+                    </div>
                   )}
               </div>
 

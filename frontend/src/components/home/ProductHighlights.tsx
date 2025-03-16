@@ -234,13 +234,14 @@ export const ProductHighlights: React.FC<ProductHighlightsProps> = ({
             </div>
             <div className="flex gap-3">
               {compareUrl && compareLabel && (
-                <Button variant="primary" size="sm" asChild>
-                  <Link
-                    href={`${compareUrl}?ids=${selectedProductIds.join(",")}`}
-                  >
+                <Link
+                  href={`${compareUrl}?ids=${selectedProductIds.join(",")}`}
+                  className="inline-block"
+                >
+                  <Button variant="primary" size="sm">
                     <LocalizedContent content={compareLabel} />
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               )}
               <Button
                 variant="outline"
