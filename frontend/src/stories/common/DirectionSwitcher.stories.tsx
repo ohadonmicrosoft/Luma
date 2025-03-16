@@ -1,18 +1,17 @@
-import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { DirectionSwitcher } from '@/components/common/DirectionSwitcher';
+import React from "react";
+import { DirectionSwitcher } from "@/components/common/DirectionSwitcher";
 
-const meta = {
-  title: 'Common/DirectionSwitcher',
+const meta: ReactStorybook.Meta<typeof DirectionSwitcher> = {
+  title: "Common/DirectionSwitcher",
   component: DirectionSwitcher,
   parameters: {
-    layout: 'padded',
+    layout: "padded",
   },
-} satisfies Meta<typeof DirectionSwitcher>;
+};
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = ReactStorybook.Story<typeof meta>;
 
 export const Default: Story = {
   args: {},
@@ -21,18 +20,18 @@ export const Default: Story = {
 export const WithCustomLabels: Story = {
   args: {
     ltrLabel: "Left-to-Right",
-    rtlLabel: "Right-to-Left"
+    rtlLabel: "Right-to-Left",
   },
 };
 
 export const WithIconOnly: Story = {
   args: {
-    showLabels: false
+    showLabels: false,
   },
 };
 
 export const WithCustomSize: Story = {
   args: {
-    size: "sm"
+    size: "sm",
   },
-}; 
+};

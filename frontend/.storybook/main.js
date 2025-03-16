@@ -19,5 +19,17 @@ const config = {
     autodocs: "tag",
   },
   staticDirs: ["../public"],
+  typescript: {
+    reactDocgen: 'react-docgen-typescript',
+    reactDocgenTypescriptOptions: {
+      compilerOptions: {
+        allowSyntheticDefaultImports: true,
+        esModuleInterop: true,
+      },
+      propFilter: { skipPropsWithoutDoc: false },
+    },
+    check: false, // We'll check types via the build process instead
+  },
 };
+
 export default config;
