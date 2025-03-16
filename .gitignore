@@ -122,3 +122,7 @@ kubeconfig
 # Implementation plans and documentation (unless explicitly tracked)
 *_implementation_plan.md
 !implementation_plan.md
+!adejusted_implementation_plan.md
+
+# Backup directory
+backup/

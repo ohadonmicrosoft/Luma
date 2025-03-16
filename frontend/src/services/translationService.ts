@@ -29,7 +29,7 @@ export interface TranslationEntry {
 export function getLocalizedContent(
   content: LocalizedString | undefined,
   locale: string,
-  fallbackLocale: string = "en"
+  fallbackLocale = "en"
 ): string | undefined {
   // Handle undefined or null content
   if (!content) return "";
@@ -63,7 +63,7 @@ export function useLocalizedContent() {
 
   const getContent = (
     content: LocalizedString | undefined,
-    fallbackLocale: string = "en"
+    fallbackLocale = "en"
   ): string | undefined => {
     return getLocalizedContent(content, i18n.language, fallbackLocale);
   };
@@ -190,7 +190,7 @@ export async function synchronizeTranslations(
   sourceLocale: string,
   targetLocale: string,
   namespace?: string,
-  overwriteExisting: boolean = false
+  overwriteExisting = false
 ): Promise<{ total: number; updated: number; created: number }> {
   try {
     const params = new URLSearchParams();
@@ -259,7 +259,7 @@ export async function exportTranslations(
  */
 export async function importTranslations(
   file: File,
-  overwriteExisting: boolean = false
+  overwriteExisting = false
 ): Promise<{
   total: number;
   imported: number;

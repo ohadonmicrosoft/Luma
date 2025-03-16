@@ -1,7 +1,7 @@
 {
   "name": "luma",
   "version": "1.0.0",
-  "description": "A high-end e-commerce platform specialized for premium soap and shampoo products.",
+  "description": "A high-end e-commerce platform specialized for tactical/outdoor equipment and home accessories.",
   "private": true,
   "packageManager": "npm@9.5.0",
   "workspaces": [

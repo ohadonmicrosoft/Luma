@@ -1,6 +1,6 @@
 # Luma - Premium E-Commerce Platform
 
-A high-end e-commerce platform specialized for premium soap and shampoo products.
+A high-end e-commerce platform specialized for tactical/outdoor equipment and home accessories.
 
 ## Project Structure
 

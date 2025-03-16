@@ -26,3 +26,6 @@ public/robots.txt
 
 # Sentry
 .sentryclirc
+
+# Tests
+src/tests/coverage/

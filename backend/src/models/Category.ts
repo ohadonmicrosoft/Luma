@@ -180,7 +180,7 @@ export class Category {
   }
 
   // Get localized name based on language
-  getLocalizedName(locale: string = "en"): string {
+  getLocalizedName(locale = "en"): string {
     if (
       this.localizedData &&
       this.localizedData[locale] &&
@@ -192,7 +192,7 @@ export class Category {
   }
 
   // Get localized description based on language
-  getLocalizedDescription(locale: string = "en"): string | undefined {
+  getLocalizedDescription(locale = "en"): string | undefined {
     if (
       this.localizedData &&
       this.localizedData[locale] &&

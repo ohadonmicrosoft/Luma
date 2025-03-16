@@ -79,7 +79,7 @@ export async function getInventoryStatus(
 export async function getInventoryHistory(
   productId: string,
   variantId?: string,
-  limit: number = 10
+  limit = 10
 ): Promise<InventoryHistoryEntry[]> {
   try {
     const params = new URLSearchParams();
@@ -116,8 +116,8 @@ export async function getInventoryHistory(
  * Get low stock products
  */
 export async function getLowStockProducts(
-  limit: number = 20,
-  page: number = 1
+  limit = 20,
+  page = 1
 ): Promise<{
   items: InventoryItem[];
   total: number;
@@ -236,8 +236,8 @@ export async function setLowStockThreshold(
  */
 export async function getReplacementSuggestions(
   productId: string,
-  limit: number = 5,
-  locale: string = "en"
+  limit = 5,
+  locale = "en"
 ): Promise<Product[]> {
   try {
     const params = new URLSearchParams();
@@ -345,8 +345,8 @@ export async function releaseReservedInventory(
  * Get inventory alerts
  */
 export async function getInventoryAlerts(
-  limit: number = 10,
-  page: number = 1
+  limit = 10,
+  page = 1
 ): Promise<{ alerts: any[]; total: number; page: number; totalPages: number }> {
   try {
     const params = new URLSearchParams();

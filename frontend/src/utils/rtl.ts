@@ -213,11 +213,7 @@ export const useRtlUtils = () => {
    * @returns Combined class string
    */
   const cx = useCallback(
-    (
-      baseClasses: string = "",
-      ltrClasses: string = "",
-      rtlClasses: string = ""
-    ): string => {
+    (baseClasses = "", ltrClasses = "", rtlClasses = ""): string => {
       const directionClasses = isRTL ? rtlClasses : ltrClasses;
       return `${baseClasses} ${directionClasses}`.trim();
     },

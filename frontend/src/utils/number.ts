@@ -27,7 +27,7 @@ interface NumberFormatOptions {
  */
 export function formatNumber(
   value: number,
-  locale: string = "en",
+  locale = "en",
   options: NumberFormatOptions = {}
 ): string {
   return new Intl.NumberFormat(locale, options).format(value);
@@ -42,8 +42,8 @@ export function formatNumber(
  */
 export function formatPercent(
   value: number,
-  locale: string = "en",
-  decimals: number = 0
+  locale = "en",
+  decimals = 0
 ): string {
   return new Intl.NumberFormat(locale, {
     style: "percent",
@@ -63,7 +63,7 @@ export function formatPercent(
 export function formatUnit(
   value: number,
   unit: string,
-  locale: string = "en",
+  locale = "en",
   options: Omit<NumberFormatOptions, "style" | "unit"> = {}
 ): string {
   return new Intl.NumberFormat(locale, {
@@ -85,7 +85,7 @@ export function formatUnit(
  */
 export function formatCompact(
   value: number,
-  locale: string = "en",
+  locale = "en",
   options: Omit<NumberFormatOptions, "notation"> = {}
 ): string {
   return new Intl.NumberFormat(locale, {
@@ -165,7 +165,7 @@ export function useNumberFormatter() {
     return formatNumber(value, i18n.language, options);
   };
 
-  const formatPct = (value: number, decimals: number = 0): string => {
+  const formatPct = (value: number, decimals = 0): string => {
     return formatPercent(value, i18n.language, decimals);
   };
 

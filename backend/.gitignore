@@ -21,3 +21,6 @@ junit.xml
 
 # Generated types
 src/types/generated/
+
+# Tests
+src/tests/coverage/

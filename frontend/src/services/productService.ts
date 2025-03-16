@@ -175,7 +175,7 @@ export async function getProducts(
  */
 export async function getProductBySlug(
   slug: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<Product> {
   try {
     const response = await fetch(
@@ -204,8 +204,8 @@ export async function getProductBySlug(
  */
 export async function getRelatedProducts(
   productId: string,
-  limit: number = 4,
-  locale: string = "en"
+  limit = 4,
+  locale = "en"
 ): Promise<Product[]> {
   try {
     // First get the product to find its categories
@@ -244,7 +244,7 @@ export async function getRelatedProducts(
  */
 export async function getProductById(
   id: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<Product> {
   try {
     const response = await fetch(
@@ -267,7 +267,7 @@ export async function getProductById(
  */
 export async function getProductVariants(
   productId: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<ProductVariant[]> {
   try {
     const response = await fetch(
@@ -321,7 +321,7 @@ export async function checkProductStock(
  */
 export async function getProductFilters(
   categoryId?: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<{
   categories: Category[];
   brands: string[];
@@ -424,8 +424,8 @@ export async function importProducts(file: File): Promise<{
  * Get featured products
  */
 export async function getFeaturedProducts(
-  limit: number = 8,
-  locale: string = "en"
+  limit = 8,
+  locale = "en"
 ): Promise<Product[]> {
   try {
     const params = new URLSearchParams();
@@ -454,8 +454,8 @@ export async function getFeaturedProducts(
  * Get new arrivals
  */
 export async function getNewArrivals(
-  limit: number = 8,
-  locale: string = "en"
+  limit = 8,
+  locale = "en"
 ): Promise<Product[]> {
   try {
     const params = new URLSearchParams();
@@ -484,8 +484,8 @@ export async function getNewArrivals(
  * Get products on sale
  */
 export async function getProductsOnSale(
-  limit: number = 8,
-  locale: string = "en"
+  limit = 8,
+  locale = "en"
 ): Promise<Product[]> {
   try {
     const params = new URLSearchParams();

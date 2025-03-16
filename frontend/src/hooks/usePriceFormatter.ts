@@ -10,7 +10,7 @@ export const usePriceFormatter = () => {
    */
   const formatPrice = (
     price: number,
-    currency: string = "USD",
+    currency = "USD",
     options?: {
       showCurrency?: boolean;
       maximumFractionDigits?: number;
@@ -47,7 +47,7 @@ export const usePriceFormatter = () => {
   const formatPriceRange = (
     minPrice: number,
     maxPrice: number,
-    currency: string = "USD"
+    currency = "USD"
   ): string => {
     if (minPrice === maxPrice) {
       return formatPrice(minPrice, currency);

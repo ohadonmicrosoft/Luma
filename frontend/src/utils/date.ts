@@ -27,7 +27,7 @@ interface DateFormatOptions {
  */
 export function formatDate(
   date: Date | string | number,
-  locale: string = "en",
+  locale = "en",
   options: DateFormatOptions = { dateStyle: "medium" }
 ): string {
   // Handle string dates
@@ -48,7 +48,7 @@ export function formatDate(
  */
 export function formatRelativeTime(
   date: Date | string | number,
-  locale: string = "en",
+  locale = "en",
   style: "long" | "short" | "narrow" = "long"
 ): string {
   const dateObj =
@@ -100,7 +100,7 @@ export function formatRelativeTime(
 export function formatDateRange(
   startDate: Date | string | number,
   endDate: Date | string | number,
-  locale: string = "en",
+  locale = "en",
   options: DateFormatOptions = { dateStyle: "medium" }
 ): string {
   const startObj =

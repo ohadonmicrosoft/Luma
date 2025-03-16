@@ -11,8 +11,8 @@ const API_BASE_URL =
  * Get all categories
  */
 export async function getAllCategories(
-  locale: string = "en",
-  includeInactive: boolean = false
+  locale = "en",
+  includeInactive = false
 ): Promise<Category[]> {
   try {
     const params = new URLSearchParams();
@@ -42,7 +42,7 @@ export async function getAllCategories(
  */
 export async function getCategoryById(
   id: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<Category> {
   try {
     const params = new URLSearchParams();
@@ -68,7 +68,7 @@ export async function getCategoryById(
  */
 export async function getCategoryBySlug(
   slug: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<Category> {
   try {
     const params = new URLSearchParams();
@@ -94,7 +94,7 @@ export async function getCategoryBySlug(
  * Returns categories in a hierarchical tree structure
  */
 export async function getCategoryHierarchy(
-  locale: string = "en",
+  locale = "en",
   rootCategoryId?: string
 ): Promise<Category[]> {
   try {
@@ -129,8 +129,8 @@ export async function getCategoryHierarchy(
  */
 export async function getChildCategories(
   parentId: string,
-  locale: string = "en",
-  includeInactive: boolean = false
+  locale = "en",
+  includeInactive = false
 ): Promise<Category[]> {
   try {
     const params = new URLSearchParams();
@@ -166,7 +166,7 @@ export async function getChildCategories(
  */
 export async function getCategoryBreadcrumbs(
   categoryId: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<Category[]> {
   try {
     const params = new URLSearchParams();
@@ -196,8 +196,8 @@ export async function getCategoryBreadcrumbs(
  * Get featured categories
  */
 export async function getFeaturedCategories(
-  limit: number = 5,
-  locale: string = "en"
+  limit = 5,
+  locale = "en"
 ): Promise<Category[]> {
   try {
     const params = new URLSearchParams();
@@ -228,7 +228,7 @@ export async function getFeaturedCategories(
  */
 export async function getCategoryProductCount(
   categoryId: string,
-  includeChildren: boolean = true
+  includeChildren = true
 ): Promise<number> {
   try {
     const params = new URLSearchParams();
@@ -260,8 +260,8 @@ export async function getCategoryProductCount(
  */
 export async function searchCategories(
   query: string,
-  locale: string = "en",
-  limit: number = 10
+  locale = "en",
+  limit = 10
 ): Promise<Category[]> {
   try {
     const params = new URLSearchParams();
@@ -290,8 +290,8 @@ export async function searchCategories(
  */
 export async function getRelatedCategories(
   categoryId: string,
-  limit: number = 5,
-  locale: string = "en"
+  limit = 5,
+  locale = "en"
 ): Promise<Category[]> {
   try {
     const params = new URLSearchParams();

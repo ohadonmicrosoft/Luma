@@ -66,11 +66,11 @@ export interface ImportValidationError {
 export async function exportProducts(
   format: ExportFormat = "csv",
   filters?: Record<string, any>,
-  includeVariants: boolean = true,
-  includeImages: boolean = true,
-  includeCategories: boolean = true,
-  includeBrands: boolean = true,
-  includeInventory: boolean = true,
+  includeVariants = true,
+  includeImages = true,
+  includeCategories = true,
+  includeBrands = true,
+  includeInventory = true,
   locales: string[] = ["en"]
 ): Promise<ExportStatus> {
   try {
@@ -139,10 +139,10 @@ export function downloadExportFile(fileUrl: string, fileName: string): void {
  */
 export async function importProducts(
   file: File,
-  updateExisting: boolean = true,
-  createMissing: boolean = true,
-  validateOnly: boolean = false,
-  defaultLocale: string = "en"
+  updateExisting = true,
+  createMissing = true,
+  validateOnly = false,
+  defaultLocale = "en"
 ): Promise<ImportStatus> {
   try {
     const formData = new FormData();
@@ -216,11 +216,11 @@ export async function cancelImport(importId: string): Promise<ImportStatus> {
  */
 export async function getImportTemplate(
   format: ImportFormat = "csv",
-  includeVariants: boolean = true,
-  includeImages: boolean = true,
-  includeCategories: boolean = true,
-  includeBrands: boolean = true,
-  includeInventory: boolean = true,
+  includeVariants = true,
+  includeImages = true,
+  includeCategories = true,
+  includeBrands = true,
+  includeInventory = true,
   locales: string[] = ["en"]
 ): Promise<string> {
   try {
@@ -254,8 +254,8 @@ export async function getImportTemplate(
  */
 export async function getImportValidationErrors(
   importId: string,
-  page: number = 1,
-  limit: number = 100
+  page = 1,
+  limit = 100
 ): Promise<{
   errors: ImportValidationError[];
   total: number;

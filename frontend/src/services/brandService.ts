@@ -11,8 +11,8 @@ const API_BASE_URL =
  * Get all brands
  */
 export async function getAllBrands(
-  locale: string = "en",
-  includeInactive: boolean = false
+  locale = "en",
+  includeInactive = false
 ): Promise<Brand[]> {
   try {
     const params = new URLSearchParams();
@@ -38,10 +38,7 @@ export async function getAllBrands(
 /**
  * Get brand by ID
  */
-export async function getBrandById(
-  id: string,
-  locale: string = "en"
-): Promise<Brand> {
+export async function getBrandById(id: string, locale = "en"): Promise<Brand> {
   try {
     const params = new URLSearchParams();
     params.append("locale", locale);
@@ -66,7 +63,7 @@ export async function getBrandById(
  */
 export async function getBrandBySlug(
   slug: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<Brand> {
   try {
     const params = new URLSearchParams();
@@ -91,8 +88,8 @@ export async function getBrandBySlug(
  * Get featured brands
  */
 export async function getFeaturedBrands(
-  limit: number = 10,
-  locale: string = "en"
+  limit = 10,
+  locale = "en"
 ): Promise<Brand[]> {
   try {
     const params = new URLSearchParams();
@@ -142,8 +139,8 @@ export async function getBrandProductCount(brandId: string): Promise<number> {
  */
 export async function searchBrands(
   query: string,
-  locale: string = "en",
-  limit: number = 10
+  locale = "en",
+  limit = 10
 ): Promise<Brand[]> {
   try {
     const params = new URLSearchParams();
@@ -172,7 +169,7 @@ export async function searchBrands(
  */
 export async function getBrandsByCategory(
   categoryId: string,
-  locale: string = "en"
+  locale = "en"
 ): Promise<Brand[]> {
   try {
     const params = new URLSearchParams();
@@ -201,8 +198,8 @@ export async function getBrandsByCategory(
  * Get popular brands
  */
 export async function getPopularBrands(
-  limit: number = 10,
-  locale: string = "en"
+  limit = 10,
+  locale = "en"
 ): Promise<Brand[]> {
   try {
     const params = new URLSearchParams();

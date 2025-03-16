@@ -17,8 +17,8 @@ export function Footer({ className }: FooterProps) {
               Luma
             </h3>
             <p className="text-neutral-600 mb-4">
-              Premium quality personal care products made with the finest
-              natural ingredients.
+              Premium quality tactical and outdoor equipment for professionals
+              and enthusiasts.
             </p>
             <div className="flex space-x-4">
               <a
@@ -96,26 +96,26 @@ export function Footer({ className }: FooterProps) {
               </li>
               <li>
                 <Link
-                  href="/categories/soaps"
+                  href="/categories/tactical"
                   className="text-neutral-600 hover:text-primary-600 transition-colors"
                 >
-                  Soaps
+                  Tactical Equipment
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/categories/shampoos"
+                  href="/categories/outdoor"
                   className="text-neutral-600 hover:text-primary-600 transition-colors"
                 >
-                  Shampoos
+                  Outdoor Gear
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/categories/body-care"
+                  href="/categories/home"
                   className="text-neutral-600 hover:text-primary-600 transition-colors"
                 >
-                  Body Care
+                  Home Accessories
                 </Link>
               </li>
               <li>
