@@ -4,12 +4,19 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:a11y": "NODE_ENV=development next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --config eslint.config.mjs .",
     "lint:fix": "eslint --config eslint.config.mjs . --fix",
+    "lint:style": "stylelint \"**/*.css\"",
+    "lint:style:fix": "stylelint \"**/*.css\" --fix",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook",
+    "loki:test": "loki test",
+    "loki:approve": "loki approve",
+    "loki:update": "loki update"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.14",
@@ -27,7 +34,9 @@
     "tailwind-merge": "^1.14.0"
   },
   "devDependencies": {
+    "@axe-core/react": "^4.10.1",
     "@next/eslint-plugin-next": "^15.2.2",
+    "@storybook/addon-a11y": "^7.6.20",
     "@storybook/addon-essentials": "^7.4.0",
     "@storybook/addon-interactions": "^7.4.0",
     "@storybook/addon-links": "^7.4.0",
@@ -50,10 +59,30 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^16.0.0",
+    "loki": "^0.35.1",
     "postcss": "^8.4.31",
     "storybook": "^7.4.0",
+    "storybook-addon-designs": "^6.3.1",
+    "stylelint": "^16.16.0",
+    "stylelint-config-standard": "^37.0.0",
+    "stylelint-config-tailwindcss": "^1.0.0",
     "tailwindcss": "3.3.0",
     "typescript": "^5.0.4",
     "typescript-eslint": "^8.26.1"
+  },
+  "loki": {
+    "configurations": {
+      "chrome.laptop": {
+        "target": "chrome.app",
+        "width": 1366,
+        "height": 768,
+        "deviceScaleFactor": 1,
+        "mobile": false
+      },
+      "chrome.iphone7": {
+        "target": "chrome.app",
+        "preset": "iPhone 7"
+      }
+    }
   }
 }

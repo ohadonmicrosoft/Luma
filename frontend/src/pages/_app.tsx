@@ -14,6 +14,15 @@ function App({ Component, pageProps }: AppProps) {
     document.documentElement.lang = i18n.language;
   }, [i18n.language]);
 
+  // Initialize accessibility testing in development mode
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      import('@/utils/a11y').then(({ initA11yTesting }) => {
+        initA11yTesting();
+      });
+    }
+  }, []);
+
   return (
     <LayoutProvider>
       <Head>

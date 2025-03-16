@@ -6,17 +6,21 @@
  */
 
 // Import design tokens
-const colors = require("./src/styles/tokens/colors");
-const { fontFamily } = require("./src/styles/tokens/typography");
-const {
+import colors from "./src/styles/tokens/colors";
+import { fontFamily } from "./src/styles/tokens/typography";
+import {
   spacing,
   containers,
   breakpoints,
-} = require("./src/styles/tokens/spacing");
-const { shadows, borderRadius } = require("./src/styles/tokens/elevation");
+} from "./src/styles/tokens/spacing";
+import { shadows, borderRadius } from "./src/styles/tokens/elevation";
+
+import forms from "@tailwindcss/forms";
+import typography from "@tailwindcss/typography";
+import aspectRatio from "@tailwindcss/aspect-ratio";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
@@ -89,9 +93,9 @@ module.exports = {
     },
   },
   plugins: [
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/aspect-ratio"),
+    forms,
+    typography,
+    aspectRatio,
     // Add custom plugins here
   ],
 };

@@ -1,0 +1,96 @@
+import { Meta, Canvas } from '@storybook/addon-docs';
+
+<Meta title="Design System/Overview" />
+
+# Luma Design System
+
+The Luma design system provides a comprehensive set of design tokens, components, and patterns for building consistent user interfaces across the Luma e-commerce platform.
+
+## Design Tokens
+
+Design tokens are the visual design atoms of the design system — specifically, they are named entities that store visual design attributes. We use them in place of hard-coded values to ensure a scalable and consistent visual system.
+
+### Categories
+
+<div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div className="p-6 border rounded shadow-sm">
+    <h3 className="text-lg font-semibold mb-2">Colors</h3>
+    <p className="text-gray-600 mb-3">The color palette for the Luma e-commerce platform includes brand colors, semantic colors, and supporting palettes.</p>
+    <a href="/?path=/story/design-system-colors--color-tokens" className="text-primary-600 hover:underline">
+      View Color Tokens →
+    </a>
+  </div>
+  
+  <div className="p-6 border rounded shadow-sm">
+    <h3 className="text-lg font-semibold mb-2">Typography</h3>
+    <p className="text-gray-600 mb-3">Typography tokens define font families, sizes, weights, and line heights for consistent text styling.</p>
+    <a href="/?path=/story/design-system-typography--typography-tokens" className="text-primary-600 hover:underline">
+      View Typography Tokens →
+    </a>
+  </div>
+  
+  <div className="p-6 border rounded shadow-sm">
+    <h3 className="text-lg font-semibold mb-2">Spacing</h3>
+    <p className="text-gray-600 mb-3">Spacing tokens define consistent spacing values, container widths, breakpoints, and z-index layers.</p>
+    <a href="/?path=/story/design-system-spacing--spacing-tokens" className="text-primary-600 hover:underline">
+      View Spacing Tokens →
+    </a>
+  </div>
+  
+  <div className="p-6 border rounded shadow-sm">
+    <h3 className="text-lg font-semibold mb-2">Elevation</h3>
+    <p className="text-gray-600 mb-3">Elevation tokens define shadows, border-radius, opacity, and elevation levels for creating depth.</p>
+    <a href="/?path=/story/design-system-elevation--elevation-tokens" className="text-primary-600 hover:underline">
+      View Elevation Tokens →
+    </a>
+  </div>
+</div>
+
+## Implementation
+
+Our design tokens are implemented as TypeScript objects in the `frontend/src/styles/tokens` directory:
+
+```typescript
+// Import the entire token system
+import tokens from '@/styles/tokens';
+
+// Import specific token categories
+import { colors, typography, spacingTokens, elevationTokens } from '@/styles/tokens';
+
+// Import specific tokens from a category
+import { primary, secondary } from '@/styles/tokens/colors';
+```
+
+These tokens are then integrated with Tailwind CSS through the `tailwind.config.js` file, making them available as utility classes:
+
+```jsx
+// Using color tokens
+<div className="bg-primary-600 text-white">Primary Button</div>
+
+// Using typography tokens
+<h1 className="font-sans text-3xl font-bold leading-tight">Heading</h1>
+
+// Using spacing tokens
+<div className="p-4 m-6">Spaced Content</div>
+
+// Using elevation tokens
+<div className="shadow-md rounded-lg">Elevated Card</div>
+```
+
+## Documentation
+
+For more detailed documentation on the design token system, refer to:
+
+- [Design System Documentation](/docs/design-system.md)
+- [Component Guidelines](/docs/component-guidelines.md)
+- [Contribution Guidelines](/docs/contribution-guidelines.md)
+
+## Components
+
+Our component library is built on top of these design tokens and follows a consistent API pattern:
+
+- [Core UI Components](/src/components/ui)
+- [Layout Components](/src/components/layout)
+- [Navigation Components](/src/components/navigation)
+- [Data Display Components](/src/components/data-display)
+- [Form Components](/src/components/form) 

@@ -96,7 +96,7 @@ export const logicalPadding = (start?: string, end?: string): string => {
 export const logicalBorder = (
   startWidth?: string,
   endWidth?: string,
-  color: string = "gray-200"
+  color = "gray-200"
 ): string => {
   const classes: string[] = [];
 

@@ -296,13 +296,11 @@ html[dir="ltr"] .rtl\:only {
 
 /* CSS Logical Properties Support */
 .logical-margin {
-  margin-inline-start: 1rem;
-  margin-inline-end: 1rem;
+  margin-inline: 1rem;
 }
 
 .logical-padding {
-  padding-inline-start: 1rem;
-  padding-inline-end: 1rem;
+  padding-inline: 1rem;
 }
 
 .logical-border {
@@ -311,8 +309,7 @@ html[dir="ltr"] .rtl\:only {
 }
 
 .logical-position {
-  inset-inline-start: 0;
-  inset-inline-end: 0;
+  inset-inline: 0;
 }
 
 /* RTL Variants for Tailwind Classes */

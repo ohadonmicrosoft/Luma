@@ -1,0 +1,43 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-tailwindcss"
+  ],
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
+          "layer"
+        ]
+      }
+    ],
+    "function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": ["theme"]
+      }
+    ],
+    "declaration-property-value-no-unknown": null,
+    "declaration-block-trailing-semicolon": null,
+    "no-descending-specificity": null,
+    "selector-class-pattern": null,
+    "at-rule-empty-line-before": null,
+    "custom-property-empty-line-before": null,
+    "rule-empty-line-before": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "no-duplicate-selectors": null,
+    "keyframes-name-pattern": null,
+    "at-rule-no-deprecated": null,
+    "declaration-block-no-redundant-longhand-properties": null,
+    "no-invalid-position-at-import-rule": null,
+    "property-no-unknown": null,
+    "function-url-quotes": null
+  }
+} 
