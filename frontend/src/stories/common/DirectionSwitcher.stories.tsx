@@ -1,37 +1,29 @@
-import React from "react";
-import { DirectionSwitcher } from "@/components/common/DirectionSwitcher";
+import React from 'react';
+import DirectionSwitcher from '@/components/common/DirectionSwitcher';
+import type { ComponentProps } from 'react';
 
-const meta: ReactStorybook.Meta<typeof DirectionSwitcher> = {
-  title: "Common/DirectionSwitcher",
+type DirectionSwitcherProps = ComponentProps<typeof DirectionSwitcher>;
+
+const meta: ReactStorybook.Meta<DirectionSwitcherProps> = {
+  title: 'Common/DirectionSwitcher',
   component: DirectionSwitcher,
   parameters: {
-    layout: "padded",
+    layout: 'centered',
   },
+  tags: ['autodocs'],
 };
 
 export default meta;
-
-type Story = ReactStorybook.Story<typeof meta>;
+type Story = ReactStorybook.Story<DirectionSwitcherProps>;
 
 export const Default: Story = {
-  args: {},
-};
-
-export const WithCustomLabels: Story = {
   args: {
-    ltrLabel: "Left-to-Right",
-    rtlLabel: "Right-to-Left",
+    className: '',
   },
 };
 
-export const WithIconOnly: Story = {
+export const WithCustomClass: Story = {
   args: {
-    showLabels: false,
-  },
-};
-
-export const WithCustomSize: Story = {
-  args: {
-    size: "sm",
+    className: 'bg-blue-100 text-blue-800 border-blue-300',
   },
 };

@@ -1,0 +1,56 @@
+/* 
+ * CSS nesting for layer-based styles 
+ * This file gets imported before Tailwind layers
+ */
+
+@layer base {
+  html {
+    font-family: var(--font-family-base);
+    color: theme("colors.neutral.800");
+    background-color: theme("colors.neutral.50");
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-family-heading);
+    font-weight: 700;
+  }
+
+  h1 {
+    @apply text-4xl sm:text-5xl;
+  }
+
+  h2 {
+    @apply text-3xl sm:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl sm:text-3xl;
+  }
+
+  h4 {
+    @apply text-xl sm:text-2xl;
+  }
+
+  h5 {
+    @apply text-lg sm:text-xl;
+  }
+
+  h6 {
+    @apply text-base sm:text-lg;
+  }
+}
+
+@layer components {
+  .container {
+    @apply px-4 mx-auto max-w-7xl;
+  }
+
+  .section {
+    @apply py-12 sm:py-16 md:py-20;
+  }
+} 

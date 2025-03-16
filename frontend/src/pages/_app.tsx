@@ -4,23 +4,9 @@ import Head from "next/head";
 import { appWithTranslation, useTranslation } from "next-i18next";
 import { LayoutProvider } from "@/contexts/LayoutContext";
 import { DirectionProvider } from "@/contexts/DirectionContext";
-import i18n from "@/lib/i18n";
+// Import i18n instance - it's already initialized in the module
+import "@/lib/i18n";
 import "../styles/globals.css";
-
-// Ensure i18n is initialized
-if (i18n.options && !i18n.isInitialized) {
-  i18n.init({
-    fallbackLng: "en",
-    defaultNS: "common",
-    supportedLngs: ["en", "he"],
-    interpolation: {
-      escapeValue: false, // React already escapes values
-    },
-    react: {
-      useSuspense: false,
-    },
-  });
-}
 
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();

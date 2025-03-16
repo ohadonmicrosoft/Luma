@@ -10,7 +10,8 @@
           "variants",
           "responsive",
           "screen",
-          "layer"
+          "layer",
+          "nest"
         ]
       }
     ],
@@ -43,6 +44,7 @@
       {
         "ignorePseudoClasses": ["global"]
       }
-    ]
+    ],
+    "selector-nesting-pattern": "^&"
   }
 }
